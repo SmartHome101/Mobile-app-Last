@@ -18,24 +18,16 @@ class Body extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SizedBox(
-            height: getProportionateScreenHeight(20),
+          Text(
+            'Welcome',
+            style: Theme.of(context).textTheme.headline1!.copyWith(
+                color: Colors.white,
+                fontSize: 50
+            ),
           ),
           Material(
             child: Image.asset('assets/images/splash_img.png'),
             color: Colors.transparent,
-          ),
-          Text(
-            'Sweet & Smart Home',
-            style: Theme.of(context).textTheme.headline1!.copyWith(
-                  color: Colors.white,
-                ),
-          ),
-          Text(
-            'Smart Home can change\nway you live in the future',
-            style: Theme.of(context).textTheme.headline3!.copyWith(
-                  color: Color(0xFFBDBDBD),
-                ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -49,13 +41,14 @@ class Body extends StatelessWidget {
               style: Theme.of(context).textTheme.headline2,
             ),
             style: ElevatedButton.styleFrom(
-              elevation: 0,
+              elevation: 15,
               padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(70),
-                vertical: getProportionateScreenHeight(15),
+                horizontal: 25,
+                vertical: 25,
               ),
+              shadowColor: Colors.blue,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20), // <-- Radius
+                borderRadius: BorderRadius.circular(25), // <-- Radius
               ),
             ),
           )
