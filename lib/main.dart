@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'living_room.dart';
 import 'input_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'body.dart';
+import 'splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
           primaryColor: Color(0xFF0A0E21),
           scaffoldBackgroundColor: Color(0xFF0A0E21)),
-      home: InputPage(),
+      home: SplashScreen(),
     );
   }
 }
