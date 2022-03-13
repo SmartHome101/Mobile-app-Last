@@ -1,3 +1,5 @@
+import 'package:smart_home_app/Login_Screen.dart';
+
 import 'size_config.dart';
 import 'package:flutter/material.dart';
 import 'input_page.dart';
@@ -33,7 +35,7 @@ class Body extends StatelessWidget {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) {
-                    return InputPage();
+                    return LoginScreen();
                   }));
             },
             child: Text(
