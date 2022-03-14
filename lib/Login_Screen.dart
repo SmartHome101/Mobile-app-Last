@@ -12,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   bool _rememberMe = false;
+  String login_State = "";
+  final Email_Controller = TextEditingController();
+  final Password_Controller = TextEditingController();
 
   Widget _buildEmailTF() {
     return Column(
@@ -42,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
               hintText: 'Enter your Email',
               hintStyle: kHintTextStyle,
             ),
+            controller: Email_Controller,
           ),
         ),
       ],
@@ -77,6 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
               hintText: 'Enter your Password',
               hintStyle: kHintTextStyle,
             ),
+            controller: Password_Controller,
+
           ),
         ),
       ],
@@ -130,11 +136,30 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: (){
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-                return InputPage();
-              }));
+        onPressed: ()
+        {
+          bool Valid = Check_Valid_Auth(Email_Controller.text, Password_Controller.text);
+
+          if(Valid) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) {
+                  return InputPage();
+                }));
+
+            setState(() {
+
+              login_State = "";
+
+            });
+          }
+          else
+          {
+            setState(() {
+
+              login_State = "Check your Email and password please";
+
+            });
+          }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -266,10 +291,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0xFF73AEF5),
-                      Color(0xFF61A4F1),
-                      Color(0xFF478DE0),
-                      Color(0xFF398AE5),
+                      Color(0XFFFAFAFA),
+                      Color(0xFF303030),
                     ],
                     stops: [0.1, 0.4, 0.7, 0.9],
                   ),
@@ -302,6 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       _buildPasswordTF(),
                       _buildLoginBtn(),
+                      Text(login_State)
                     ],
                   ),
                 ),
@@ -312,4 +336,13 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+
+bool Check_Valid_Auth(String Email, String Password)
+{
+  if(Email == "Project@gmail.com" && Password == "123")
+    return true;
+  else
+    return false;
 }
