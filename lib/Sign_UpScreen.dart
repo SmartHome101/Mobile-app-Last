@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_home_app/Login_Screen.dart';
 import 'constants.dart';
 import 'input_page.dart';
-import 'package:smart_home_app/Sign_UpScreen.dart';
 
 
-class LoginScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreen createState() => _SignUpScreen();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreen extends State<SignUpScreen> {
 
   bool _rememberMe = false;
   String login_State = "";
+
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
 
@@ -90,20 +91,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildGo_SignUp() {
+  Widget _buildForgotPasswordBtn() {
     return Container(
       alignment: Alignment.centerRight,
       child: FlatButton(
-        onPressed: ()
-        {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-                return SignUpScreen();
-              }));
-        },
+        onPressed: () => print('Forgot Password Button Pressed'),
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
-          "Don't have an account? Sign Up",
+          'Forgot Password?',
           style: kLabelStyle,
         ),
       ),
@@ -137,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildGo_SignUp() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
@@ -145,29 +140,30 @@ class _LoginScreenState extends State<LoginScreen> {
         elevation: 5.0,
         onPressed: ()
         {
-          bool Valid = Check_Valid_Auth(Email_Controller.text, Password_Controller.text);
+          bool Value = Sign_Up_Account(Email_Controller.text, Password_Controller.text);
 
-          if(Valid) {
-            Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) {
-                  return InputPage();
-                }));
+          if(Value)
+            {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) {
+                    return LoginScreen();
+                  }));
 
-            setState(() {
+              setState(() {
 
-              login_State = "";
+                login_State = "";
 
-            });
-          }
+              });
+            }
           else
-          {
-            setState(() {
+            {
+              setState(() {
 
-              login_State = "Wrong Email or password";
-
-            });
-          }
+                login_State = "Wrong Parameters";
+              });
+            }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -175,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         color: Colors.white,
         child: Text(
-          'LOGIN',
+          'Sign Up',
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
@@ -183,6 +179,28 @@ class _LoginScreenState extends State<LoginScreen> {
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginBtn() {
+    return Container(
+      alignment: Alignment.centerRight,
+      child: FlatButton(
+        onPressed: ()
+        {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) {
+                return LoginScreen();
+              }));
+        },
+        padding: EdgeInsets.only(right: 0.0),
+        child: Text(
+          "Sign In",
+          style: kLabelStyle,
         ),
       ),
     );
@@ -318,7 +336,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Sign In',
+                        'Sign Up',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
@@ -332,8 +350,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
-                      _buildLoginBtn(),
                       _buildGo_SignUp(),
+                      _buildLoginBtn(),
                       Text(login_State)
                     ],
                   ),
@@ -348,9 +366,9 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 
-bool Check_Valid_Auth(String Email, String Password)
+bool Sign_Up_Account(String Email, String Password)
 {
-  if(Email == "Project@gmail.com" && Password == "123")
+  if(Email != "" && Password != "")
     return true;
   else
     return false;
