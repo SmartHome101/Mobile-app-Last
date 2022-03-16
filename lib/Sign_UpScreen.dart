@@ -15,6 +15,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   bool _rememberMe = false;
   String login_State = "";
 
+  final Name_Controller = TextEditingController();
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
 
@@ -48,6 +49,43 @@ class _SignUpScreen extends State<SignUpScreen> {
               hintStyle: kHintTextStyle,
             ),
             controller: Email_Controller,
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildUserName() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Name',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 60.0,
+          child: TextField(
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.light,
+                color: Colors.white,
+              ),
+              hintText: 'Enter your name',
+              hintStyle: kHintTextStyle,
+            ),
+            controller: Name_Controller,
           ),
         ),
       ],
@@ -105,33 +143,6 @@ class _SignUpScreen extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildRememberMeCheckbox() {
-    return Container(
-      height: 20.0,
-      child: Row(
-        children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value!;
-                });
-              },
-            ),
-          ),
-          Text(
-            'Remember me',
-            style: kLabelStyle,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildGo_SignUp() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -140,16 +151,11 @@ class _SignUpScreen extends State<SignUpScreen> {
         elevation: 5.0,
         onPressed: ()
         {
-          bool Value = Sign_Up_Account(Email_Controller.text, Password_Controller.text);
+          bool Value = Sign_Up_Account(Name_Controller.text, Email_Controller.text, Password_Controller.text);
 
           if(Value)
             {
               Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) {
-                    return LoginScreen();
-                  }));
 
               setState(() {
 
@@ -191,11 +197,6 @@ class _SignUpScreen extends State<SignUpScreen> {
         onPressed: ()
         {
           Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-                return LoginScreen();
-              }));
         },
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
@@ -312,17 +313,6 @@ class _SignUpScreen extends State<SignUpScreen> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0XFFFAFAFA),
-                      Color(0xFF303030),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
               ),
               Container(
                 height: double.infinity,
@@ -345,11 +335,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                         ),
                       ),
                       SizedBox(height: 30.0),
+                      _buildUserName(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
                       _buildEmailTF(),
                       SizedBox(
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
                       _buildGo_SignUp(),
                       _buildLoginBtn(),
                       Text(login_State)
@@ -366,9 +363,9 @@ class _SignUpScreen extends State<SignUpScreen> {
 }
 
 
-bool Sign_Up_Account(String Email, String Password)
+bool Sign_Up_Account(String Name, String Email, String Password)
 {
-  if(Email != "" && Password != "")
+  if(Name != "" && Email != "" && Password != "")
     return true;
   else
     return false;

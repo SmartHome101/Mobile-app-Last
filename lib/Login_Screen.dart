@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_home_app/loading.dart';
 import 'constants.dart';
 import 'input_page.dart';
 import 'package:smart_home_app/Sign_UpScreen.dart';
@@ -9,6 +10,7 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
+
 
 class _LoginScreenState extends State<LoginScreen> {
 
@@ -147,7 +149,12 @@ class _LoginScreenState extends State<LoginScreen> {
         {
           bool Valid = Check_Valid_Auth(Email_Controller.text, Password_Controller.text);
 
+
           if(Valid) {
+
+            if(_rememberMe)
+              Remember_Me(Email_Controller.text, Password_Controller.text);
+
             Navigator.pop(context);
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) {
@@ -159,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
               login_State = "";
 
             });
+
           }
           else
           {
@@ -284,7 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Check_Valid_Auth(Get_Saved_Email(), Get_Saved_Password()) ? InputPage() : Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
@@ -294,17 +302,6 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0XFFFAFAFA),
-                      Color(0xFF303030),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
               ),
               Container(
                 height: double.infinity,
@@ -332,6 +329,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      _buildRememberMeCheckbox(),
                       _buildLoginBtn(),
                       _buildGo_SignUp(),
                       Text(login_State)
@@ -355,3 +356,30 @@ bool Check_Valid_Auth(String Email, String Password)
   else
     return false;
 }
+
+void Remember_Me(String Email, String Password)
+{
+  //Save data to local
+}
+
+String Get_Saved_Email()
+{
+  String DataSaved_Locally;
+
+  //Getting Data from Local
+  DataSaved_Locally = "Projec2t@gmail.com";
+
+  return DataSaved_Locally;
+}
+
+String Get_Saved_Password()
+{
+  String DataSaved_Locally;
+
+  //Getting Data from Local
+  DataSaved_Locally = "123";
+
+  return DataSaved_Locally;
+}
+
+

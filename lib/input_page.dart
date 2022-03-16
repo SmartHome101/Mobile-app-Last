@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smart_home_app/Login_Screen.dart';
 import 'living_room.dart';
 import 'reusabel_card.dart';
 import 'icon_content.dart';
 import 'constants.dart';
+import 'package:smart_home_app/Login_Screen.dart';
 
 int temp = 180;
 
@@ -16,7 +18,21 @@ class _InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('All Rooms')),
+          title: Center(child: Text('Hello ' + GetName())),
+          actions: <Widget>[
+            FlatButton(
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                      return LoginScreen();
+                    }));
+              },
+              child: Text("Log out"),
+              shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+            ),
+          ],
           backgroundColor: Color(0xFF1D1E33),
         ),
         body: Column(
@@ -90,4 +106,9 @@ class _InputPageState extends State<InputPage> {
           ],
         ));
   }
+}
+
+String GetName()
+{
+  return "Alfy";
 }
