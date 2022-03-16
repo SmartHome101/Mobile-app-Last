@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:smart_home_app/Login_Screen.dart';
 import 'constants.dart';
-import 'input_page.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -11,10 +9,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreen extends State<SignUpScreen> {
-
   bool _rememberMe = false;
   String login_State = "";
-
   final Name_Controller = TextEditingController();
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
@@ -54,7 +50,6 @@ class _SignUpScreen extends State<SignUpScreen> {
       ],
     );
   }
-
 
   Widget _buildUserName() {
     return Column(
@@ -122,7 +117,6 @@ class _SignUpScreen extends State<SignUpScreen> {
               hintStyle: kHintTextStyle,
             ),
             controller: Password_Controller,
-
           ),
         ),
       ],
@@ -149,27 +143,20 @@ class _SignUpScreen extends State<SignUpScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: ()
-        {
-          bool Value = Sign_Up_Account(Name_Controller.text, Email_Controller.text, Password_Controller.text);
+        onPressed: () async {
+          bool Value = await Sign_Up_Account(Name_Controller.text,
+              Email_Controller.text, Password_Controller.text);
+          if (Value) {
+            Navigator.pop(context);
 
-          if(Value)
-            {
-              Navigator.pop(context);
-
-              setState(() {
-
-                login_State = "";
-
-              });
-            }
-          else
-            {
-              setState(() {
-
-                login_State = "Wrong Parameters";
-              });
-            }
+            setState(() {
+              login_State = "";
+            });
+          } else {
+            setState(() {
+              login_State = "Wrong Parameters";
+            });
+          }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -194,8 +181,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     return Container(
       alignment: Alignment.centerRight,
       child: FlatButton(
-        onPressed: ()
-        {
+        onPressed: () {
           Navigator.pop(context);
         },
         padding: EdgeInsets.only(right: 0.0),
@@ -257,13 +243,13 @@ class _SignUpScreen extends State<SignUpScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           _buildSocialBtn(
-                () => print('Login with Facebook'),
+            () => print('Login with Facebook'),
             AssetImage(
               'assets/logos/facebook.jpg',
             ),
           ),
           _buildSocialBtn(
-                () => print('Login with Google'),
+            () => print('Login with Google'),
             AssetImage(
               'assets/logos/google.jpg',
             ),
@@ -362,11 +348,24 @@ class _SignUpScreen extends State<SignUpScreen> {
   }
 }
 
-
-bool Sign_Up_Account(String Name, String Email, String Password)
-{
-  if(Name != "" && Email != "" && Password != "")
-    return true;
-  else
+Sign_Up_Account(String Name, String Email, String Password) async {
+  if (Email != "" && Password != "") {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: Email, password: Password);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+        return false;
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+        return false;
+      }
+    } catch (e) {
+      print(e);
+    }
+  } else {
     return false;
+  }
 }

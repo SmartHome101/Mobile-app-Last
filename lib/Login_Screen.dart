@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_home_app/loading.dart';
@@ -5,15 +6,12 @@ import 'constants.dart';
 import 'input_page.dart';
 import 'package:smart_home_app/Sign_UpScreen.dart';
 
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-
 class _LoginScreenState extends State<LoginScreen> {
-
   bool _rememberMe = false;
   String login_State = "";
   final Email_Controller = TextEditingController();
@@ -85,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
               hintStyle: kHintTextStyle,
             ),
             controller: Password_Controller,
-
           ),
         ),
       ],
@@ -96,12 +93,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       alignment: Alignment.centerRight,
       child: FlatButton(
-        onPressed: ()
-        {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-                return SignUpScreen();
-              }));
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SignUpScreen();
+          }));
         },
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
@@ -145,35 +140,25 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: ()
-        {
-          bool Valid = Check_Valid_Auth(Email_Controller.text, Password_Controller.text);
+        onPressed: () async {
+          bool Valid = await Check_Valid_Auth(
+              Email_Controller.text, Password_Controller.text);
 
-
-          if(Valid) {
-
-            if(_rememberMe)
-              Remember_Me(Email_Controller.text, Password_Controller.text);
+          if (Valid) {
+            // if(_rememberMe)
+            //   Remember_Me(Email_Controller.text, Password_Controller.text);
 
             Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) {
-                  return InputPage();
-                }));
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return InputPage();
+            }));
 
             setState(() {
-
               login_State = "";
-
             });
-
-          }
-          else
-          {
+          } else {
             setState(() {
-
               login_State = "Wrong Email or password";
-
             });
           }
         },
@@ -246,13 +231,13 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           _buildSocialBtn(
-                () => print('Login with Facebook'),
+            () => print('Login with Facebook'),
             AssetImage(
               'assets/logos/facebook.jpg',
             ),
           ),
           _buildSocialBtn(
-                () => print('Login with Google'),
+            () => print('Login with Google'),
             AssetImage(
               'assets/logos/google.jpg',
             ),
@@ -292,7 +277,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Check_Valid_Auth(Get_Saved_Email(), Get_Saved_Password()) ? InputPage() : Scaffold(
+    // return Check_Valid_Auth(Get_Saved_Email(), Get_Saved_Password()) ? InputPage() :
+    return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
@@ -348,38 +334,47 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-
-bool Check_Valid_Auth(String Email, String Password)
-{
-  if(Email == "Project@gmail.com" && Password == "123")
-    return true;
-  else
+Check_Valid_Auth(String Email, String Password) async {
+  if (Email != "" && Password != "") {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: Email, password: Password);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        return false;
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        return false;
+      }
+    }
+  } else {
     return false;
+  }
 }
 
-void Remember_Me(String Email, String Password)
-{
-  //Save data to local
-}
-
-String Get_Saved_Email()
-{
-  String DataSaved_Locally;
-
-  //Getting Data from Local
-  DataSaved_Locally = "Projec2t@gmail.com";
-
-  return DataSaved_Locally;
-}
-
-String Get_Saved_Password()
-{
-  String DataSaved_Locally;
-
-  //Getting Data from Local
-  DataSaved_Locally = "123";
-
-  return DataSaved_Locally;
-}
-
-
+// void Remember_Me(String Email, String Password)
+// {
+//   //Save data to local
+// }
+//
+// String Get_Saved_Email()
+// {
+//   String DataSaved_Locally;
+//
+//   //Getting Data from Local
+//   DataSaved_Locally = "Projec2t@gmail.com";
+//
+//   return DataSaved_Locally;
+// }
+//
+// String Get_Saved_Password()
+// {
+//   String DataSaved_Locally;
+//
+//   //Getting Data from Local
+//   DataSaved_Locally = "123";
+//
+//   return DataSaved_Locally;
+// }
