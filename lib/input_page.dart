@@ -61,7 +61,7 @@ class _InputPageState extends State<InputPage> {
             Expanded(
               child: Row(children: [
                 Expanded(
-                  child: ReusableCard(
+                  child:  ReusableCard(
                     colour: kInactiveCardColor,
                     cardChild: IconContent(
                         icon: 'icons/living_room.png', label: "Living Room"),
@@ -72,6 +72,7 @@ class _InputPageState extends State<InputPage> {
                       }));
                     },
                   ),
+
                 ),
                 Expanded(
                   child: ReusableCard(

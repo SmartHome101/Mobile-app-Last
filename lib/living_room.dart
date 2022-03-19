@@ -74,81 +74,26 @@ class _LivingRoomState extends State<LivingRoom> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: Row(children: [
-                    Expanded(
-                      child: ReusableCard(
-                          colour: lampStatus
-                              ? kActiveCardColor
-                              : kInactiveCardColor,
-                          cardChild: IconContent(
-                              icon: 'icons/lights.png', label: 'LAMP'),
-                          onPress: () {
-                            if (!mounted) return;
-                            setState(() {
-                              update();
-                            });
-                          }),
-                    ),
-                    Expanded(
-                      child: ReusableCard(
-                        colour:
-                            fanStatus ? kActiveCardColor : kInactiveCardColor,
-                        cardChild: IconContent(
-                            icon: 'icons/cooling-fan.png', label: "Fan"),
-                        onPress: () {
-                          setState(() {
-                            fanStatus = !fanStatus;
-                          });
-                        },
-                      ),
-                    ),
-                  ]),
-                ),
-                Expanded(
                   child: ReusableCard(
                       colour: kInactiveCardColor,
                       cardChild: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            "Tempreature",
-                            style: kLabelStyle,
-                          ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             textBaseline: TextBaseline.alphabetic,
                             children: <Widget>[
+                              ImageIcon(
+                                AssetImage(temp > 30
+                                    ? 'assets/images/temp_high.png'
+                                    : 'assets/images/temp_low.png'),
+                                size: 120,
+                              ),
                               Text(
-                                temp.toString(),
+                                temp.toString() + " C",
                                 style: kFontStyle,
                               ),
-                              Text(
-                                'c',
-                                style: kLabelStyle,
-                              ),
-                              // SliderTheme(
-                              //   data: SliderTheme.of(context).copyWith(
-                              //     inactiveTrackColor: Color(0xFF8D8E98),
-                              //     activeTrackColor: Colors.white,
-                              //     thumbColor: Color(0xFFEB1555),
-                              //     overlayColor: Color(0x29EB1555),
-                              //     thumbShape: RoundSliderThumbShape(
-                              //         enabledThumbRadius: 15.0),
-                              //     overlayShape: RoundSliderOverlayShape(
-                              //         overlayRadius: 30.0),
-                              //   ),
-                              //   child: Slider(
-                              //     value: temp.toDouble(),
-                              //     min: 0.0,
-                              //     max: 40.0,
-                              //     onChanged: (double newValue) {
-                              //       setState(() {
-                              //         temp = newValue.round();
-                              //       });
-                              //     },
-                              //   ),
-                              // ),
                             ],
                           ),
                         ],
@@ -189,6 +134,37 @@ class _LivingRoomState extends State<LivingRoom> {
                               heaterStatus = !heaterStatus;
                             });
                           }),
+                    ),
+                  ]),
+                ),
+                Expanded(
+                  child: Row(children: [
+                    Expanded(
+                      child: ReusableCard(
+                          colour: lampStatus
+                              ? kActiveCardColor
+                              : kInactiveCardColor,
+                          cardChild: IconContent(
+                              icon: 'icons/lights.png', label: 'LAMP'),
+                          onPress: () {
+                            if (!mounted) return;
+                            setState(() {
+                              update();
+                            });
+                          }),
+                    ),
+                    Expanded(
+                      child: ReusableCard(
+                        colour:
+                            fanStatus ? kActiveCardColor : kInactiveCardColor,
+                        cardChild: IconContent(
+                            icon: 'icons/cooling-fan.png', label: "Fan"),
+                        onPress: () {
+                          setState(() {
+                            fanStatus = !fanStatus;
+                          });
+                        },
+                      ),
                     ),
                   ]),
                 ),
