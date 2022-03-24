@@ -11,7 +11,10 @@ class IconContent extends StatelessWidget {
   // }
   final String icon;
   final String label;
-  IconContent({required this.icon, required this.label}) {}
+  final double size_x;
+  final double size_y;
+  IconContent({required this.icon, required this.label, required this.size_x, required this
+  .size_y}) {}
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,11 +22,10 @@ class IconContent extends StatelessWidget {
       children: [
         Image.asset(
           icon,
-          height: 70,
-          width: 70,
-          color: Colors.white,
+          height: size_x,
+          width: size_y,
+
         ),
-        SizedBox(height: 15),
         Text(
           label,
           style: kLabelStyle,

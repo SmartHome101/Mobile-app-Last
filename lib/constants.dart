@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const kFontStyle = TextStyle(fontSize: 50, fontWeight: FontWeight.w900);
 const kBottomContainerHeight = 80.0;
-const kActiveCardColor = Color(0xFFEB1555); //Color(0xFF1D1E33);
+const kActiveCardColor = Colors.black38; //Color(0xFF1D1E33);
 const kInactiveCardColor = Color(0xFF1D1E33); //Color(0xFF111328);
 const kDisabledinCardColor = Color(0xFF111328);
 const kPrimaryColor = Color(0xFF6F35A5);
@@ -15,7 +15,7 @@ final kHintTextStyle = TextStyle(
 
 final kLabelStyle = TextStyle(
   color: Colors.grey,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.normal,
   fontFamily: 'OpenSans',
 );
 

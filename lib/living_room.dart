@@ -24,6 +24,7 @@ class LivingRoom extends StatefulWidget {
 }
 
 class _LivingRoomState extends State<LivingRoom> {
+
   get_Data_from_Firebase() {
     dbref = FirebaseDatabase.instance.ref("Smart Home/The First Floor/Room 1");
     Stream<DatabaseEvent> stream = dbref.onValue;
@@ -84,12 +85,12 @@ class _LivingRoomState extends State<LivingRoom> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             textBaseline: TextBaseline.alphabetic,
                             children: <Widget>[
-                              ImageIcon(
-                                AssetImage(temp > 30
-                                    ? 'assets/images/temp_high.png'
-                                    : 'assets/images/temp_low.png'),
-                                size: 120,
-                              ),
+                              IconContent(
+                                  icon: temp > 30
+                          ? 'assets/images/temp_high.png'
+                          : 'assets/images/temp_low.png',
+                                  label: "",
+                              size_x: 100, size_y: 100 ),
                               Text(
                                 temp.toString() + " C",
                                 style: kFontStyle,
@@ -115,7 +116,9 @@ class _LivingRoomState extends State<LivingRoom> {
                               icon: doorStatus
                                   ? 'icons/padlock.png'
                                   : 'icons/unlock.png',
-                              label: "Door"),
+                              label: "" ,
+                              size_x: 80,
+                              size_y : 80),
                           onPress: () {
                             setState(() {
                               doorStatus = !doorStatus;
@@ -128,7 +131,11 @@ class _LivingRoomState extends State<LivingRoom> {
                               ? kActiveCardColor
                               : kInactiveCardColor,
                           cardChild: IconContent(
-                              icon: 'icons/heater.png', label: "Heater"),
+                              icon: heaterStatus
+                                  ? 'icons/heater_On.png'
+                                  : 'icons/heater.png', label: "",
+                              size_x: 80,
+                              size_y : 80),
                           onPress: () {
                             setState(() {
                               heaterStatus = !heaterStatus;
@@ -145,7 +152,11 @@ class _LivingRoomState extends State<LivingRoom> {
                               ? kActiveCardColor
                               : kInactiveCardColor,
                           cardChild: IconContent(
-                              icon: 'icons/lights.png', label: 'LAMP'),
+                              icon: lampStatus
+                              ? 'icons/lights_On.png'
+                              : 'icons/lights.png', label: '' ,
+                              size_x: 80,
+                              size_y : 80),
                           onPress: () {
                             if (!mounted) return;
                             setState(() {
@@ -158,7 +169,11 @@ class _LivingRoomState extends State<LivingRoom> {
                         colour:
                             fanStatus ? kActiveCardColor : kInactiveCardColor,
                         cardChild: IconContent(
-                            icon: 'icons/cooling-fan.png', label: "Fan"),
+                            icon: fanStatus ?
+                            'icons/cooling-fan_On.png' :
+                            'icons/cooling-fan.png', label: "" ,
+                            size_x: 100,
+                            size_y : 100),
                         onPress: () {
                           setState(() {
                             fanStatus = !fanStatus;
@@ -176,7 +191,11 @@ class _LivingRoomState extends State<LivingRoom> {
                               ? kActiveCardColor
                               : kInactiveCardColor,
                           cardChild: IconContent(
-                              icon: 'icons/windows.png', label: "Window"),
+                              icon:  windowStatus ?
+                              'icons/windows_On.png' :
+                              'icons/windows.png', label: "" ,
+                              size_x: 90,
+                              size_y : 90),
                           onPress: () {
                             setState(() {
                               windowStatus = !windowStatus;

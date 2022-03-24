@@ -44,7 +44,10 @@ class _InputPageState extends State<InputPage> {
                   child: ReusableCard(
                     colour: kDisabledinCardColor,
                     cardChild: IconContent(
-                        icon: 'icons/bathroom.png', label: 'Bath Room'),
+                        icon: 'icons/bathroom.png',
+                      label: 'Bath Room',
+                      size_x: 70,
+                      size_y : 70),
                     onPress: () {},
                   ),
                 ),
@@ -52,7 +55,9 @@ class _InputPageState extends State<InputPage> {
                   child: ReusableCard(
                     colour: kDisabledinCardColor,
                     cardChild: IconContent(
-                        icon: 'icons/bedroom.png', label: "Bed Room"),
+                        icon: 'icons/bedroom.png', label: "Bed Room" ,
+                        size_x: 70,
+                        size_y : 70),
                     onPress: () {},
                   ),
                 ),
@@ -64,7 +69,9 @@ class _InputPageState extends State<InputPage> {
                   child:  ReusableCard(
                     colour: kInactiveCardColor,
                     cardChild: IconContent(
-                        icon: 'icons/living_room.png', label: "Living Room"),
+                        icon: 'icons/living_room.png', label: "Living Room" ,
+                        size_x: 70,
+                        size_y : 70),
                     onPress: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
@@ -78,7 +85,9 @@ class _InputPageState extends State<InputPage> {
                   child: ReusableCard(
                     colour: kDisabledinCardColor,
                     cardChild: IconContent(
-                        icon: 'icons/kitchen.png', label: "Kitchen"),
+                        icon: 'icons/kitchen.png', label: "Kitchen" ,
+                        size_x: 70,
+                        size_y : 70),
                     onPress: () {},
                   ),
                 ),
@@ -90,7 +99,9 @@ class _InputPageState extends State<InputPage> {
                   child: ReusableCard(
                     colour: kDisabledinCardColor,
                     cardChild:
-                        IconContent(icon: 'icons/studio.png', label: "Studio"),
+                        IconContent(icon: 'icons/studio.png', label: "Studio" ,
+                            size_x: 70,
+                            size_y : 70),
                     onPress: () {},
                   ),
                 ),
@@ -98,7 +109,9 @@ class _InputPageState extends State<InputPage> {
                   child: ReusableCard(
                     colour: kDisabledinCardColor,
                     cardChild: IconContent(
-                        icon: 'icons/washing_room.png', label: "Washing Room"),
+                        icon: 'icons/washing_room.png', label: "Washing Room" ,
+                        size_x: 70,
+                        size_y : 70),
                     onPress: () {},
                   ),
                 ),
@@ -111,5 +124,5 @@ class _InputPageState extends State<InputPage> {
 
 String GetName()
 {
-  return "Alfy";
+  return "Nour";
 }
