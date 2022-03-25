@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'constants.dart';
+import 'shared/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -353,6 +353,9 @@ Sign_Up_Account(String Name, String Email, String Password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: Email, password: Password);
+      User? user = userCredential.user;
+      user?.updateProfile(displayName: Name);
+      print(user);
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

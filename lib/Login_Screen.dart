@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:smart_home_app/loading.dart';
-import 'constants.dart';
+import 'shared/constants.dart';
 import 'Home_Screen.dart';
 import 'package:smart_home_app/Sign_UpScreen.dart';
+
+var userName;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -150,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return HomePage();
+              return HomePage(userName);
             }));
 
             setState(() {
@@ -339,6 +340,9 @@ Check_Valid_Auth(String Email, String Password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: Email, password: Password);
+      print(userCredential.user);
+      User? user = userCredential.user;
+      userName = user?.displayName;
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

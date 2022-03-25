@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:async';
-import 'loading.dart';
-import '/Living Room/ApplicationWidget.dart';
+import '../loading.dart';
+import '../shared/ApplicationWidget.dart';
 
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
@@ -60,12 +60,12 @@ class _LivingRoomState extends State<LivingRoom> {
         ? Loading()
         : Scaffold(
             appBar: AppBar(
-              title: Text('Living Room'),
+              title: Text('Rooms'),
               backgroundColor: Color(0xFF1D1E33),
             ),
             body: SafeArea(
               child: Container(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
                 child: Column(
                   children: <Widget>[
                     const SizedBox(
@@ -74,8 +74,8 @@ class _LivingRoomState extends State<LivingRoom> {
                     Expanded(
                         child: GridView.count(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 12,
                       children: devices
                           .map((item) => ApplicationWidget(item, update))
                           .toList(),

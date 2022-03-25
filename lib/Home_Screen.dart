@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:smart_home_app/Login_Screen.dart';
-import 'living_room.dart';
+import 'Rooms/living_room.dart';
 
-String GetName() {
-  return "Nour";
-}
+// String GetName() {
+//   return ;
+// }
 
 class HomePage extends StatefulWidget {
+  final userName;
+  const HomePage(this.userName);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int temp = 20;
-
+  int temp = 40;
   @override
   Widget build(BuildContext context) {
     final List<Map> _listItem = [
@@ -38,14 +39,15 @@ class _HomePageState extends State<HomePage> {
     ];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        elevation: 0,
+        backgroundColor: Color(0xFF0A0E21),
         leading: Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
           child: Image(
             image: AssetImage('icons/vector.png'),
           ),
         ),
-        title: Text('Hello ' + GetName()),
+        title: Text('Hello ' + widget.userName),
         actions: <Widget>[
           TextButton(
               onPressed: () {
@@ -54,7 +56,10 @@ class _HomePageState extends State<HomePage> {
                   return LoginScreen();
                 }));
               },
-              child: Icon(IconData(0xe3b3, fontFamily: 'MaterialIcons'))),
+              child: Icon(
+                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
+                color: Color(0xFF6F35A5),
+              )),
         ],
       ),
       body: SafeArea(
@@ -74,11 +79,14 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   textBaseline: TextBaseline.alphabetic,
                   children: <Widget>[
-                    Image(
-                      image: AssetImage(temp > 30
-                          ? 'assets/images/temp_high.png'
-                          : 'assets/images/temp_low.png'),
-                      width: 180,
+                    Transform.scale(
+                      scale: 1.3,
+                      child: Image(
+                        image: AssetImage(temp > 30
+                            ? 'assets/images/temp_high.png'
+                            : 'assets/images/temp_low.png'),
+                        width: 180,
+                      ),
                     ),
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.baseline,

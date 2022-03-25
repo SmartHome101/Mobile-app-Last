@@ -46,7 +46,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0)
-                .copyWith(left: 20, bottom: 0, top: 5, right: 15),
+                .copyWith(left: 15, bottom: 0, top: 5, right: 15),
             child: Text(
               key,
               style: GoogleFonts.yantramanav(

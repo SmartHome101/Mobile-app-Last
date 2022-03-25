@@ -1,8 +1,5 @@
 import 'package:smart_home_app/Login_Screen.dart';
-
-import 'size_config.dart';
 import 'package:flutter/material.dart';
-import 'Home_Screen.dart';
 
 class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);

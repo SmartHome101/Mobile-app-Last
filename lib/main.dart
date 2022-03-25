@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'living_room.dart';
-import 'Home_Screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'body.dart';
 import 'splash_screen.dart';
-import 'package:smart_home_app/Login_Screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
