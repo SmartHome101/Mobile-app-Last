@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                   return LoginScreen();
                 }));
               },
-              child: Icon(
+              child: const Icon(
                 IconData(0xe3b3, fontFamily: 'MaterialIcons'),
                 color: Color(0xFF6F35A5),
               )),
