@@ -2,14 +2,14 @@ import 'package:smart_home_app/Login_Screen.dart';
 
 import 'size_config.dart';
 import 'package:flutter/material.dart';
-import 'input_page.dart';
+import 'Home_Screen.dart';
 
 class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 14,
         vertical: 14,
@@ -22,10 +22,10 @@ class Body extends StatelessWidget {
         children: [
           Text(
             'Welcome',
-            style: Theme.of(context).textTheme.headline1!.copyWith(
-                color: Colors.white,
-                fontSize: 50
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .headline1!
+                .copyWith(color: Colors.white, fontSize: 50),
           ),
           Material(
             child: Image.asset('assets/images/splash_img.png'),
@@ -34,10 +34,9 @@ class Body extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) {
-                    return LoginScreen();
-                  }));
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return LoginScreen();
+              }));
             },
             child: Text(
               'Get Started',

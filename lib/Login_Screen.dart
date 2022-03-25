@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_home_app/loading.dart';
 import 'constants.dart';
-import 'input_page.dart';
+import 'Home_Screen.dart';
 import 'package:smart_home_app/Sign_UpScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return InputPage();
+              return HomePage();
             }));
 
             setState(() {

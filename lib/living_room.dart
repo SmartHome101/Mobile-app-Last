@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
-import 'reusabel_card.dart';
-import 'icon_content.dart';
-import 'constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:async';
 import 'loading.dart';
+import '/Living Room/ApplicationWidget.dart';
 
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
-
-bool lampStatus = false;
-bool fanStatus = false;
-bool doorStatus = true;
-bool heaterStatus = false;
-bool windowStatus = false;
-int temp = 22;
 late DatabaseReference dbref;
 late Map dataBase;
+late List devices;
 
 class LivingRoom extends StatefulWidget {
   @override
@@ -24,9 +16,8 @@ class LivingRoom extends StatefulWidget {
 }
 
 class _LivingRoomState extends State<LivingRoom> {
-
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("Smart Home/The First Floor/Room 1");
+    dbref = FirebaseDatabase.instance.ref("Smart Home/Living Room");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -34,7 +25,8 @@ class _LivingRoomState extends State<LivingRoom> {
       if (!mounted) return;
       setState(() {
         dataBase = event.snapshot.value as Map;
-        lampStatus = dataBase['led'];
+        devices =
+            dataBase.entries.map((entry) => {entry.key: entry.value}).toList();
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -58,8 +50,8 @@ class _LivingRoomState extends State<LivingRoom> {
     get_Data_from_Firebase();
   }
 
-  Future<void> update() async {
-    await dbref.update({'led': !lampStatus});
+  Future<void> update(name, value) async {
+    await dbref.update({name: value});
   }
 
   @override
@@ -71,140 +63,27 @@ class _LivingRoomState extends State<LivingRoom> {
               title: Text('Living Room'),
               backgroundColor: Color(0xFF1D1E33),
             ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: ReusableCard(
-                      colour: kInactiveCardColor,
-                      cardChild: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: <Widget>[
-                              IconContent(
-                                  icon: temp > 30
-                          ? 'assets/images/temp_high.png'
-                          : 'assets/images/temp_low.png',
-                                  label: "",
-                              size_x: 100, size_y: 100 ),
-                              Text(
-                                temp.toString() + " C",
-                                style: kFontStyle,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      onPress: () {
-                        setState(() {
-                          lampStatus = false;
-                        });
-                      }),
+            body: SafeArea(
+              child: Container(
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                        child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
+                  ],
                 ),
-                Expanded(
-                  child: Row(children: [
-                    Expanded(
-                      child: ReusableCard(
-                          colour: doorStatus
-                              ? kInactiveCardColor
-                              : kActiveCardColor,
-                          cardChild: IconContent(
-                              icon: doorStatus
-                                  ? 'icons/padlock.png'
-                                  : 'icons/unlock.png',
-                              label: "" ,
-                              size_x: 80,
-                              size_y : 80),
-                          onPress: () {
-                            setState(() {
-                              doorStatus = !doorStatus;
-                            });
-                          }),
-                    ),
-                    Expanded(
-                      child: ReusableCard(
-                          colour: heaterStatus
-                              ? kActiveCardColor
-                              : kInactiveCardColor,
-                          cardChild: IconContent(
-                              icon: heaterStatus
-                                  ? 'icons/heater_On.png'
-                                  : 'icons/heater.png', label: "",
-                              size_x: 80,
-                              size_y : 80),
-                          onPress: () {
-                            setState(() {
-                              heaterStatus = !heaterStatus;
-                            });
-                          }),
-                    ),
-                  ]),
-                ),
-                Expanded(
-                  child: Row(children: [
-                    Expanded(
-                      child: ReusableCard(
-                          colour: lampStatus
-                              ? kActiveCardColor
-                              : kInactiveCardColor,
-                          cardChild: IconContent(
-                              icon: lampStatus
-                              ? 'icons/lights_On.png'
-                              : 'icons/lights.png', label: '' ,
-                              size_x: 80,
-                              size_y : 80),
-                          onPress: () {
-                            if (!mounted) return;
-                            setState(() {
-                              update();
-                            });
-                          }),
-                    ),
-                    Expanded(
-                      child: ReusableCard(
-                        colour:
-                            fanStatus ? kActiveCardColor : kInactiveCardColor,
-                        cardChild: IconContent(
-                            icon: fanStatus ?
-                            'icons/cooling-fan_On.png' :
-                            'icons/cooling-fan.png', label: "" ,
-                            size_x: 100,
-                            size_y : 100),
-                        onPress: () {
-                          setState(() {
-                            fanStatus = !fanStatus;
-                          });
-                        },
-                      ),
-                    ),
-                  ]),
-                ),
-                Expanded(
-                  child: Row(children: [
-                    Expanded(
-                      child: ReusableCard(
-                          colour: windowStatus
-                              ? kActiveCardColor
-                              : kInactiveCardColor,
-                          cardChild: IconContent(
-                              icon:  windowStatus ?
-                              'icons/windows_On.png' :
-                              'icons/windows.png', label: "" ,
-                              size_x: 90,
-                              size_y : 90),
-                          onPress: () {
-                            setState(() {
-                              windowStatus = !windowStatus;
-                            });
-                          }),
-                    ),
-                  ]),
-                ),
-              ],
-            ));
+              ),
+            ),
+          );
   }
 }
