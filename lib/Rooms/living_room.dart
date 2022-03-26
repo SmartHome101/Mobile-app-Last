@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:async';
-import '../loading.dart';
+import '../shared/loading.dart';
 import '../shared/ApplicationWidget.dart';
 
 StreamController<bool> streamController = StreamController<bool>();

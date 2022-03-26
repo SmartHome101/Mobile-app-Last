@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smart_home_app/Login_Screen.dart';
-import 'Rooms/living_room.dart';
+import 'package:smart_home_app/Splash,%20Sign%20In,%20Sign%20Up/Login_Screen.dart';
+import '../Rooms/living_room.dart';
 
 // String GetName() {
 //   return ;

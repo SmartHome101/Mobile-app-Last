@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+const background_Color = Colors.black12;
 const kFontStyle = TextStyle(fontSize: 50, fontWeight: FontWeight.w900);
 const kBottomContainerHeight = 80.0;
 const kActiveCardColor = Colors.black38; //Color(0xFF1D1E33);
