@@ -42,7 +42,7 @@ ApplicationState Get_App_State()
 
 
 
-  return ApplicationState.Remembered;
+  return ApplicationState.FirstTime;
 }
 
 
