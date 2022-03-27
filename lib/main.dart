@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:smart_home_app/Home%20Room/Home_Screen.dart';
-import 'package:smart_home_app/Splash,%20Sign%20In,%20Sign%20Up/Login_Screen.dart';
+import 'package:Home/Home%20Room/Home_Screen.dart';
+import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Login_Screen.dart';
 import 'Splash, Sign In, Sign Up/splash_screen.dart';
 
 Future<void> main() async {

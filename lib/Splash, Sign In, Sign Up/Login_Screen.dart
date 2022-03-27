@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../shared/constants.dart';
 import '../Home Room/Home_Screen.dart';
-import 'package:smart_home_app/Splash,%20Sign%20In,%20Sign%20Up/Sign_UpScreen.dart';
+import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Sign_UpScreen.dart';
 import 'Custom_Widgets.dart';
 
 var userName;
