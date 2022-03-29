@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import '../shared/constants.dart';
 import '../Home Room/Home_Screen.dart';
 import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Sign_UpScreen.dart';
 import 'Custom_Widgets.dart';
+import 'dart:async';
 
 var userName;
 
@@ -19,6 +22,21 @@ class _LoginScreenState extends State<LoginScreen> {
   String login_State = "";
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
+
+  Offset _offset = Offset(0,-0.05);
+  double _opacity = 0;
+  Duration _duration = Duration(seconds: 1);
+
+  Timer? timer;
+
+
+  void initState ()
+  {
+    timer = Timer(Duration(seconds: 0), () => setState(() {
+      setState(() => _offset = const Offset(0, 0.05));
+      setState(() => _opacity = 1);
+    }));
+  }
 
   Widget _buildRememberMeCheckbox() {
     return Container(
@@ -110,7 +128,10 @@ class _LoginScreenState extends State<LoginScreen> {
               horizontal: 40.0,
               vertical: 60.0,
             ),
-            child: Column(
+            child:                AnimatedOpacity(
+              opacity: _opacity,
+              duration: _duration,
+              child: AnimatedSlide(offset: _offset, duration: _duration, child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
@@ -136,15 +157,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 30.0,
                 ),
                 BuildPasswordTF(Password_Controller),
-                SizedBox(
-                  height: 30.0,
-                ),
+                SizedBox(height: 30.0, ),
                 _buildRememberMeCheckbox(),
                 _buildLoginBtn(),
                 BuildGo_SignUp(context),
                 Text(login_State)
               ],
             ),
+          ),),
           ),
         )
     );

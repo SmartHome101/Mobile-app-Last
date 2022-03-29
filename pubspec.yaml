@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   firebase_database: ^9.0.8
   firebase_core: ^1.13.1
   flutter_svg: ^1.0.3
