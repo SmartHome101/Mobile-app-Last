@@ -61,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () async {
           bool Valid = await Check_Valid_Auth(
               Email_Controller.text, Password_Controller.text);
-
           if (Valid) {
             // if(_rememberMe)
             //   Remember_Me(Email_Controller.text, Password_Controller.text);
@@ -105,23 +104,31 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
        body: Container(
           height: double.infinity,
-          color:  background_Color,
+          color:  appMainColor,
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
               horizontal: 40.0,
-              vertical: 120.0,
+              vertical: 60.0,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  'Sign In',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'OpenSans',
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget> [
+                    SizedBox(width: 35),
+                    Image.asset("icons/Home_Icon.png", scale: 5,),
+                    SizedBox(width: 15.0),
+                    Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'OpenSans',
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 30.0),
                 BuildEmailTF(Email_Controller),

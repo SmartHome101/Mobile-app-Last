@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'dart:async';
 import '../shared/loading.dart';
 import '../shared/ApplicationWidget.dart';
+import '../shared/constants.dart';
 
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
@@ -16,6 +17,7 @@ class LivingRoom extends StatefulWidget {
 }
 
 class _LivingRoomState extends State<LivingRoom> {
+
   get_Data_from_Firebase() {
     dbref = FirebaseDatabase.instance.ref("Smart Home/Living Room");
     Stream<DatabaseEvent> stream = dbref.onValue;
@@ -61,7 +63,10 @@ class _LivingRoomState extends State<LivingRoom> {
         : Scaffold(
             appBar: AppBar(
               title: Text('Rooms'),
-              backgroundColor: Color(0xFF1D1E33),
+              backgroundColor: cardColor,
+              elevation: 10,
+              toolbarHeight: 60,
+              shadowColor: shadowColor,
             ),
             body: SafeArea(
               child: Container(
@@ -77,8 +82,7 @@ class _LivingRoomState extends State<LivingRoom> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
                       children: devices
-                          .map((item) => ApplicationWidget(item, update))
-                          .toList(),
+                          .map((item) => ApplicationWidget(item, update)).toList(),
                     ))
                   ],
                 ),

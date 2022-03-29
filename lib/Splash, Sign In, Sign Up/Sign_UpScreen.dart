@@ -76,6 +76,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     return Scaffold(
       body: Container(
                 height: double.infinity,
+                color: appMainColor,
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(
@@ -85,14 +86,23 @@ class _SignUpScreen extends State<SignUpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'OpenSans',
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      SizedBox(height: 30.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget> [
+                          SizedBox(width: 35),
+                          Image.asset("icons/Home_Icon.png", scale: 5,),
+                          SizedBox(width: 15.0),
+                          Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'OpenSans',
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 30.0),
                       BuildUserName(Name_Controller),
