@@ -1,13 +1,11 @@
-import 'dart:ffi';
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../shared/constants.dart';
+
 import '../Home Room/Home_Screen.dart';
-import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Sign_UpScreen.dart';
+import '../shared/constants.dart';
 import 'Custom_Widgets.dart';
-import 'dart:async';
 
 var userName;
 

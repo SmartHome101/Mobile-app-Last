@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../shared/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import '../shared/constants.dart';
 import 'Custom_Widgets.dart';
 
 class SignUpScreen extends StatefulWidget {

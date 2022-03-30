@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Login_Screen.dart';
+
 import '../Rooms/living_room.dart';
+import '../Splash, Sign In, Sign Up/Login_Screen.dart';
 import '../shared/constants.dart';
 
 class HomePage extends StatefulWidget {
