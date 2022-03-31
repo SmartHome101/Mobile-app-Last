@@ -1,13 +1,13 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../Home Room/Home_Screen.dart';
 import '../shared/constants.dart';
 import 'Custom_Widgets.dart';
+import '../Controllers/shared_preferences.dart';
 
 var userName;
+bool _rememberMe = false;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,25 +15,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-  bool _rememberMe = false;
   String login_State = "";
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
 
-  Offset _offset = Offset(0,-0.05);
+  Offset _offset = Offset(0, -0.05);
   double _opacity = 0;
   Duration _duration = Duration(seconds: 1);
 
   Timer? timer;
 
-
-  void initState ()
-  {
-    timer = Timer(Duration(seconds: 0), () => setState(() {
-      setState(() => _offset = const Offset(0, 0.05));
-      setState(() => _opacity = 1);
-    }));
+  void initState() {
+    timer = Timer(
+        Duration(seconds: 0),
+        () => setState(() {
+              setState(() => _offset = const Offset(0, 0.05));
+              setState(() => _opacity = 1);
+            }));
   }
 
   Widget _buildRememberMeCheckbox() {
@@ -50,12 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
               onChanged: (value) {
                 setState(() {
                   _rememberMe = value!;
-
-                  if(_rememberMe) {
-                    Remember_Me(
-                        Email_Controller.text, Password_Controller.text);
-                  }
-
                 });
               },
             ),
@@ -68,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
   Widget _buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -78,9 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
           bool Valid = await Check_Valid_Auth(
               Email_Controller.text, Password_Controller.text);
           if (Valid) {
-            // if(_rememberMe)
-            //   Remember_Me(Email_Controller.text, Password_Controller.text);
-
             Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return HomePage(userName);
@@ -118,25 +108,31 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     // return Check_Valid_Auth(Get_Saved_Email(), Get_Saved_Password()) ? InputPage() :
     return Scaffold(
-       body: Container(
-          height: double.infinity,
-          color:  appMainColor,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 40.0,
-              vertical: 60.0,
-            ),
-            child:                AnimatedOpacity(
-              opacity: _opacity,
-              duration: _duration,
-              child: AnimatedSlide(offset: _offset, duration: _duration, child: Column(
+        body: Container(
+      height: double.infinity,
+      color: appMainColor,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 40.0,
+          vertical: 60.0,
+        ),
+        child: AnimatedOpacity(
+          opacity: _opacity,
+          duration: _duration,
+          child: AnimatedSlide(
+            offset: _offset,
+            duration: _duration,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget> [
+                  children: <Widget>[
                     SizedBox(width: 35),
-                    Image.asset("icons/Home_Icon.png", scale: 5,),
+                    Image.asset(
+                      "icons/Home_Icon.png",
+                      scale: 5,
+                    ),
                     SizedBox(width: 15.0),
                     Text(
                       'Sign In',
@@ -155,17 +151,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 30.0,
                 ),
                 BuildPasswordTF(Password_Controller),
-                SizedBox(height: 30.0, ),
+                SizedBox(
+                  height: 30.0,
+                ),
                 _buildRememberMeCheckbox(),
                 _buildLoginBtn(),
                 BuildGo_SignUp(context),
                 Text(login_State)
               ],
             ),
-          ),),
           ),
-        )
-    );
+        ),
+      ),
+    ));
   }
 }
 
@@ -177,6 +175,9 @@ Check_Valid_Auth(String Email, String Password) async {
       print(userCredential.user);
       User? user = userCredential.user;
       userName = user?.displayName;
+      if (_rememberMe && userName != null) {
+        await CacheHelper.saveData(key: "userName", value: userName);
+      }
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -192,14 +193,6 @@ Check_Valid_Auth(String Email, String Password) async {
   }
 }
 
-void Remember_Me(String Email, String Password)
-{
-   //Save data to local
+void Remember_Me(String Email, String Password) {
+  //Save data to local
 }
-
-
-
-
-
-
-

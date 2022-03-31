@@ -3,9 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:Home/Home%20Room/Home_Screen.dart';
 import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Login_Screen.dart';
 import 'Splash, Sign In, Sign Up/splash_screen.dart';
+import './Controllers/shared_preferences.dart';
 
+String? userName;
+bool? newUser;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CacheHelper.init();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -13,38 +17,31 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var token = Get_App_State();
+    // print(token);
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-          primaryColor: Color(0xFF0A0E21),
-          scaffoldBackgroundColor: Color(0xFF0A0E21)),
-      home:
-      Get_App_State() == ApplicationState.FirstTime
-          ? SplashScreen()
-          : Get_App_State() == ApplicationState.Remembered ?
-          HomePage(userName) : LoginScreen()
-
-    );
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark().copyWith(
+            primaryColor: Color(0xFF0A0E21),
+            scaffoldBackgroundColor: Color(0xFF0A0E21)),
+        home: token == ApplicationState.FirstTime
+            ? SplashScreen()
+            : token == ApplicationState.Remembered
+                ? HomePage(userName)
+                : LoginScreen());
   }
 }
 
+enum ApplicationState { FirstTime, NotRememeberd, Remembered }
 
-
-enum ApplicationState {FirstTime, NotRememeberd, Remembered}
-
-ApplicationState Get_App_State()
-{
-  //Code to decide the state
-
-  //First Time = First time the user opens the app.
-  //Not Rememember = Not first time, but there is no user data saved.
-  //Rememeberd = There's userdata saved.
-
-
-
-  return ApplicationState.FirstTime;
+ApplicationState Get_App_State() {
+  newUser = CacheHelper.getData(key: "newUser");
+  userName = CacheHelper.getData(key: "userName");
+  if (userName != null) {
+    return ApplicationState.Remembered;
+  } else if (newUser == false) {
+    return ApplicationState.NotRememeberd;
+  } else {
+    return ApplicationState.FirstTime;
+  }
 }
-
-
-
-

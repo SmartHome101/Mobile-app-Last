@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../Controllers/shared_preferences.dart';
 import '../Rooms/living_room.dart';
 import '../Splash, Sign In, Sign Up/Login_Screen.dart';
 import '../shared/constants.dart';
@@ -13,59 +14,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   int temp = 40;
-
-  InitState()
-  {
-    Colormode currentColor = GetSavedColor();
-
-    if(currentColor == Colormode.Color1){
-      Change_Color_Red();
-    }
-    else if(currentColor == Colormode.Color2) {
-      Change_Color_Black();
-    }
-    else{
-      Change_Color_Blue();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-
-    final buttom_Bar = AppBar(
-      elevation: 10,
-      toolbarHeight: 60,
-      backgroundColor: cardColor,
-      bottom: PreferredSize(
-          child: Container(
-            color: Colors.white12,
-            height: 4.0,
-          ),
-          preferredSize: Size.fromHeight(4.0)),
-
-      shadowColor: shadowColor,
-      title: Row(
-        children: <Widget>[
-          IconButton(onPressed: (){ setState(() {
-            Change_Color_Red();
-          });  }, icon: const Icon(Icons.circle), color: cardColor_red, ),
-          IconButton(onPressed: (){
-            setState(() {
-              Change_Color_Black();
-            });
-          }, icon: const Icon(Icons.circle), color: cardColor_blue,),
-          IconButton(onPressed: (){
-            setState(() {
-              Change_Color_Blue();
-            });
-          }, icon: const Icon(Icons.circle), color: cardColor_orange,),
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      ),
-    );
-
     final List<Map> _listItem = [
       {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {}},
       {"img": "icons/bathroom.png", "name": "Bathroom", "onPress": () {}},
@@ -104,17 +56,19 @@ class _HomePageState extends State<HomePage> {
           child: Image(
             image: AssetImage('icons/vector.png'),
           ),
-
         ),
-        title: Text('Hello ' + widget.userName,
-        style: TextStyle(
-          color: foregroundColor,
-          fontStyle: FontStyle.italic,
+        title: Text(
+          'Hello ' + widget.userName,
+          style: TextStyle(
+            color: foregroundColor,
+            fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w300,
-        ),),
+          ),
+        ),
         actions: <Widget>[
           TextButton(
-              onPressed: () {
+              onPressed: () async {
+                await CacheHelper.RemoveData(key: 'userName');
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return LoginScreen();
@@ -128,7 +82,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.fromLTRB(25,15,25,5),
+          padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
           child: Column(
             children: <Widget>[
               const SizedBox(
@@ -205,7 +159,8 @@ class _HomePageState extends State<HomePage> {
                                   color: shadowColor,
                                   spreadRadius: 5,
                                   blurRadius: 7,
-                                  offset: Offset(0, 3), // changes position of shadow
+                                  offset: Offset(
+                                      0, 3), // changes position of shadow
                                 ),
                               ],
                             ),
@@ -236,38 +191,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: new SizedBox(
-        height: buttom_Bar.preferredSize.height,
-        child: buttom_Bar,
-      ),
     );
   }
 }
-
-
-enum Colormode {Color1 , Color2, Color3}
-
-
-Colormode GetSavedColor()
-{
-  //Get color stored and return properly saved color.
-  return Colormode.Color2;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -33,49 +33,13 @@ final kBoxDecorationStyle = BoxDecoration(
   ],
 );
 
-
 const appMainColor = Colors.white12;
 const appSecondaryColor = Colors.blueGrey;
 const shadowColor = Colors.black54;
 const foregroundColor = Colors.white;
-
 
 var cardColor = Color(0xFF1D1E33);
 
 const cardColor_red = Color(0xFF1D1E33);
 const cardColor_blue = Colors.white10;
 const cardColor_orange = Color(0xAB2D1E70);
-
-
-void Change_Color_Red()
-{
-  cardColor = cardColor_red;
-  Save_Color(Colormode.Color1);
-}
-void Change_Color_Black()
-{
-  cardColor = cardColor_blue;
-  Save_Color(Colormode.Color2);
-}
-void Change_Color_Blue()
-{
-  cardColor = cardColor_orange;
-  Save_Color(Colormode.Color3);
-}
-
-
-////////Save to local Database
-void Save_Color(Colormode colormode)
-{
-  if(colormode == Colormode.Color1){
-    //save 1
-  }
-  else if(colormode == Colormode.Color2) {
-    //save 2
-  }
-  else{
-    //save 3
-  }
-}
-
-
