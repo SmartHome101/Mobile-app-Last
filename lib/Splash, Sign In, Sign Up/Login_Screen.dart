@@ -33,6 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
             }));
   }
 
+  void reset() {
+    setState(() {
+      login_State = '';
+      Email_Controller.text = "";
+      Password_Controller.text = "";
+    });
+  }
+
   bool validateMail(email) {
     if (email == "") {
       setState(() {
@@ -215,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 _buildRememberMeCheckbox(),
                 _buildLoginBtn(),
-                BuildGo_SignUp(context),
+                BuildGo_SignUp(context, reset),
                 Text(login_State)
               ],
             ),

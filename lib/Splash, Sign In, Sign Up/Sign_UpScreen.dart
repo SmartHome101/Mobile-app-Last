@@ -9,20 +9,19 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreen extends State<SignUpScreen> {
-  bool _rememberMe = false;
-  String login_State = "";
+  String signup_state = "";
   final Name_Controller = TextEditingController();
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
   bool validateUserName(userName) {
     if (userName == "") {
       setState(() {
-        login_State = "UserName Cannot Be Empty!";
+        signup_state = "UserName Cannot Be Empty!";
       });
       return false;
     } else if (userName.length < 8) {
       setState(() {
-        login_State = "userName Must Be At Least 8 Characters!";
+        signup_state = "userName Must Be At Least 8 Characters!";
       });
       return false;
     }
@@ -31,7 +30,7 @@ class _SignUpScreen extends State<SignUpScreen> {
             .hasMatch(userName);
     if (!userNameValid) {
       setState(() {
-        login_State = "InValid UserName";
+        signup_state = "InValid UserName";
       });
       return false;
     }
@@ -41,7 +40,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   bool validateMail(email) {
     if (email == "") {
       setState(() {
-        login_State = "Email Cannot Be Empty!";
+        signup_state = "Email Cannot Be Empty!";
       });
       return false;
     }
@@ -50,7 +49,7 @@ class _SignUpScreen extends State<SignUpScreen> {
         .hasMatch(email);
     if (!emailValid) {
       setState(() {
-        login_State = "InValid Email";
+        signup_state = "InValid Email";
       });
     }
     return emailValid;
@@ -59,12 +58,12 @@ class _SignUpScreen extends State<SignUpScreen> {
   bool validatePassowrd(password) {
     if (password == "") {
       setState(() {
-        login_State = "Password Cannot Be Empty!";
+        signup_state = "Password Cannot Be Empty!";
       });
       return false;
     } else if (password.length < 8) {
       setState(() {
-        login_State = "Password Must Be At Least 8 Characters!";
+        signup_state = "Password Must Be At Least 8 Characters!";
       });
       return false;
     }
@@ -84,18 +83,18 @@ class _SignUpScreen extends State<SignUpScreen> {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           setState(() {
-            login_State = "The password provided is too weak.";
+            signup_state = "The password provided is too weak.";
           });
           return false;
         } else if (e.code == 'email-already-in-use') {
           setState(() {
-            login_State = 'The account already exists for that email.';
+            signup_state = 'The account already exists for that email.';
           });
           return false;
         }
       } catch (e) {
         setState(() {
-          login_State = 'Something Went Wrong, Please try again';
+          signup_state = 'Something Went Wrong, Please try again';
         });
       }
     } else {
@@ -105,7 +104,6 @@ class _SignUpScreen extends State<SignUpScreen> {
 
   Widget _buildGo_SignUp() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
@@ -114,7 +112,7 @@ class _SignUpScreen extends State<SignUpScreen> {
               Email_Controller.text, Password_Controller.text);
           if (Value) {
             setState(() {
-              login_State = "";
+              signup_state = "";
             });
             Navigator.pop(context);
           }
@@ -164,7 +162,7 @@ class _SignUpScreen extends State<SignUpScreen> {
           physics: AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(
             horizontal: 40.0,
-            vertical: 60.0,
+            vertical: 20.0,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -205,7 +203,7 @@ class _SignUpScreen extends State<SignUpScreen> {
               ),
               _buildGo_SignUp(),
               _buildLoginBtn(),
-              Text(login_State)
+              Text(signup_state)
             ],
           ),
         ),

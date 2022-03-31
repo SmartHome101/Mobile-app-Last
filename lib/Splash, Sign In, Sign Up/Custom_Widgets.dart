@@ -40,6 +40,7 @@ Widget BuildEmailTF(TextEditingController Email_Controller) {
     ],
   );
 }
+
 Widget BuildPasswordTF(TextEditingController Password_Controller) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,6 +76,7 @@ Widget BuildPasswordTF(TextEditingController Password_Controller) {
     ],
   );
 }
+
 Widget BuildUserName(TextEditingController Name_Controller) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,11 +112,13 @@ Widget BuildUserName(TextEditingController Name_Controller) {
     ],
   );
 }
-Widget BuildGo_SignUp(BuildContext context) {
+
+Widget BuildGo_SignUp(BuildContext context, void Function() reset) {
   return Container(
     alignment: Alignment.centerRight,
     child: FlatButton(
       onPressed: () {
+        reset();
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return SignUpScreen();
         }));
@@ -127,5 +131,3 @@ Widget BuildGo_SignUp(BuildContext context) {
     ),
   );
 }
-
-
