@@ -91,6 +91,10 @@ class _LoginScreenState extends State<LoginScreen> {
           });
           return false;
         }
+      } catch (e) {
+        setState(() {
+          login_State = 'Something Went Wrong, Please try again';
+        });
       }
     } else {
       return false;

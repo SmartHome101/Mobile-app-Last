@@ -19,7 +19,6 @@ class LivingRoom extends StatefulWidget {
 }
 
 class _LivingRoomState extends State<LivingRoom> {
-
   get_Data_from_Firebase() {
     dbref = FirebaseDatabase.instance.ref("Smart Home/Living Room");
     Stream<DatabaseEvent> stream = dbref.onValue;
@@ -64,7 +63,7 @@ class _LivingRoomState extends State<LivingRoom> {
         ? Loading()
         : Scaffold(
             appBar: AppBar(
-              title: Text('Rooms'),
+              title: Text('Living Room'),
               backgroundColor: cardColor,
               elevation: 10,
               toolbarHeight: 60,
@@ -84,7 +83,8 @@ class _LivingRoomState extends State<LivingRoom> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
                       children: devices
-                          .map((item) => ApplicationWidget(item, update)).toList(),
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
                     ))
                   ],
                 ),
