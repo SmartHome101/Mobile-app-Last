@@ -1,10 +1,11 @@
-import 'package:Home/UnCategorized/User_settings.dart';
-import 'package:Home/main.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../Controllers/shared_preferences.dart';
 import '../Rooms/living_room.dart';
+import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
-
+import '../Splash, Sign In, Sign Up/Login_Screen.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage> {
       {"img": "icons/studio.png", "name": "Studio", "onPress": () {}},
     ];
 
-    return Scaffold(
+    return  Scaffold(
       appBar: AppBar(
         elevation: 10,
         toolbarHeight: 60,
@@ -71,26 +72,28 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(
-              Icons.settings,
+              Icons.logout,
               color: Colors.white,
             ),
-            onPressed: () {
+            onPressed: () async {
+              await CacheHelper.RemoveData(key: 'userName');
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return User_Settings(widget.userName);
+                return LoginScreen();
               }));
-
             },
           )
         ],
       ),
-      body: SafeArea(
+      body: SlidingUpPanel(
+        body: SafeArea(
         child: Container(
           padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
+          decoration:  Background_decoration(),
           child: Column(
             children: <Widget>[
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               Container(
                 width: double.infinity,
@@ -152,6 +155,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 25,
                 mainAxisSpacing: 15,
+                scrollDirection: Axis.vertical,
                 children: _listItem
                     .map((item) => GestureDetector(
                           child: Container(
@@ -161,8 +165,8 @@ class _HomePageState extends State<HomePage> {
                               boxShadow: [
                                 BoxShadow(
                                   color: shadowColor,
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
+                                  spreadRadius: 1,
+                                  blurRadius: 3,
                                   offset: Offset(
                                       0, 3), // changes position of shadow
                                 ),
@@ -190,11 +194,55 @@ class _HomePageState extends State<HomePage> {
                           onTap: item['onPress'],
                         ))
                     .toList(),
-              ))
+              )),
+              const SizedBox(
+                height: 145,
+              ),
             ],
           ),
         ),
       ),
-    );
+        color: cardColor,
+        minHeight: 55,
+        maxHeight: 300,
+        border: Border.all(width: 1.0, color: Colors.deepPurple),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        panelBuilder: (controller) => PanelWidget(
+          controller: controller,
+        ),
+    ));
   }
 }
+
+
+class PanelWidget extends StatelessWidget {
+
+  final ScrollController controller;
+  const PanelWidget({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => ListView(
+    padding: EdgeInsets.all(5),
+    children: [
+      SizedBox(height: 0,),
+      Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.supervised_user_circle_outlined,
+              color: Colors.deepPurple,
+            ),
+            onPressed: ()  {
+
+            },
+          ),
+          Text(" User Settings - تحت الأنشاء", style: TextStyle(fontSize: 20, color: Colors.white),),
+        ],
+      )
+    ],
+
+  );
+}
+
+
+

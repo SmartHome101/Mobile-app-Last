@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../shared/constants.dart';
-import 'Sign_UpScreen.dart';
+import 'constants.dart';
+import '../Splash, Sign In, Sign Up/Sign_UpScreen.dart';
 
 //Custom Email,Password and Username widgets
 
@@ -130,4 +130,14 @@ Widget BuildGo_SignUp(BuildContext context, void Function() reset) {
       ),
     ),
   );
+}
+
+BoxDecoration Background_decoration ()
+{
+  return BoxDecoration(
+    image: DecorationImage(
+    image: AssetImage('icons/Background.jpg'),
+    fit: BoxFit.cover,
+    colorFilter: ColorFilter.mode(Colors.black12, BlendMode.darken)
+      ));
 }

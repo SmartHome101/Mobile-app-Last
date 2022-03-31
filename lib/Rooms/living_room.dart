@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
+import '../shared/Custom_Widgets.dart';
 
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
@@ -19,6 +20,7 @@ class LivingRoom extends StatefulWidget {
 }
 
 class _LivingRoomState extends State<LivingRoom> {
+
   get_Data_from_Firebase() {
     dbref = FirebaseDatabase.instance.ref("Smart Home/Living Room");
     Stream<DatabaseEvent> stream = dbref.onValue;
@@ -59,6 +61,7 @@ class _LivingRoomState extends State<LivingRoom> {
 
   @override
   Widget build(BuildContext context) {
+
     return is_Loading
         ? Loading()
         : Scaffold(
@@ -72,6 +75,7 @@ class _LivingRoomState extends State<LivingRoom> {
             body: SafeArea(
               child: Container(
                 padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                decoration: Background_decoration(),
                 child: Column(
                   children: <Widget>[
                     const SizedBox(
