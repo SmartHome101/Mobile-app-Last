@@ -69,7 +69,6 @@ class _User_SettingsState extends State<User_Settings> {
             onPressed: () async {
               await CacheHelper.RemoveData(key: 'userName');
               Navigator.pop(context);
-              Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return LoginScreen();
               }));
