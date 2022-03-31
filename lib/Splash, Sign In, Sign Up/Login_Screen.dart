@@ -6,15 +6,14 @@ import '../shared/constants.dart';
 import 'Custom_Widgets.dart';
 import '../Controllers/shared_preferences.dart';
 
-var userName;
-bool _rememberMe = false;
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  var userName;
+  bool _rememberMe = false;
   String login_State = "";
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
@@ -32,6 +31,70 @@ class _LoginScreenState extends State<LoginScreen> {
               setState(() => _offset = const Offset(0, 0.05));
               setState(() => _opacity = 1);
             }));
+  }
+
+  bool validateMail(email) {
+    if (email == "") {
+      setState(() {
+        login_State = "Email Cannot Be Empty!";
+      });
+      return false;
+    }
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+    if (!emailValid) {
+      setState(() {
+        login_State = "InValid Email";
+      });
+    }
+    return emailValid;
+  }
+
+  bool validatePassowrd(password) {
+    if (password == "") {
+      setState(() {
+        login_State = "Password Cannot Be Empty!";
+      });
+      return false;
+    } else if (password.length < 8) {
+      setState(() {
+        login_State = "Password Must Be At Least 8 Characters!";
+      });
+      return false;
+    }
+    return true;
+  }
+
+  Check_Valid_Auth(String Email, String Password) async {
+    if (validateMail(Email) && validatePassowrd(Password)) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: Email, password: Password);
+        User? user = userCredential.user;
+        userName = user?.displayName;
+        if (_rememberMe && userName != null) {
+          await CacheHelper.saveData(key: "userName", value: userName);
+        }
+        return true;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          setState(() {
+            login_State = 'No user found for that email.';
+            Email_Controller.text = "";
+            Password_Controller.text = "";
+          });
+          return false;
+        } else if (e.code == 'wrong-password') {
+          setState(() {
+            login_State = 'Wrong mail or password.';
+          });
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
   }
 
   Widget _buildRememberMeCheckbox() {
@@ -71,18 +134,11 @@ class _LoginScreenState extends State<LoginScreen> {
           bool Valid = await Check_Valid_Auth(
               Email_Controller.text, Password_Controller.text);
           if (Valid) {
+            login_State = "";
             Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return HomePage(userName);
             }));
-
-            setState(() {
-              login_State = "";
-            });
-          } else {
-            setState(() {
-              login_State = "Wrong Email or password";
-            });
           }
         },
         padding: EdgeInsets.all(15.0),
@@ -106,7 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return Check_Valid_Auth(Get_Saved_Email(), Get_Saved_Password()) ? InputPage() :
     return Scaffold(
         body: Container(
       height: double.infinity,
@@ -165,34 +220,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     ));
   }
-}
-
-Check_Valid_Auth(String Email, String Password) async {
-  if (Email != "" && Password != "") {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: Email, password: Password);
-      print(userCredential.user);
-      User? user = userCredential.user;
-      userName = user?.displayName;
-      if (_rememberMe && userName != null) {
-        await CacheHelper.saveData(key: "userName", value: userName);
-      }
-      return true;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-        return false;
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-        return false;
-      }
-    }
-  } else {
-    return false;
-  }
-}
-
-void Remember_Me(String Email, String Password) {
-  //Save data to local
 }
