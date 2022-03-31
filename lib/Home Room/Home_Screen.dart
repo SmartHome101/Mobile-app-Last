@@ -1,11 +1,13 @@
+import 'package:Home/UnCategorized/User_settings.dart';
+import 'package:Home/main.dart';
 import 'package:flutter/material.dart';
 
-import '../Controllers/shared_preferences.dart';
 import '../Rooms/living_room.dart';
-import '../Splash, Sign In, Sign Up/Login_Screen.dart';
 import '../shared/constants.dart';
 
+
 class HomePage extends StatefulWidget {
+
   final userName;
 
   const HomePage(this.userName);
@@ -18,6 +20,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     final List<Map> _listItem = [
       {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {}},
       {"img": "icons/bathroom.png", "name": "Bathroom", "onPress": () {}},
@@ -66,18 +69,19 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: <Widget>[
-          TextButton(
-              onPressed: () async {
-                await CacheHelper.RemoveData(key: 'userName');
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return LoginScreen();
-                }));
-              },
-              child: const Icon(
-                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
-                color: foregroundColor,
-              )),
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return User_Settings(widget.userName);
+              }));
+
+            },
+          )
         ],
       ),
       body: SafeArea(

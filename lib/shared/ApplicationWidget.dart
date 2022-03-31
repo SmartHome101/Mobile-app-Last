@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'constants.dart';
 
 class ApplicationWidget extends StatefulWidget {
   final item;
@@ -22,7 +23,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
-        color: Color(0xFF1D1E33),
+        color: cardColor,
       ),
       height: 150,
       width: 150,

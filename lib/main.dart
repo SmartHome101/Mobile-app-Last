@@ -7,6 +7,7 @@ import './Controllers/shared_preferences.dart';
 
 String? userName;
 bool? newUser;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
