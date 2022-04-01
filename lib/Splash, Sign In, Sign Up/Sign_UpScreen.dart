@@ -157,7 +157,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     return Scaffold(
       body: Container(
         height: double.infinity,
-        color: appMainColor,
+        decoration: Background_decoration(),
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(

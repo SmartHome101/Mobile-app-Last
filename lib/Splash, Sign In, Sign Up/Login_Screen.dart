@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         body: Container(
       height: double.infinity,
-      color: appMainColor,
+      decoration: Background_decoration (),
       child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: 40.0,

@@ -11,6 +11,7 @@ class Loading extends StatelessWidget {
       ),
       body: Center(
         child: Lottie.asset('assets/images/98432-loading.json'),
+
       )
 
     );

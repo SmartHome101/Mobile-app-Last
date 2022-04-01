@@ -72,6 +72,7 @@ class SplashScreen extends StatelessWidget {
           skip: Text("skip"),
           next: Icon(Icons.arrow_forward),
           globalBackgroundColor: appMainColor,
+
         ),
       );
 }
