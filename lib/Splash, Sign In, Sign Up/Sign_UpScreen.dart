@@ -121,11 +121,11 @@ class _SignUpScreen extends State<SignUpScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: Colors.white,
+        color: Colors.blueAccent,
         child: Text(
           'Sign Up',
           style: TextStyle(
-            color: Color(0xFF527DAA),
+            color: Colors.white,
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
