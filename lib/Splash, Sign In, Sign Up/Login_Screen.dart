@@ -140,9 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        style: buttonStyle(Size(200,50)),
         onPressed: () async {
           bool Valid = await Check_Valid_Auth(
               Email_Controller.text, Password_Controller.text);
@@ -154,11 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
             }));
           }
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.blueAccent,
         child: Text(
           'LOGIN',
           style: TextStyle(

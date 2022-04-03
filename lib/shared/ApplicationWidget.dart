@@ -88,6 +88,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
           )
         ],
       ),
+
     );
   }
 }

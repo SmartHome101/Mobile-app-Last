@@ -104,9 +104,9 @@ class _SignUpScreen extends State<SignUpScreen> {
 
   Widget _buildGo_SignUp() {
     return Container(
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        style: buttonStyle(Size(200,50)),
         onPressed: () async {
           bool Value = await Sign_Up_Account(Name_Controller.text,
               Email_Controller.text, Password_Controller.text);
@@ -117,11 +117,6 @@ class _SignUpScreen extends State<SignUpScreen> {
             Navigator.pop(context);
           }
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.blueAccent,
         child: Text(
           'Sign Up',
           style: TextStyle(
@@ -139,11 +134,10 @@ class _SignUpScreen extends State<SignUpScreen> {
   Widget _buildLoginBtn() {
     return Container(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: TextButton(
         onPressed: () {
           Navigator.pop(context);
         },
-        padding: EdgeInsets.only(right: 0.0),
         child: Text(
           "Sign In",
           style: kLabelStyle,

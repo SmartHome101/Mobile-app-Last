@@ -118,14 +118,13 @@ Widget BuildUserName(TextEditingController Name_Controller) {
 Widget BuildGo_SignUp(BuildContext context, void Function() reset) {
   return Container(
     alignment: Alignment.centerRight,
-    child: FlatButton(
+    child: TextButton(
       onPressed: () {
         reset();
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return SignUpScreen();
         }));
       },
-      padding: EdgeInsets.only(right: 0.0),
       child: Text(
         "Don't have an account? Sign Up",
         style: kLabelStyle,
@@ -145,7 +144,7 @@ BoxDecoration Background_decoration ()
 }
 
 
-Widget BuildUserName_Customized(TextEditingController Name_Controller) {
+Widget BuildUserName_Customized() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
@@ -171,29 +170,15 @@ Widget BuildUserName_Customized(TextEditingController Name_Controller) {
             hintText: 'Enter your name',
             hintStyle: kHintTextStyle,
           ),
-          controller: Name_Controller,
         ),
       ),
     ],
   );
 }
-
 Widget Build_Logout(BuildContext context) {
   return Container(
-    child: RaisedButton(
-      elevation: 5.0,
-      onPressed: () async {
-        await CacheHelper.RemoveData(key: 'userName');
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return LoginScreen();
-        }));
-      },
-      padding: EdgeInsets.all(15.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      color: Colors.blueAccent,
+    alignment: Alignment.center,
+    child: ElevatedButton(
       child: Text(
         'Log out',
         style: TextStyle(
@@ -204,6 +189,48 @@ Widget Build_Logout(BuildContext context) {
           fontFamily: 'OpenSans',
         ),
       ),
+      style: buttonStyle(Size(250,50)) ,
+      onPressed: () async {
+        await CacheHelper.RemoveData(key: 'userName');
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return LoginScreen();
+        }));
+      },
+
+    ),
+  );
+}
+Widget Build_Update() {
+  return Container(
+    alignment: Alignment.center,
+    child: ElevatedButton(
+      child: Text(
+          'Update',
+          style: TextStyle(
+            color: Colors.white,
+            letterSpacing: 1.5,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+          ),
+        ),
+      style: buttonStyle(Size(250,50)) ,
+      onPressed: (){},
+    ),
+  );
+}
+
+
+ButtonStyle buttonStyle(Size _size)
+{
+  return ElevatedButton.styleFrom(
+    minimumSize: _size,
+    primary: Colors.blueAccent,
+    onPrimary: Colors.white10,
+    shape: new RoundedRectangleBorder(
+      borderRadius: new BorderRadius.circular(40.0),
+      side: BorderSide(color: Colors.blue),
     ),
   );
 }

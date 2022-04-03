@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../Controllers/shared_preferences.dart';
 import '../Rooms/living_room.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
-import '../Splash, Sign In, Sign Up/Login_Screen.dart';
-import '../Home Room/SlidingPanel.dart';
-
-
-const _spacing = 30.0;
+import '../Home Room/Sliding_Bar.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -28,33 +23,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
 
-    final Name_Controller = TextEditingController();
-    Widget Build_Update() {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 25.0),
-        child: RaisedButton(
-          elevation: 5.0,
-          onPressed: ()  {
-          },
-          padding: EdgeInsets.all(15.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          color: Colors.blueAccent,
-          child: Text(
-            'Update',
-            style: TextStyle(
-              color: Colors.white,
-              letterSpacing: 1.5,
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
-            ),
-          ),
-        ),
-      );
-    }
-    var Opened = false;
 
     final List<Map> _listItem = [
       {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {}},
@@ -221,76 +189,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          onPanelOpened: (){
-            setState(() {
-              Opened = true;
-            });
-          },
-          onPanelClosed: () {
-            Opened = false;
-          },
           color: cardColor,
           minHeight: 55,
-          maxHeight: 420,
+          maxHeight: 370,
           border: Border.all(width: 2.0, color: Colors.white10),
           borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          panelBuilder: (controller) => ListView(
-            padding: EdgeInsets.all(5),
-            children: [
-              SizedBox(height: 8, width: 0,),
-              Row(
-                children: [
-                  SizedBox(height: 0, width: 120,),
-                  Icon(Opened ? Icons.arrow_downward : Icons.arrow_upward,
-                    color: Colors.deepPurple,
-                  ),
-                  Text(" User Settings", style: TextStyle(fontSize: 20, color: Colors.white),),
-                ],
-              ),
-              SizedBox(height: 15,),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(width: _spacing,),
-                  IconButton(
-                      icon: Image.asset('icons/vector.png'),
-                      iconSize: 80,
-                      onPressed: () {
-                      }
-                  ),
-                  SizedBox(width: _spacing,),
-                  IconButton(
-                      icon: Image.asset('icons/vector2.png'),
-                      iconSize: 80,
-                      onPressed: () {
-                      }
-                  ),
-                  SizedBox(width: _spacing,),
-                  IconButton(
-                      icon: Image.asset('icons/vector3.png'),
-                      iconSize: 80,
-                      onPressed: () {
-                      }
-                  ),
+          panelBuilder: (controller) => SlidingBar(
+            Scroll_controller: controller,
 
-                ],
-              ),
-              SizedBox(height: 15,),
-              BuildUserName_Customized(Name_Controller),
-              Build_Update(),
-              Build_Logout(context),
-              SizedBox(height: 25,),
-            ],
-          )),
-
-
+          )  ),
       );
 
   }
 }
-
-
-
-
 
 
