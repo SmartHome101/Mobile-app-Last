@@ -18,11 +18,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   int temp = 40;
+  String CurrentAvatar = 'icons/vector.png';
+
 
   @override
   Widget build(BuildContext context) {
-
-
 
     final List<Map> _listItem = [
       {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {}},
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
           leading: Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Image(
-              image: AssetImage('icons/vector.png'),
+              image: AssetImage(CurrentAvatar),
             ),
           ),
           title: Text(
@@ -196,6 +196,8 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
           panelBuilder: (controller) => SlidingBar(
             Scroll_controller: controller,
+            name: widget.userName,
+            Avatar_Path: CurrentAvatar,
 
           )  ),
       );

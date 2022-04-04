@@ -144,7 +144,7 @@ BoxDecoration Background_decoration ()
 }
 
 
-Widget BuildUserName_Customized() {
+Widget BuildUserName_Customized(TextEditingController Name_Controller) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
@@ -170,6 +170,7 @@ Widget BuildUserName_Customized() {
             hintText: 'Enter your name',
             hintStyle: kHintTextStyle,
           ),
+          controller: Name_Controller,
         ),
       ),
     ],
@@ -201,25 +202,7 @@ Widget Build_Logout(BuildContext context) {
     ),
   );
 }
-Widget Build_Update() {
-  return Container(
-    alignment: Alignment.center,
-    child: ElevatedButton(
-      child: Text(
-          'Update',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      style: buttonStyle(Size(250,50)) ,
-      onPressed: (){},
-    ),
-  );
-}
+
 
 
 ButtonStyle buttonStyle(Size _size)
