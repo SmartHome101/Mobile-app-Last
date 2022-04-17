@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-
+import '../shared/constants.dart';
 import '../shared/Custom_Widgets.dart';
 
 
@@ -160,6 +160,25 @@ class _SlidingBarState extends State<SlidingBar> {
       ),
       SizedBox(height: 20,),
       BuildUserName_Customized(UserName_Controller),
+      SizedBox(height: 20,),
+      Row(
+        children: <Widget>[
+          IconButton(onPressed: (){ setState(() {
+            Change_Color_Red();
+          });  }, icon: const Icon(Icons.circle), color: cardColor_red, ),
+          IconButton(onPressed: (){
+            setState(() {
+              Change_Color_Black();
+            });
+          }, icon: const Icon(Icons.circle), color: cardColor_blue,),
+          IconButton(onPressed: (){
+            setState(() {
+              Change_Color_Blue();
+            });
+          }, icon: const Icon(Icons.circle), color: cardColor_orange,),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      ),
       SizedBox(height: 20,),
       Build_Update(),
       SizedBox(height: 20,),

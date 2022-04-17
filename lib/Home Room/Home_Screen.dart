@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
           ),
           color: cardColor,
           minHeight: 55,
-          maxHeight: 370,
+          maxHeight: 430,
           border: Border.all(width: 2.0, color: Colors.white10),
           borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
           panelBuilder: (controller) => SlidingBar(
