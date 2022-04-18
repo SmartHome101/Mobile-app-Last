@@ -40,9 +40,9 @@ const foregroundColor = Colors.white;
 
 var cardColor = Color(0xFF1D1E33);
 
-const cardColor_red = Color(0xFF1D1E33);
-const cardColor_blue = Colors.white10;
-const cardColor_orange = Color(0xAB2D1E70);
+const cardColor_red = Color.fromARGB(200,36,36,70);
+const cardColor_blue = Color.fromARGB(200,20, 13, 70);
+const cardColor_orange = Color.fromARGB(200,44, 50, 100);
 
 enum Colormode {Color1 , Color2, Color3}
 
