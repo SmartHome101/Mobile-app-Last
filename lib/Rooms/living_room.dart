@@ -20,15 +20,15 @@ class LivingRoom extends StatefulWidget {
 }
 
 class _LivingRoomState extends State<LivingRoom> {
-
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("Smart Home/Living Room");
+    dbref = FirebaseDatabase.instance.ref("HOME01/Bath Room");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
     stream.listen((DatabaseEvent event) {
       if (!mounted) return;
       setState(() {
+        print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
         devices =
             dataBase.entries.map((entry) => {entry.key: entry.value}).toList();
@@ -61,7 +61,6 @@ class _LivingRoomState extends State<LivingRoom> {
 
   @override
   Widget build(BuildContext context) {
-
     return is_Loading
         ? Loading()
         : Scaffold(
