@@ -6,6 +6,7 @@ import 'Splash, Sign In, Sign Up/splash_screen.dart';
 import './Controllers/shared_preferences.dart';
 
 String? userName;
+String? photoURL;
 bool? newUser;
 
 Future<void> main() async {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         home: token == ApplicationState.FirstTime
             ? SplashScreen()
             : token == ApplicationState.Remembered
-                ? HomePage(userName)
+                ? HomePage(userName, photoURL)
                 : LoginScreen());
   }
 }
@@ -38,6 +39,7 @@ enum ApplicationState { FirstTime, NotRememeberd, Remembered }
 ApplicationState Get_App_State() {
   newUser = CacheHelper.getData(key: "newUser");
   userName = CacheHelper.getData(key: "userName");
+  photoURL = CacheHelper.getData(key: "photoURL");
   if (userName != null) {
     return ApplicationState.Remembered;
   } else if (newUser == false) {

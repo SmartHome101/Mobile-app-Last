@@ -78,7 +78,11 @@ class _SignUpScreen extends State<SignUpScreen> {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: Email, password: Password);
         User? user = userCredential.user;
-        user?.updateProfile(displayName: Name);
+        await user!.updateDisplayName(Name);
+        await user.updatePhotoURL("icons/vector.png");
+
+        // user?.updateProfile(displayName: Name);
+
         return true;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -106,7 +110,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(
-        style: buttonStyle(Size(200,50)),
+        style: buttonStyle(Size(200, 50)),
         onPressed: () async {
           bool Value = await Sign_Up_Account(Name_Controller.text,
               Email_Controller.text, Password_Controller.text);

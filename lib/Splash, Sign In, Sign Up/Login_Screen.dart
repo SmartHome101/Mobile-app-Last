@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   var userName;
+  var photoURL;
   bool _rememberMe = false;
   String login_State = "";
   final Email_Controller = TextEditingController();
@@ -31,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
               setState(() => _offset = const Offset(0, 0.05));
               setState(() => _opacity = 1);
             }));
-
   }
 
   void reset() {
@@ -81,9 +81,12 @@ class _LoginScreenState extends State<LoginScreen> {
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: Email, password: Password);
         User? user = userCredential.user;
+        print(user);
         userName = user?.displayName;
+        photoURL = user?.photoURL;
         if (_rememberMe && userName != null) {
           await CacheHelper.saveData(key: "userName", value: userName);
+          await CacheHelper.saveData(key: "photoURL", value: photoURL);
         }
         return true;
       } on FirebaseAuthException catch (e) {
@@ -142,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.symmetric(vertical: 25.0),
       alignment: Alignment.center,
       child: ElevatedButton(
-        style: buttonStyle(Size(200,50)),
+        style: buttonStyle(Size(200, 50)),
         onPressed: () async {
           bool Valid = await Check_Valid_Auth(
               Email_Controller.text, Password_Controller.text);
@@ -150,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
             login_State = "";
             Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return HomePage(userName);
+              return HomePage(userName, photoURL);
             }));
           }
         },
@@ -173,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         body: Container(
       height: double.infinity,
-      decoration: Background_decoration (),
+      decoration: Background_decoration(),
       child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: 40.0,
