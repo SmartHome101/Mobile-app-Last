@@ -102,6 +102,10 @@ class _LoginScreenState extends State<LoginScreen> {
             login_State = 'Wrong mail or password.';
           });
           return false;
+        } else {
+          setState(() {
+            login_State = e.code;
+          });
         }
       } catch (e) {
         setState(() {
@@ -109,8 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     } else {
-      return false;
+      setState(() {
+        login_State = 'Your Mail Or Password is invalid';
+      });
     }
+    return false;
   }
 
   Widget _buildRememberMeCheckbox() {
