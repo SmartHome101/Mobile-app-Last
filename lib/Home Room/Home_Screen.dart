@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../Rooms/living_room.dart';
+import '../Rooms/Room.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 
@@ -132,24 +132,36 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final List<Map> _listItem = [
-      {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {}},
-      {"img": "icons/bathroom.png", "name": "Bathroom", "onPress": () {}},
+      {"img": "icons/reception.png", "name": "reception", "onPress": () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return Room("reception");
+        }));
+      }},
       {
         "img": "icons/living_room.png",
         "name": "Living Room",
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return LivingRoom();
+            return Room("Living Room");
           }));
         }
       },
-      {"img": "icons/bedroom.png", "name": "Bed Room", "onPress": () {}},
-      {
-        "img": "icons/washing_room.png",
-        "name": "Waching Room",
-        "onPress": () {}
-      },
-      {"img": "icons/studio.png", "name": "Studio", "onPress": () {}},
+      {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return Room("kitchen");
+        }));
+      }},
+      {"img": "icons/bathroom.png", "name": "Bathroom", "onPress": () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return Room("Bath Room");
+        }));
+      }},
+      {"img": "icons/bedroom.png", "name": "Bed Room", "onPress": () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return Room("Bed Room");
+        }));
+      }},
+
     ];
 
     return Scaffold(

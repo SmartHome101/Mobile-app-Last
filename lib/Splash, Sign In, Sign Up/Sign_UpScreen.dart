@@ -13,6 +13,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   final Name_Controller = TextEditingController();
   final Email_Controller = TextEditingController();
   final Password_Controller = TextEditingController();
+  final Code_Controller = TextEditingController();
   bool validateUserName(userName) {
     if (userName == "") {
       setState(() {
@@ -153,6 +154,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         height: double.infinity,
         decoration: Background_decoration(),
@@ -186,6 +188,10 @@ class _SignUpScreen extends State<SignUpScreen> {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 30.0,
+              ),
+              BuildCode(Code_Controller),
               SizedBox(height: 30.0),
               BuildUserName(Name_Controller),
               SizedBox(
@@ -199,9 +205,13 @@ class _SignUpScreen extends State<SignUpScreen> {
               SizedBox(
                 height: 30.0,
               ),
+              Text(signup_state),
+              SizedBox(
+                height: 30.0,
+              ),
               _buildGo_SignUp(),
               _buildLoginBtn(),
-              Text(signup_state)
+
             ],
           ),
         ),

@@ -17,6 +17,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     var entryList = widget.item.entries.toList();
     key = entryList[0].key;
     isActive = entryList[0].value;
@@ -34,13 +35,13 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
           Padding(
             padding: const EdgeInsets.all(8.0).copyWith(bottom: 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image(
                   image: AssetImage('icons/' + key + '.png'),
                   height: 60,
-                  color: isActive ? null : Colors.white,
+                  color: isActive ? Colors.deepPurple[200] : Colors.white,
                 )
               ],
             ),
@@ -48,15 +49,24 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
           Padding(
             padding: const EdgeInsets.all(8.0)
                 .copyWith(left: 15, bottom: 0, top: 5, right: 15),
-            child: Text(
-              key,
-              style: GoogleFonts.yantramanav(
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
+
+            child:
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  key,
+                  style: GoogleFonts.yantramanav(
+                    textStyle: TextStyle(
+                      fontSize: 20,
+                      color: isActive ? Colors.deepPurple[200] : Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
+
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20),
@@ -65,9 +75,9 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                 Text(
                   isActive ? "On" : "Off",
                   style: GoogleFonts.yantramanav(
-                    textStyle: const TextStyle(
+                    textStyle: TextStyle(
                       fontSize: 20,
-                      color: Colors.white,
+                      color: isActive ? Colors.deepPurple[200] : Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -80,7 +90,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                     });
                   },
                   activeColor: Colors.white,
-                  activeTrackColor: const Color(0xFF6F35A5),
+                  activeTrackColor: Colors.deepPurple[200],
                   value: isActive,
                 )
               ],

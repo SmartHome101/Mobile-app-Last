@@ -181,7 +181,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
+      resizeToAvoidBottomInset: true,
+      body: Container(
       height: double.infinity,
       decoration: Background_decoration(),
       child: SingleChildScrollView(
@@ -227,10 +228,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 30.0,
                 ),
+                Text(login_State),
+                SizedBox(
+                  height: 30.0,
+                ),
                 _buildRememberMeCheckbox(),
                 _buildLoginBtn(),
                 BuildGo_SignUp(context, reset),
-                Text(login_State)
               ],
             ),
           ),
