@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       UserName_Controller.text = widget.userName;
 
-      CurrentAvatar = Get_Saved_Avatar_Path();
+      CurrentAvatar = widget.photoURL;
 
       if (CurrentAvatar == Avatar1_Path)
         Select_Avatar(1);
@@ -132,11 +132,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final List<Map> _listItem = [
-      {"img": "icons/reception.png", "name": "reception", "onPress": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Room("reception");
-        }));
-      }},
+      {
+        "img": "icons/reception.png",
+        "name": "reception",
+        "onPress": () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return Room("reception");
+          }));
+        }
+      },
       {
         "img": "icons/living_room.png",
         "name": "Living Room",
@@ -146,22 +150,33 @@ class _HomePageState extends State<HomePage> {
           }));
         }
       },
-      {"img": "icons/kitchen.png", "name": "Kitchen", "onPress": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Room("kitchen");
-        }));
-      }},
-      {"img": "icons/bathroom.png", "name": "Bathroom", "onPress": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Room("Bath Room");
-        }));
-      }},
-      {"img": "icons/bedroom.png", "name": "Bed Room", "onPress": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Room("Bed Room");
-        }));
-      }},
-
+      {
+        "img": "icons/kitchen.png",
+        "name": "Kitchen",
+        "onPress": () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return Room("kitchen");
+          }));
+        }
+      },
+      {
+        "img": "icons/bathroom.png",
+        "name": "Bathroom",
+        "onPress": () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return Room("Bath Room");
+          }));
+        }
+      },
+      {
+        "img": "icons/bedroom.png",
+        "name": "Bed Room",
+        "onPress": () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return Room("Bed Room");
+          }));
+        }
+      },
     ];
 
     return Scaffold(
@@ -447,10 +462,6 @@ class _HomePageState extends State<HomePage> {
 }
 
 void update_UserData(String AvatarPath, String Name, int Selected_Color) {}
-
-String Get_Saved_Avatar_Path() {
-  return 'icons/vector.png';
-}
 
 int Get_Saved_Color() {
   return 1;

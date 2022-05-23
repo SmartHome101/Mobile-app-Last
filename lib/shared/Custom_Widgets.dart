@@ -128,7 +128,12 @@ Widget BuildCode(TextEditingController Code_Controller) {
         alignment: Alignment.centerLeft,
         decoration: kBoxDecorationStyle,
         height: 60.0,
-        child: TextField(
+        child: TextFormField(
+          validator: (data) {
+            if (data!.isEmpty) {
+              return "Field is Required";
+            }
+          },
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
             color: Colors.white,
@@ -169,16 +174,13 @@ Widget BuildGo_SignUp(BuildContext context, void Function() reset) {
   );
 }
 
-BoxDecoration Background_decoration ()
-{
+BoxDecoration Background_decoration() {
   return BoxDecoration(
-    image: DecorationImage(
-    image: AssetImage('icons/Background.jpg'),
-    fit: BoxFit.cover,
-    colorFilter: ColorFilter.mode(Colors.black12, BlendMode.darken)
-      ));
+      image: DecorationImage(
+          image: AssetImage('icons/Background.jpg'),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.black12, BlendMode.darken)));
 }
-
 
 Widget BuildUserName_Customized(TextEditingController Name_Controller) {
   return Column(
@@ -212,6 +214,7 @@ Widget BuildUserName_Customized(TextEditingController Name_Controller) {
     ],
   );
 }
+
 Widget Build_Logout(BuildContext context) {
   return Container(
     alignment: Alignment.center,
@@ -226,7 +229,7 @@ Widget Build_Logout(BuildContext context) {
           fontFamily: 'OpenSans',
         ),
       ),
-      style: buttonStyle(Size(250,50)) ,
+      style: buttonStyle(Size(250, 50)),
       onPressed: () async {
         await CacheHelper.RemoveData(key: 'userName');
         Navigator.pop(context);
@@ -234,15 +237,11 @@ Widget Build_Logout(BuildContext context) {
           return LoginScreen();
         }));
       },
-
     ),
   );
 }
 
-
-
-ButtonStyle buttonStyle(Size _size)
-{
+ButtonStyle buttonStyle(Size _size) {
   return ElevatedButton.styleFrom(
     minimumSize: _size,
     primary: Colors.blueAccent,

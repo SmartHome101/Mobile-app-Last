@@ -5,8 +5,7 @@ import 'package:Home/Splash,%20Sign%20In,%20Sign%20Up/Login_Screen.dart';
 import 'Splash, Sign In, Sign Up/splash_screen.dart';
 import './Controllers/shared_preferences.dart';
 
-String? userName;
-String? photoURL;
+String? userName, photoURL;
 bool? newUser;
 
 Future<void> main() async {
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var token = Get_App_State();
-    // print(token);
+    print(token);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
