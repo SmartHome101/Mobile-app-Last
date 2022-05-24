@@ -185,6 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Color(0xff2B475E),
           resizeToAvoidBottomInset: true,
           body: Container(
+            decoration: Background_decoration(),
             height: double.infinity,
             // decoration: Background_decoration(),
             child: SingleChildScrollView(
@@ -229,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onChanged: (data) {
                             email = data;
                           },
-                          isPassword: false,
+                          isPassword: false, icon: Icons.email,
                         ),
                         SizedBox(
                           height: 30.0,
@@ -239,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onChanged: (data) {
                             password = data;
                           },
-                          isPassword: true,
+                          isPassword: true, icon: Icons.lock,
                         ),
                         SizedBox(
                           height: 30.0,
@@ -247,7 +248,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: 30.0,
                         ),
-                        _buildRememberMeCheckbox(),
                         SizedBox(
                           height: 30.0,
                         ),

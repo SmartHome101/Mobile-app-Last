@@ -170,6 +170,7 @@ class _SignUpScreen extends State<SignUpScreen> {
         backgroundColor: Color(0xff2B475E),
         resizeToAvoidBottomInset: true,
         body: Container(
+          decoration: Background_decoration(),
           height: double.infinity,
           // decoration: Background_decoration(),
           child: SingleChildScrollView(
@@ -212,7 +213,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       code = data;
                     },
-                    isPassword: false,
+                    isPassword: false, icon: Icons.code,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -222,7 +223,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       fullName = data;
                     },
-                    isPassword: false,
+                    isPassword: false, icon:Icons.man,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -232,7 +233,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       email = data;
                     },
-                    isPassword: false,
+                    isPassword: false,icon:Icons.email,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -242,7 +243,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       password = data;
                     },
-                    isPassword: true,
+                    isPassword: true,icon:Icons.lock,
                   ),
                   SizedBox(
                     height: 30.0,
