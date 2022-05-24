@@ -18,11 +18,10 @@ class Room extends StatefulWidget {
   final room_Name;
   const Room(this.room_Name);
   @override
-    _RoomState createState() => _RoomState();
+  _RoomState createState() => _RoomState();
 }
 
 class _RoomState extends State<Room> {
-
   get_Data_from_Firebase() {
     dbref = FirebaseDatabase.instance.ref("HOME01/" + widget.room_Name);
     Stream<DatabaseEvent> stream = dbref.onValue;
@@ -33,8 +32,9 @@ class _RoomState extends State<Room> {
       setState(() {
         print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
-        devices =
-            dataBase.entries.map((entry) => {entry.key: (entry.value == 0 ? false : true)}).toList();
+        devices = dataBase.entries
+            .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
+            .toList();
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -59,7 +59,7 @@ class _RoomState extends State<Room> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name):(value == true ? 1 : 0)});
+    await dbref.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
@@ -88,8 +88,10 @@ class _RoomState extends State<Room> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
-                      children: devices.map((item) => ApplicationWidget(item, update)).toList(),)
-                    )
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
                   ],
                 ),
               ),

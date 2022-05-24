@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:Home/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../Home Room/Home_Screen.dart';
+import 'package:provider/provider.dart';
+import '../Controllers/authentication_servies.dart';
+import 'Home_Screen.dart';
 import '../shared/constants.dart';
 import '../shared/Custom_Widgets.dart';
 import '../Controllers/shared_preferences.dart';
@@ -49,136 +51,32 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  // bool validateMail(email) {
-  //   if (email == "") {
-  //     setState(() {
-  //       login_State = "Email Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   }
-  //   bool emailValid = RegExp(
-  //           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-  //       .hasMatch(email);
-  //   if (!emailValid) {
-  //     setState(() {
-  //       login_State = "InValid Email";
-  //     });
-  //   }
-  //   return emailValid;
-  // }
-  // bool validatePassowrd(password) {
-  //   if (password == "") {
-  //     setState(() {
-  //       login_State = "Password Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   } else if (password.length < 8) {
-  //     setState(() {
-  //       login_State = "Password Must Be At Least 8 Characters!";
-  //     });
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  Check_Valid_Auth() async {
-    try {
+  @override
+  Widget build(BuildContext context) {
+    signInToFirebase() async {
       isLoading = true;
       setState(() {});
 
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email!, password: password!);
-      User? user = userCredential.user;
-      userName = user?.displayName;
-      photoURL = user?.photoURL;
+      var result = await context
+          .read<AuthenticationService>()
+          .signIn(email: email!, password: password!);
 
-      if (_rememberMe) {
-        await CacheHelper.saveData(key: "userName", value: userName);
-        await CacheHelper.saveData(key: "photoURL", value: photoURL);
-      }
-      Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return HomePage(userName, photoURL);
-      }));
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
+      if (result == "user-not-found") {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("User Not Found")));
-      } else if (e.code == 'wrong-password') {
+      } else if (result == "email-already-in-use") {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Invalid Mail or Password")));
-      } else {
+            .showSnackBar(SnackBar(content: Text("Email already exists")));
+      } else if (result == "wrong-password") {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Something Went Wrong please Try again")));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
+      } else if (result == "error")
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Something Went Wrong please Try again")));
+      isLoading = false;
+      setState(() {});
     }
-    isLoading = false;
-    setState(() {});
-  }
 
-  Widget _buildRememberMeCheckbox() {
-    return Container(
-      height: 20.0,
-      child: Row(
-        children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value!;
-                });
-              },
-            ),
-          ),
-          Text(
-            'Remember me',
-            style: kLabelStyle,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget _buildLoginBtn() {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(vertical: 25.0),
-  //     alignment: Alignment.center,
-  //     child: ElevatedButton(
-  //       style: buttonStyle(Size(200, 50)),
-  //       onPressed: () async {
-  //         bool Valid = await Check_Valid_Auth(
-  //             Email_Controller.text, Password_Controller.text);
-  //         if (Valid) {
-  //           login_State = "";
-  //           Navigator.pop(context);
-  //           Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //             return HomePage(userName, photoURL);
-  //           }));
-  //         }
-  //       },
-  //       child: Text(
-  //         'LOGIN',
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //           letterSpacing: 1.5,
-  //           fontSize: 18.0,
-  //           fontWeight: FontWeight.bold,
-  //           fontFamily: 'OpenSans',
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  @override
-  Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
@@ -247,14 +145,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: 30.0,
                         ),
-                        _buildRememberMeCheckbox(),
-                        SizedBox(
-                          height: 30.0,
-                        ),
+                        // _buildRememberMeCheckbox(),
+                        // SizedBox(
+                        //   height: 30.0,
+                        // ),
                         CustomeButton(
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
-                                await Check_Valid_Auth();
+                                await signInToFirebase();
                               } else {}
                             },
                             title: "Log In"),

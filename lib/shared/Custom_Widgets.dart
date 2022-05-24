@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../Controllers/authentication_servies.dart';
 import '../Controllers/shared_preferences.dart';
-import '../Splash, Sign In, Sign Up/Login_Screen.dart';
-import '../Splash, Sign In, Sign Up/Sign_UpScreen.dart';
+import '../pages/Login_Screen.dart';
+import '../pages/Sign_UpScreen.dart';
 import 'constants.dart';
 
 //Custom Email,Password and Username widgets
@@ -186,7 +188,8 @@ BoxDecoration Background_decoration() {
           colorFilter: ColorFilter.mode(Colors.black12, BlendMode.darken)));
 }
 
-Widget BuildUserName_Customized(TextEditingController Name_Controller) {
+Widget BuildUserName_Customized(
+    TextEditingController Name_Controller, String displayName) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
@@ -209,7 +212,7 @@ Widget BuildUserName_Customized(TextEditingController Name_Controller) {
               Icons.light,
               color: Colors.white,
             ),
-            hintText: 'Enter your name',
+            hintText: displayName,
             hintStyle: kHintTextStyle,
           ),
           controller: Name_Controller,
@@ -235,11 +238,12 @@ Widget Build_Logout(BuildContext context) {
       ),
       style: buttonStyle(Size(250, 50)),
       onPressed: () async {
-        await CacheHelper.RemoveData(key: 'userName');
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return LoginScreen();
-        }));
+        await context.read<AuthenticationService>().signOut();
+        // await CacheHelper.RemoveData(key: 'userName');
+        // Navigator.pop(context);
+        // Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //   return LoginScreen();
+        // }));
       },
     ),
   );

@@ -17,7 +17,6 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     var entryList = widget.item.entries.toList();
     key = entryList[0].key;
     isActive = entryList[0].value;
@@ -49,9 +48,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
           Padding(
             padding: const EdgeInsets.all(8.0)
                 .copyWith(left: 15, bottom: 0, top: 5, right: 15),
-
-            child:
-            Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -66,7 +63,6 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                 ),
               ],
             ),
-
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20),
@@ -98,7 +94,6 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
           )
         ],
       ),
-
     );
   }
 }
