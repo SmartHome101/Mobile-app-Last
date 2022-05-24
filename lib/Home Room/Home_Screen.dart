@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../Rooms/Room.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
+import '../Controllers/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   final userName;
@@ -50,13 +52,13 @@ class _HomePageState extends State<HomePage> {
         Select_Avatar(2);
       else if (CurrentAvatar == Avatar3_Path) Select_Avatar(3);
 
-      Selected_Color = Get_Saved_Color();
+      // Selected_Color = await Get_Saved_Color() ;
 
       if (Selected_Color == 1)
-        Change_Color_Red();
+        Change_Color("Red");
       else if (Selected_Color == 2)
-        Change_Color_Black();
-      else if (Selected_Color == 3) Change_Color_Blue();
+        Change_Color("Black");
+      else if (Selected_Color == 3) Change_Color("Blue");
     });
   }
 
@@ -88,19 +90,19 @@ class _HomePageState extends State<HomePage> {
       Color2_BoarderColor = UnHighLighted_color;
       Color3_BoarderColor = UnHighLighted_color;
 
-      Change_Color_Red();
+      Change_Color("Red");
     } else if (number == 2) {
       Color2_BoarderColor = Highlighted_color;
       Color1_BoarderColor = UnHighLighted_color;
       Color3_BoarderColor = UnHighLighted_color;
 
-      Change_Color_Black();
+      Change_Color("Black");
     } else if (number == 3) {
       Color3_BoarderColor = Highlighted_color;
       Color1_BoarderColor = UnHighLighted_color;
       Color2_BoarderColor = UnHighLighted_color;
 
-      Change_Color_Blue();
+      Change_Color("Blue");
     }
 
     Selected_Color = number;
@@ -461,8 +463,18 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void update_UserData(String AvatarPath, String Name, int Selected_Color) {}
+Future<void> update_UserData(
+    String AvatarPath, String Name, int Selected_Color) async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    print(user);
+    await user.updateDisplayName(Name);
+    await user.updatePhotoURL(AvatarPath);
+  }
+}
 
-int Get_Saved_Color() {
-  return 1;
+Future<int> Get_Saved_Color() async {
+  var color = await CacheHelper.getData(key: "color");
+  print(color);
+  return color;
 }

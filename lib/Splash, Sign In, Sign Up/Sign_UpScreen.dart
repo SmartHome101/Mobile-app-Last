@@ -77,6 +77,14 @@ class _SignUpScreen extends State<SignUpScreen> {
   //   }
   //   return true;
   // }
+  void reset() {
+    setState(() {
+      code = "";
+      fullName = "";
+      email = "";
+      password = "";
+    });
+  }
 
   Sign_Up_Account() async {
     try {
@@ -137,13 +145,18 @@ class _SignUpScreen extends State<SignUpScreen> {
   Widget _buildLoginBtn() {
     return Container(
       alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text(
-          "Sign In",
-          style: kLabelStyle,
+      child: Padding(
+        padding:
+            const EdgeInsets.only(left: 0.0, top: 8.0, right: 0, bottom: 8.0),
+        child: TextButton(
+          onPressed: () {
+            reset();
+            Navigator.pop(context);
+          },
+          child: Text(
+            "Sign In",
+            style: kLabelStyle,
+          ),
         ),
       ),
     );

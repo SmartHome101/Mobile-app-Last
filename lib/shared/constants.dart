@@ -40,39 +40,42 @@ const foregroundColor = Colors.white;
 
 var cardColor = Color(0xFF1D1E33);
 
-const cardColor_red = Color.fromARGB(200,36,36,70);
-const cardColor_blue = Color.fromARGB(200,20, 13, 70);
-const cardColor_orange = Color.fromARGB(200,44, 50, 100);
+const cardColor_red = Color.fromARGB(200, 36, 36, 70);
+const cardColor_blue = Color.fromARGB(200, 20, 13, 70);
+const cardColor_orange = Color.fromARGB(200, 44, 50, 100);
 
-enum Colormode {Color1 , Color2, Color3}
+enum Colormode { Color1, Color2, Color3 }
 
-void Change_Color_Red()
-{
-  cardColor = cardColor_red;
-  Save_Color(Colormode.Color1);
+void Change_Color(color) {
+  if (color == "Red") {
+    cardColor = cardColor_red;
+    Save_Color(Colormode.Color1);
+  } else if (color == "black") {
+    cardColor = cardColor_blue;
+    Save_Color(Colormode.Color2);
+  } else {
+    cardColor = cardColor_orange;
+    Save_Color(Colormode.Color3);
+  }
 }
-void Change_Color_Black()
-{
-  cardColor = cardColor_blue;
-  Save_Color(Colormode.Color2);
-}
-void Change_Color_Blue()
-{
-  cardColor = cardColor_orange;
-  Save_Color(Colormode.Color3);
-}
-
+// void Change_Color_Black()
+// {
+//   cardColor = cardColor_blue;
+//   Save_Color(Colormode.Color2);
+// }
+// void Change_Color_Blue()
+// {
+//   cardColor = cardColor_orange;
+//   Save_Color(Colormode.Color3);
+// }
 
 ////////Save to local Database
-void Save_Color(Colormode colormode)
-{
-  if(colormode == Colormode.Color1){
+void Save_Color(Colormode colormode) {
+  if (colormode == Colormode.Color1) {
     //save 1
-  }
-  else if(colormode == Colormode.Color2) {
+  } else if (colormode == Colormode.Color2) {
     //save 2
-  }
-  else{
+  } else {
     //save 3
   }
 }

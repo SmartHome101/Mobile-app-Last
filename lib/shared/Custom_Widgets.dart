@@ -159,16 +159,20 @@ Widget BuildCode(TextEditingController Code_Controller) {
 Widget BuildGo_SignUp(BuildContext context, void Function() reset) {
   return Container(
     alignment: Alignment.centerRight,
-    child: TextButton(
-      onPressed: () {
-        reset();
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return SignUpScreen();
-        }));
-      },
-      child: Text(
-        "Don't have an account? Sign Up",
-        style: kLabelStyle,
+    child: Padding(
+      padding:
+          const EdgeInsets.only(left: 0.0, top: 8.0, right: 0, bottom: 8.0),
+      child: TextButton(
+        onPressed: () {
+          reset();
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SignUpScreen();
+          }));
+        },
+        child: Text(
+          "Don't have an account? Sign Up",
+          style: kLabelStyle,
+        ),
       ),
     ),
   );
