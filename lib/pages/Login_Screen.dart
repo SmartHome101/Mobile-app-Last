@@ -26,9 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool _rememberMe = false;
 
-  // final Email_Controller = TextEditingController();
-  // final Password_Controller = TextEditingController();
-
   Offset _offset = Offset(0, -0.05);
   double _opacity = 0;
   Duration _duration = Duration(seconds: 1);
@@ -80,11 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-          backgroundColor: Color(0xff2B475E),
           resizeToAvoidBottomInset: true,
           body: Container(
             height: double.infinity,
-            // decoration: Background_decoration(),
+            decoration: Background_decoration(),
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
                 horizontal: 40.0,
@@ -128,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             email = data;
                           },
                           isPassword: false,
+                          icon: Icons.email,
                         ),
                         SizedBox(
                           height: 30.0,
@@ -138,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             password = data;
                           },
                           isPassword: true,
+                          icon: Icons.lock,
                         ),
                         SizedBox(
                           height: 30.0,

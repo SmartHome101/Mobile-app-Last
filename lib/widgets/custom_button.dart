@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../shared/Custom_Widgets.dart';
 
 class CustomeButton extends StatelessWidget {
   CustomeButton({required this.title, this.onTap});
@@ -7,22 +8,19 @@ class CustomeButton extends StatelessWidget {
   String title;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
+    return ElevatedButton(
+      child: Text(
+        title,
+        style: TextStyle(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        width: double.infinity,
-        height: 60,
-        child: Center(
-          child: Text(
-            title,
-            style: TextStyle(color: Colors.black),
-          ),
+          letterSpacing: 1.5,
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'OpenSans',
         ),
       ),
+      style: buttonStyle(Size(250, 50)),
+      onPressed: onTap,
     );
   }
 }

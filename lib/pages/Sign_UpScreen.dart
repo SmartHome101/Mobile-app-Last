@@ -28,51 +28,6 @@ class _SignUpScreen extends State<SignUpScreen> {
     });
   }
 
-  // Navigator.pop(context);
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'weak-password') {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text("Weak Password")));
-  //     } else if (e.code == "email-already-in-use") {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text("Email already exists")));
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text("Something Went Wrong please Try again")));
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
-  //   }
-  //   isLoading = false;
-  //   setState(() {});
-  // }
-
-  // Widget _buildGo_SignUp() {
-  //   return Container(
-  //     alignment: Alignment.center,
-  //     child: ElevatedButton(
-  //       style: buttonStyle(Size(200, 50)),
-  //       onPressed: () async {
-  //         if (formKey.currentState!.validate()) {
-  //           await Sign_Up_Account(Name_Controller.text, Email_Controller.text,
-  //               Password_Controller.text);
-  //         } else {}
-  //       },
-  //       child: Text(
-  //         'Sign Up',
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //           letterSpacing: 1.5,
-  //           fontSize: 18.0,
-  //           fontWeight: FontWeight.bold,
-  //           fontFamily: 'OpenSans',
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     Sign_Up_Account() async {
@@ -86,29 +41,27 @@ class _SignUpScreen extends State<SignUpScreen> {
           code: code,
           photoURL: "icons/vector.png");
 
-      if (result == "weak-password") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Weak Password")));
-      } else if (result == "email-already-in-use") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Email already exists")));
+      if (result == "success") {
+        Navigator.pop(context);
       } else if (result == "error") {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Something Went Wrong please Try again")));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result)));
       }
+
       isLoading = false;
       setState(() {});
-      Navigator.pop(context);
     }
 
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-        backgroundColor: Color(0xff2B475E),
         resizeToAvoidBottomInset: true,
         body: Container(
           height: double.infinity,
-          // decoration: Background_decoration(),
+          decoration: Background_decoration(),
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.symmetric(
@@ -150,6 +103,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       code = data;
                     },
                     isPassword: false,
+                    icon: Icons.code,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -160,6 +114,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       fullName = data;
                     },
                     isPassword: false,
+                    icon: Icons.man,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -170,6 +125,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       email = data;
                     },
                     isPassword: false,
+                    icon: Icons.email,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -180,6 +136,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       password = data;
                     },
                     isPassword: true,
+                    icon: Icons.lock,
                   ),
                   SizedBox(
                     height: 30.0,
