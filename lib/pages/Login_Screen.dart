@@ -57,19 +57,14 @@ class _LoginScreenState extends State<LoginScreen> {
       var result = await context
           .read<AuthenticationService>()
           .signIn(email: email!, password: password!);
+      if (result != "success" && result != "error") {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result)));
+      } else if (result == "error") {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Something Went Wrong please Try again")));
+      }
 
-      if (result == "user-not-found") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("User Not Found")));
-      } else if (result == "email-already-in-use") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Email already exists")));
-      } else if (result == "wrong-password") {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Something Went Wrong please Try again")));
-      } else if (result == "error")
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Something Went Wrong please Try again")));
       isLoading = false;
       setState(() {});
     }
