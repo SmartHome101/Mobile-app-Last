@@ -1,8 +1,12 @@
+import 'package:Home/Rooms/BedRoom.dart';
+import 'package:Home/Rooms/Kitchen.dart';
+import 'package:Home/Rooms/LivingRoom.dart';
+import 'package:Home/Rooms/Reception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../Rooms/Room.dart';
+import '../Rooms/Bathroom.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
@@ -139,7 +143,7 @@ class _HomePageState extends State<HomePage> {
         "name": "reception",
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Room("reception");
+            return Reception();
           }));
         }
       },
@@ -148,7 +152,7 @@ class _HomePageState extends State<HomePage> {
         "name": "Living Room",
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Room("Living Room");
+            return LivingRoom();
           }));
         }
       },
@@ -157,7 +161,7 @@ class _HomePageState extends State<HomePage> {
         "name": "Kitchen",
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Room("kitchen");
+            return Kitchen();
           }));
         }
       },
@@ -166,7 +170,7 @@ class _HomePageState extends State<HomePage> {
         "name": "Bathroom",
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Room("Bath Room");
+            return Bathroom();
           }));
         }
       },
@@ -175,7 +179,7 @@ class _HomePageState extends State<HomePage> {
         "name": "Bed Room",
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Room("Bed Room");
+            return BedRoom();
           }));
         }
       },

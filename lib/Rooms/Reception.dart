@@ -14,17 +14,15 @@ late DatabaseReference dbref;
 late Map dataBase;
 late List devices;
 
-class Room extends StatefulWidget {
-  final room_Name;
-  const Room(this.room_Name);
+class Reception extends StatefulWidget {
   @override
-    _RoomState createState() => _RoomState();
+    _ReceptionState createState() => _ReceptionState();
 }
 
-class _RoomState extends State<Room> {
+class _ReceptionState extends State<Reception> {
 
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME01/" + widget.room_Name);
+    dbref = FirebaseDatabase.instance.ref("HOME01/reception/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -68,7 +66,7 @@ class _RoomState extends State<Room> {
         ? Loading()
         : Scaffold(
             appBar: AppBar(
-              title: Text(widget.room_Name),
+              title: Text("Reception"),
               backgroundColor: cardColor,
               elevation: 10,
               toolbarHeight: 60,
