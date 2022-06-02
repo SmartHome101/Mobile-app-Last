@@ -484,16 +484,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Future<void> update_UserData(
-    String AvatarPath, String Name, int Selected_Color) async {
-  User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    print(user);
-    await user.updateDisplayName(Name);
-    await user.updatePhotoURL(AvatarPath);
-  }
-}
-
 Future<int> Get_Saved_Color() async {
   var color = await CacheHelper.getData(key: "color");
   print(color);
