@@ -237,7 +237,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-<<<<<<< Updated upstream
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,36 +249,6 @@ class _HomePageState extends State<HomePage> {
                               ? 'assets/images/temp_high.png'
                               : 'assets/images/temp_low.png'),
                           width: 180,
-=======
-                  Container(
-                    width: double.infinity,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: shadowColor,
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Transform.scale(
-                          scale: 1.4,
-                          child: Image(
-                            image: AssetImage(temp > 40
-                                ? 'assets/images/temp_high.png'
-                                : 'assets/images/temp_low.png'),
-                            width: 180,
-                          ),
->>>>>>> Stashed changes
                         ),
                       ),
                       Row(
