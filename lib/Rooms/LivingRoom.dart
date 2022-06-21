@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -8,23 +9,22 @@ import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
 
+
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
 late DatabaseReference dbref;
 late Map dataBase;
 late List devices;
 
-class Room extends StatefulWidget {
-  final room_Name;
-  const Room(this.room_Name);
+class LivingRoom extends StatefulWidget {
   @override
-    _RoomState createState() => _RoomState();
+    _LivingRoomState createState() => _LivingRoomState();
 }
 
-class _RoomState extends State<Room> {
+class _LivingRoomState extends State<LivingRoom> {
 
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME01/" + widget.room_Name);
+    dbref = FirebaseDatabase.instance.ref("HOME01/living room/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -64,11 +64,19 @@ class _RoomState extends State<Room> {
 
   @override
   Widget build(BuildContext context) {
+
+    int Temperature = 55;
+
+    double temp_ratio()
+    {
+      return Temperature/60.0;
+    }
+
     return is_Loading
         ? Loading()
         : Scaffold(
             appBar: AppBar(
-              title: Text(widget.room_Name),
+              title: Text("living room"),
               backgroundColor: cardColor,
               elevation: 10,
               toolbarHeight: 60,
@@ -82,6 +90,53 @@ class _RoomState extends State<Room> {
                   children: <Widget>[
                     const SizedBox(
                       height: 20,
+                    ),
+                    Text("Temperature", style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                    ),),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (rect) {
+                              return SweepGradient(
+                                startAngle: 0.0,
+                                endAngle: pi*2,
+                                stops: [temp_ratio(),temp_ratio()],
+                                colors: [Colors.deepPurpleAccent, Colors.white],
+                              ).createShader(rect);
+                            },
+                            child: Container(
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 110,
+                            height: 110,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFF1D1E33),
+                            ),
+                          ),
+                          Text(Temperature.toString() + " C", style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
                     ),
                     Expanded(
                         child: GridView.count(

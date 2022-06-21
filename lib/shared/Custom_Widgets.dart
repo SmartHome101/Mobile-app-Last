@@ -183,7 +183,7 @@ BoxDecoration Background_decoration() {
       image: DecorationImage(
           image: AssetImage('icons/Background.jpg'),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black12, BlendMode.darken)));
+          colorFilter: ColorFilter.mode(Colors.black12, BlendMode.darken,)));
 }
 
 Widget BuildUserName_Customized(TextEditingController Name_Controller) {
