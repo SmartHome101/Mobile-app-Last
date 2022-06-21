@@ -51,7 +51,7 @@ class SplashScreen extends StatelessWidget {
             PageViewModel(
               title: 'Security comes first',
               body:
-                  "To make sure you'e secure, you create an account and use it to "
+                  "To make sure you're secure, you create an account and use it to "
                   "control your house",
               image: Image.asset("icons/Lock.png", width: 500),
               decoration: Custom_Page_Decoration(),
