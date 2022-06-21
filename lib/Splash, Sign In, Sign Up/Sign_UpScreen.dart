@@ -86,37 +86,6 @@ class _SignUpScreen extends State<SignUpScreen> {
     });
   }
 
-  Sign_Up_Account() async {
-    try {
-      isLoading = true;
-      setState(() {});
-
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email!, password: password!);
-      User? user = userCredential.user;
-      await user!.updateDisplayName(fullName);
-      await user.updatePhotoURL("icons/vector.png");
-
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Weak Password")));
-      } else if (e.code == "email-already-in-use") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Email already exists")));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Something Went Wrong please Try again")));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
-    }
-    isLoading = false;
-    setState(() {});
-  }
-
   // Widget _buildGo_SignUp() {
   //   return Container(
   //     alignment: Alignment.center,
@@ -142,28 +111,59 @@ class _SignUpScreen extends State<SignUpScreen> {
   //   );
   // }
 
-  Widget _buildLoginBtn() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 0.0, top: 8.0, right: 0, bottom: 8.0),
-        child: TextButton(
-          onPressed: () {
-            reset();
-            Navigator.pop(context);
-          },
-          child: Text(
-            "Sign In",
-            style: kLabelStyle,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    Sign_Up_Account() async {
+      try {
+        isLoading = true;
+        setState(() {});
+
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email!, password: password!);
+        User? user = userCredential.user;
+        await user!.updateDisplayName(fullName);
+        await user.updatePhotoURL("icons/vector.png");
+
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Weak Password")));
+        } else if (e.code == "email-already-in-use") {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Email already exists")));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Something Went Wrong please Try again")));
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
+      }
+      isLoading = false;
+      setState(() {});
+    }
+
+    Widget _buildLoginBtn() {
+      return Container(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding:
+              const EdgeInsets.only(left: 0.0, top: 8.0, right: 0, bottom: 8.0),
+          child: TextButton(
+            onPressed: () {
+              reset();
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Sign In",
+              style: kLabelStyle,
+            ),
+          ),
+        ),
+      );
+    }
+
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(

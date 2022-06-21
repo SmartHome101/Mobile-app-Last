@@ -81,44 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
   //   return true;
   // }
 
-  Check_Valid_Auth() async {
-    try {
-      isLoading = true;
-      setState(() {});
-
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email!, password: password!);
-      User? user = userCredential.user;
-      userName = user?.displayName;
-      photoURL = user?.photoURL;
-
-      if (_rememberMe) {
-        await CacheHelper.saveData(key: "userName", value: userName);
-        await CacheHelper.saveData(key: "photoURL", value: photoURL);
-      }
-      Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return HomePage(userName, photoURL);
-      }));
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("User Not Found")));
-      } else if (e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Invalid Mail or Password")));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Something Went Wrong please Try again")));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
-    }
-    isLoading = false;
-    setState(() {});
-  }
-
   Widget _buildRememberMeCheckbox() {
     return Container(
       height: 20.0,
@@ -179,6 +141,44 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Check_Valid_Auth() async {
+      try {
+        isLoading = true;
+        setState(() {});
+
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email!, password: password!);
+        User? user = userCredential.user;
+        userName = user?.displayName;
+        photoURL = user?.photoURL;
+
+        if (_rememberMe) {
+          await CacheHelper.saveData(key: "userName", value: userName);
+          await CacheHelper.saveData(key: "photoURL", value: photoURL);
+        }
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return HomePage(userName, photoURL);
+        }));
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("User Not Found")));
+        } else if (e.code == 'wrong-password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Invalid Mail or Password")));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Something Went Wrong please Try again")));
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
+      }
+      isLoading = false;
+      setState(() {});
+    }
+
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
