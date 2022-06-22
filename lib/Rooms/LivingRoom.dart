@@ -65,7 +65,7 @@ class _LivingRoomState extends State<LivingRoom> {
   @override
   Widget build(BuildContext context) {
 
-    int Temperature = 55;
+    int Temperature = 25;
 
     double temp_ratio()
     {

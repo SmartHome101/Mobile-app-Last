@@ -25,6 +25,10 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
         color: cardColor,
+        border: Border.all(
+          color: isActive ? (Colors.deepPurple[200])! : Colors.black,
+          width: 3,
+        ),
       ),
       height: 150,
       width: 150,
