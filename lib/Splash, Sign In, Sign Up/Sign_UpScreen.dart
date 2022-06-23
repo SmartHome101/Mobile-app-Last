@@ -1,10 +1,11 @@
 import 'package:Home/widgets/custom_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
 import '../shared/constants.dart';
 import '../shared/Custom_Widgets.dart';
 import '../widgets/custom_text_field.dart';
+import '../Controllers/authentication_servies.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -17,66 +18,6 @@ class _SignUpScreen extends State<SignUpScreen> {
   bool isLoading = false;
   String? code, fullName, email, password;
 
-  // final Name_Controller = TextEditingController();
-  // final Email_Controller = TextEditingController();
-  // final Password_Controller = TextEditingController();
-  // final Code_Controller = TextEditingController();
-
-  // bool validateUserName(userName) {
-  //   if (userName == "") {
-  //     setState(() {
-  //       signup_state = "UserName Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   } else if (userName.length < 8) {
-  //     setState(() {
-  //       signup_state = "userName Must Be At Least 8 Characters!";
-  //     });
-  //     return false;
-  //   }
-  //   bool userNameValid =
-  //       RegExp(r"^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$")
-  //           .hasMatch(userName);
-  //   if (!userNameValid) {
-  //     setState(() {
-  //       signup_state = "InValid UserName";
-  //     });
-  //     return false;
-  //   }
-  //   return true;
-  // }
-  // bool validateMail(email) {
-  //   if (email == "") {
-  //     setState(() {
-  //       signup_state = "Email Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   }
-  //   bool emailValid = RegExp(
-  //           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-  //       .hasMatch(email);
-  //   if (!emailValid) {
-  //     setState(() {
-  //       signup_state = "InValid Email";
-  //     });
-  //   }
-  //   return emailValid;
-  // }
-  //
-  // bool validatePassowrd(password) {
-  //   if (password == "") {
-  //     setState(() {
-  //       signup_state = "Password Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   } else if (password.length < 8) {
-  //     setState(() {
-  //       signup_state = "Password Must Be At Least 8 Characters!";
-  //     });
-  //     return false;
-  //   }
-  //   return true;
-  // }
   void reset() {
     setState(() {
       code = "";
@@ -86,93 +27,40 @@ class _SignUpScreen extends State<SignUpScreen> {
     });
   }
 
-  // Widget _buildGo_SignUp() {
-  //   return Container(
-  //     alignment: Alignment.center,
-  //     child: ElevatedButton(
-  //       style: buttonStyle(Size(200, 50)),
-  //       onPressed: () async {
-  //         if (formKey.currentState!.validate()) {
-  //           await Sign_Up_Account(Name_Controller.text, Email_Controller.text,
-  //               Password_Controller.text);
-  //         } else {}
-  //       },
-  //       child: Text(
-  //         'Sign Up',
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //           letterSpacing: 1.5,
-  //           fontSize: 18.0,
-  //           fontWeight: FontWeight.bold,
-  //           fontFamily: 'OpenSans',
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     Sign_Up_Account() async {
-      try {
-        isLoading = true;
-        setState(() {});
+      isLoading = true;
+      setState(() {});
 
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email!, password: password!);
-        User? user = userCredential.user;
-        await user!.updateDisplayName(fullName);
-        await user.updatePhotoURL("icons/vector.png");
+      var result = await context.read<AuthenticationService>().signUp(
+          email: email!,
+          password: password!,
+          fullName: fullName,
+          code: code,
+          photoURL: "icons/vector.png");
 
+      if (result == "success") {
         Navigator.pop(context);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Weak Password")));
-        } else if (e.code == "email-already-in-use") {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Email already exists")));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Something Went Wrong please Try again")));
-        }
-      } catch (e) {
+      } else if (result == "error") {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Something Went Wrong please Try again")));
+      } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
+            .showSnackBar(SnackBar(content: Text(result)));
       }
+
       isLoading = false;
       setState(() {});
-    }
-
-    Widget _buildLoginBtn() {
-      return Container(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 0.0, top: 8.0, right: 0, bottom: 8.0),
-          child: TextButton(
-            onPressed: () {
-              reset();
-              Navigator.pop(context);
-            },
-            child: Text(
-              "Sign In",
-              style: kLabelStyle,
-            ),
-          ),
-        ),
-      );
     }
 
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-        backgroundColor: Color(0xff2B475E),
         resizeToAvoidBottomInset: true,
         body: Container(
-          decoration: Background_decoration(),
           height: double.infinity,
-          // decoration: Background_decoration(),
+          decoration: Background_decoration(),
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.symmetric(
@@ -213,7 +101,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       code = data;
                     },
-                    isPassword: false, icon: Icons.code,
+                    isPassword: false,
+                    icon: Icons.code,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -223,7 +112,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       fullName = data;
                     },
-                    isPassword: false, icon:Icons.man,
+                    isPassword: false,
+                    icon: Icons.man,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -233,7 +123,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       email = data;
                     },
-                    isPassword: false,icon:Icons.email,
+                    isPassword: false,
+                    icon: Icons.email,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -243,7 +134,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     onChanged: (data) {
                       password = data;
                     },
-                    isPassword: true,icon:Icons.lock,
+                    isPassword: true,
+                    icon: Icons.lock,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -258,26 +150,23 @@ class _SignUpScreen extends State<SignUpScreen> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  // BuildCode(Code_Controller),
-                  // SizedBox(height: 15.0),
-                  // BuildUserName(Name_Controller),
-                  // SizedBox(
-                  //   height: 15.0,
-                  // ),
-                  // BuildEmailTF(Email_Controller),
-                  // SizedBox(
-                  //   height: 15.0,
-                  // ),
-                  // BuildPasswordTF(Password_Controller),
-                  // SizedBox(
-                  //   height: 15.0,
-                  // ),
-                  // Text(signup_state),
-                  // SizedBox(
-                  //   height: 15.0,
-                  // ),
-                  // _buildGo_SignUp(),
-                  _buildLoginBtn(),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 0.0, top: 8.0, right: 0, bottom: 8.0),
+                      child: TextButton(
+                        onPressed: () {
+                          reset();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Sign In",
+                          style: kLabelStyle,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

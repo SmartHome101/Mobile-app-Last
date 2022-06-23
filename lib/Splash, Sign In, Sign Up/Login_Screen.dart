@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:Home/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../Controllers/authentication_servies.dart';
 import '../Home Room/Home_Screen.dart';
 import '../shared/constants.dart';
 import '../shared/Custom_Widgets.dart';
@@ -23,9 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
   bool _rememberMe = false;
-
-  // final Email_Controller = TextEditingController();
-  // final Password_Controller = TextEditingController();
 
   Offset _offset = Offset(0, -0.05);
   double _opacity = 0;
@@ -49,132 +48,23 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  // bool validateMail(email) {
-  //   if (email == "") {
-  //     setState(() {
-  //       login_State = "Email Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   }
-  //   bool emailValid = RegExp(
-  //           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-  //       .hasMatch(email);
-  //   if (!emailValid) {
-  //     setState(() {
-  //       login_State = "InValid Email";
-  //     });
-  //   }
-  //   return emailValid;
-  // }
-  // bool validatePassowrd(password) {
-  //   if (password == "") {
-  //     setState(() {
-  //       login_State = "Password Cannot Be Empty!";
-  //     });
-  //     return false;
-  //   } else if (password.length < 8) {
-  //     setState(() {
-  //       login_State = "Password Must Be At Least 8 Characters!";
-  //     });
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  Widget _buildRememberMeCheckbox() {
-    return Container(
-      height: 20.0,
-      child: Row(
-        children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value!;
-                });
-              },
-            ),
-          ),
-          Text(
-            'Remember me',
-            style: kLabelStyle,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget _buildLoginBtn() {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(vertical: 25.0),
-  //     alignment: Alignment.center,
-  //     child: ElevatedButton(
-  //       style: buttonStyle(Size(200, 50)),
-  //       onPressed: () async {
-  //         bool Valid = await Check_Valid_Auth(
-  //             Email_Controller.text, Password_Controller.text);
-  //         if (Valid) {
-  //           login_State = "";
-  //           Navigator.pop(context);
-  //           Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //             return HomePage(userName, photoURL);
-  //           }));
-  //         }
-  //       },
-  //       child: Text(
-  //         'LOGIN',
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //           letterSpacing: 1.5,
-  //           fontSize: 18.0,
-  //           fontWeight: FontWeight.bold,
-  //           fontFamily: 'OpenSans',
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    Check_Valid_Auth() async {
-      try {
-        isLoading = true;
-        setState(() {});
+    signInToFirebase() async {
+      isLoading = true;
+      setState(() {});
 
-        UserCredential userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email!, password: password!);
-        User? user = userCredential.user;
-        userName = user?.displayName;
-        photoURL = user?.photoURL;
-
-        if (_rememberMe) {
-          await CacheHelper.saveData(key: "userName", value: userName);
-          await CacheHelper.saveData(key: "photoURL", value: photoURL);
-        }
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return HomePage(userName, photoURL);
-        }));
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("User Not Found")));
-        } else if (e.code == 'wrong-password') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Invalid Mail or Password")));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Something Went Wrong please Try again")));
-        }
-      } catch (e) {
+      var result = await context
+          .read<AuthenticationService>()
+          .signIn(email: email!, password: password!);
+      if (result != "success" && result != "error") {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something Went Wrong")));
+            .showSnackBar(SnackBar(content: Text(result)));
+      } else if (result == "error") {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Something Went Wrong please Try again")));
       }
+
       isLoading = false;
       setState(() {});
     }
@@ -182,12 +72,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
-          backgroundColor: Color(0xff2B475E),
           resizeToAvoidBottomInset: true,
           body: Container(
-            decoration: Background_decoration(),
             height: double.infinity,
-            // decoration: Background_decoration(),
+            decoration: Background_decoration(),
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
                 horizontal: 40.0,
@@ -230,7 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onChanged: (data) {
                             email = data;
                           },
-                          isPassword: false, icon: Icons.email,
+                          isPassword: false,
+                          icon: Icons.email,
                         ),
                         SizedBox(
                           height: 30.0,
@@ -240,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onChanged: (data) {
                             password = data;
                           },
-                          isPassword: true, icon: Icons.lock,
+                          isPassword: true,
+                          icon: Icons.lock,
                         ),
                         SizedBox(
                           height: 30.0,
@@ -248,13 +138,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: 30.0,
                         ),
-                        SizedBox(
-                          height: 30.0,
-                        ),
+                        // _buildRememberMeCheckbox(),
+                        // SizedBox(
+                        //   height: 30.0,
+                        // ),
                         CustomeButton(
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
-                                await Check_Valid_Auth();
+                                await signInToFirebase();
                               } else {}
                             },
                             title: "Log In"),
