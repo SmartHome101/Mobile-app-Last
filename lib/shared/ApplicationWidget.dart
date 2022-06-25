@@ -26,7 +26,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
         borderRadius: BorderRadius.circular(25),
         color: cardColor,
         border: Border.all(
-          color: isActive ? (Colors.deepPurple[200])! : Colors.black,
+          color: isActive ? (cardBorder_On_Color)! : cardBorder_Off_Color,
           width: 3,
         ),
       ),

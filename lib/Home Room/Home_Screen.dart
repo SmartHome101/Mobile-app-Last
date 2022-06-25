@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
 
   Color Color1_BoarderColor = Colors.transparent;
   Color Color2_BoarderColor = Colors.transparent;
-  Color Color3_BoarderColor = Colors.transparent;
 
   String Avatar1_Path = 'icons/vector.png';
   String Avatar2_Path = 'icons/vector2.png';
@@ -48,11 +47,9 @@ class _HomePageState extends State<HomePage> {
   int Selected_Color = 1;
 
   initState() {
-    setState(() {
-      // UserName_Controller.text = widget.userName;
 
-      // CurrentAvatar = widget.photoURL;
-      // UserName_Controller.text = "Elalfy";
+    setState(() {
+
       CurrentAvatar = "icons/vector.png";
 
       if (CurrentAvatar == Avatar1_Path)
@@ -61,13 +58,23 @@ class _HomePageState extends State<HomePage> {
         Select_Avatar(2);
       else if (CurrentAvatar == Avatar3_Path) Select_Avatar(3);
 
-      // Selected_Color = await Get_Saved_Color() ;
+      GetColor();
+    });
+  }
 
-      if (Selected_Color == 1)
-        Change_Color("Red");
-      else if (Selected_Color == 2)
+  GetColor() async
+  {
+    Selected_Color = await CacheHelper.getData(key: "color");
+
+    setState(() {
+      if (Selected_Color == 1 || Selected_Color == 0) {
         Change_Color("Black");
-      else if (Selected_Color == 3) Change_Color("Blue");
+        Selected_Color = 1;
+      }
+      else if (Selected_Color == 2)
+        Change_Color("White");
+
+      Select_Color(Selected_Color);
     });
   }
 
@@ -94,27 +101,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   void Select_Color(int number) {
-    if (number == 1) {
+
+    if (number == 1)
+    {
       Color1_BoarderColor = Highlighted_color;
       Color2_BoarderColor = UnHighLighted_color;
-      Color3_BoarderColor = UnHighLighted_color;
-
-      Change_Color("Red");
-    } else if (number == 2) {
-      Color2_BoarderColor = Highlighted_color;
-      Color1_BoarderColor = UnHighLighted_color;
-      Color3_BoarderColor = UnHighLighted_color;
 
       Change_Color("Black");
-    } else if (number == 3) {
-      Color3_BoarderColor = Highlighted_color;
-      Color1_BoarderColor = UnHighLighted_color;
-      Color2_BoarderColor = UnHighLighted_color;
 
-      Change_Color("Blue");
     }
-
+    else if (number == 2)
+    {
+      Color2_BoarderColor = Highlighted_color;
+      Color1_BoarderColor = UnHighLighted_color;
+      Change_Color("White");
+    }
     Selected_Color = number;
+
+    CacheHelper.saveData(key: "color", value: number);
   }
 
   @override
@@ -436,16 +440,6 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                   ),
-                  IconButton(
-                    icon: Image.asset('icons/color3.png',
-                        color: Color3_BoarderColor,
-                        colorBlendMode: BlendMode.multiply),
-                    onPressed: () {
-                      setState(() {
-                        Select_Color(3);
-                      });
-                    },
-                  ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               ),
@@ -497,8 +491,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Future<int> Get_Saved_Color() async {
-  var color = await CacheHelper.getData(key: "color");
-  print(color);
-  return color;
-}
+

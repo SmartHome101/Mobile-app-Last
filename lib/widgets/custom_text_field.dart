@@ -18,10 +18,10 @@ class CustomTextField extends StatelessWidget {
       },
       obscureText: isPassword!,
       onChanged: onChanged,
+      style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
-          fillColor: Colors.white,
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.white),
+          hintStyle: TextStyle(color: Colors.grey),
           prefixIcon: Icon(
             icon,
             color: Colors.white,
@@ -32,7 +32,7 @@ class CustomTextField extends StatelessWidget {
           )),
           border: OutlineInputBorder(
               borderSide: BorderSide(
-            color: Colors.black12,
+            color: Colors.white,
           ))),
     );
   }
@@ -50,7 +50,7 @@ Widget BuildEmailTF(IconData icon, bool isPassword, Function(String) onChanged,
     onChanged: onChanged,
     decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: TextStyle(color: Colors.white),
         prefixIcon: Icon(
           icon,
           color: Colors.white,
