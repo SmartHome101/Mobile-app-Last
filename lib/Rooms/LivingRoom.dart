@@ -8,6 +8,8 @@ import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
+import '../Home Room/Home_Screen.dart';
+
 
 
 StreamController<bool> streamController = StreamController<bool>();
@@ -24,7 +26,7 @@ class LivingRoom extends StatefulWidget {
 class _LivingRoomState extends State<LivingRoom> {
 
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME01/living room/on-off");
+    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/living room/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
