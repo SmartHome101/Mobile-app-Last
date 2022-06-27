@@ -17,14 +17,12 @@ late List devices;
 
 class BedRoom extends StatefulWidget {
   @override
-    _BedRoomState createState() => _BedRoomState();
+  _BedRoomState createState() => _BedRoomState();
 }
 
 class _BedRoomState extends State<BedRoom> {
-
   get_Data_from_Firebase() {
-
-    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/bedroom/on-off/");
+    dbref = FirebaseDatabase.instance.ref(Home_Code + "/bedroom/on-off/");
 
     Stream<DatabaseEvent> stream = dbref.onValue;
 
@@ -35,17 +33,14 @@ class _BedRoomState extends State<BedRoom> {
         print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
 
-        devices =  dataBase.entries.map(
-
-                (entry) => {entry.key : (entry.value == 0 ? false : true)}
-
-                ).toList();
+        devices = dataBase.entries
+            .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
+            .toList();
 
         is_Loading = false;
         streamController.add(is_Loading);
       });
     });
-
   }
 
   void mySetState(bool state) {
@@ -66,7 +61,7 @@ class _BedRoomState extends State<BedRoom> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name):(value == true ? 1 : 0)});
+    await dbref.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
@@ -95,8 +90,10 @@ class _BedRoomState extends State<BedRoom> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
-                      children: devices.map((item) => ApplicationWidget(item, update)).toList(),)
-                    )
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
                   ],
                 ),
               ),

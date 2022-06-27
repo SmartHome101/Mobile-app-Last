@@ -9,7 +9,6 @@ import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
 import '../Home Room/Home_Screen.dart';
 
-
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
 late DatabaseReference dbref;
@@ -18,13 +17,12 @@ late List devices;
 
 class Kitchen extends StatefulWidget {
   @override
-    _KitchenState createState() => _KitchenState();
+  _KitchenState createState() => _KitchenState();
 }
 
 class _KitchenState extends State<Kitchen> {
-
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/kitchen/on-off");
+    dbref = FirebaseDatabase.instance.ref(Home_Code + "/kitchen/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -33,8 +31,9 @@ class _KitchenState extends State<Kitchen> {
       setState(() {
         print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
-        devices =
-            dataBase.entries.map((entry) => {entry.key: (entry.value == 0 ? false : true)}).toList();
+        devices = dataBase.entries
+            .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
+            .toList();
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -59,7 +58,7 @@ class _KitchenState extends State<Kitchen> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name):(value == true ? 1 : 0)});
+    await dbref.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
@@ -88,8 +87,10 @@ class _KitchenState extends State<Kitchen> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
-                      children: devices.map((item) => ApplicationWidget(item, update)).toList(),)
-                    )
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
                   ],
                 ),
               ),

@@ -10,7 +10,6 @@ import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
 
-
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
 late DatabaseReference dbref;
@@ -19,15 +18,12 @@ late List devices;
 
 class Bathroom extends StatefulWidget {
   @override
-    _BathroomState createState() => _BathroomState();
+  _BathroomState createState() => _BathroomState();
 }
 
 class _BathroomState extends State<Bathroom> {
-
   get_Data_from_Firebase() {
-
-
-    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/bathroom/on-off");
+    dbref = FirebaseDatabase.instance.ref(Home_Code + "/bathroom/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -36,8 +32,9 @@ class _BathroomState extends State<Bathroom> {
       setState(() {
         print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
-        devices =
-            dataBase.entries.map((entry) => {entry.key: (entry.value == 0 ? false : true)}).toList();
+        devices = dataBase.entries
+            .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
+            .toList();
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -63,12 +60,11 @@ class _BathroomState extends State<Bathroom> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name):(value == true ? 1 : 0)});
+    await dbref.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
   Widget build(BuildContext context) {
-
     return is_Loading
         ? Loading()
         : Scaffold(
@@ -93,8 +89,10 @@ class _BathroomState extends State<Bathroom> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
-                      children: devices.map((item) => ApplicationWidget(item, update)).toList(),)
-                    )
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
                   ],
                 ),
               ),

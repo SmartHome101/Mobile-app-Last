@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
 import 'package:Home/Rooms/LivingRoom.dart';
 import 'package:Home/Rooms/RoomAWS.dart';
 import 'package:Home/Rooms/Reception.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:http/http.dart' as http;
 
 import '../Controllers/authentication_servies.dart';
 import '../Rooms/Bathroom.dart';
@@ -15,17 +19,43 @@ import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
 
+Future<WeatheData> fetchWeather() async {
+  final response = await http.get(Uri.parse(
+      'https://api.openweathermap.org/data/2.5/weather?q=cairo&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
+  print(response);
+  if (response.statusCode == 200) {
+    return WeatheData.fromJson(jsonDecode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load Weather');
+  }
+}
 
-String Home_Code = "01";
+class WeatheData {
+  final double temp;
+
+  const WeatheData({required this.temp});
+
+  factory WeatheData.fromJson(Map<String, dynamic> json) {
+    return WeatheData(
+      temp: json['main']['temp'] - 273.15,
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+var Home_Code;
+
 class _HomePageState extends State<HomePage> {
-  int temp = 40;
+  double temp = 40;
   bool isLoading = false;
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  late Future<WeatheData> weatheData;
 
   String CurrentAvatar = 'icons/vector.png';
 
@@ -50,9 +80,8 @@ class _HomePageState extends State<HomePage> {
   int Selected_Color = 1;
 
   initState() {
-
+    weatheData = fetchWeather();
     setState(() {
-
       CurrentAvatar = "icons/vector.png";
 
       if (CurrentAvatar == Avatar1_Path)
@@ -65,22 +94,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  GetColor() async
-  {
+  GetColor() async {
     Selected_Color = await CacheHelper.getData(key: "color");
 
     setState(() {
       if (Selected_Color == 1 || Selected_Color == 0) {
         Change_Color("Black");
         Selected_Color = 1;
-      }
-      else if (Selected_Color == 2)
-        Change_Color("White");
+      } else if (Selected_Color == 2) Change_Color("White");
 
       Select_Color(Selected_Color);
     });
   }
 
+  getWeather() async {}
   void Select_Avatar(int number) {
     if (number == 1) {
       Avatar1_Color = Highlighted_color;
@@ -104,17 +131,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void Select_Color(int number) {
-
-    if (number == 1)
-    {
+    if (number == 1) {
       Color1_BoarderColor = Highlighted_color;
       Color2_BoarderColor = UnHighLighted_color;
 
       Change_Color("Black");
-
-    }
-    else if (number == 2)
-    {
+    } else if (number == 2) {
       Color2_BoarderColor = Highlighted_color;
       Color1_BoarderColor = UnHighLighted_color;
       Change_Color("White");
@@ -130,6 +152,18 @@ class _HomePageState extends State<HomePage> {
     String? displayName = firebaseUser?.displayName ?? "User";
     String? photoURL = firebaseUser?.photoURL ?? "icons/vector.png";
 
+    getHomeCode() async {
+      final docRef = db.collection("users").doc(firebaseUser!.uid);
+      docRef.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map;
+          Home_Code = data["code"];
+        },
+        onError: (e) => print("Error getting document: $e"),
+      );
+    }
+
+    getHomeCode();
     final List<Map> _listItem = [
       {
         "img": "icons/reception.png",
@@ -243,41 +277,53 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Transform.scale(
-                          scale: 1.4,
-                          child: Image(
-                            image: AssetImage(temp > 30
-                                ? 'assets/images/temp_high.png'
-                                : 'assets/images/temp_low.png'),
-                            width: 180,
-                          ),
-                        ),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                    child: FutureBuilder<WeatheData>(
+                      future: weatheData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             textBaseline: TextBaseline.alphabetic,
                             children: <Widget>[
-                              Text(
-                                temp.toString(),
-                                style: const TextStyle(
-                                    color: foregroundColor,
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                              const Text(
-                                'c',
-                                style: TextStyle(
-                                  color: foregroundColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'OpenSans',
+                              Transform.scale(
+                                scale: 1.4,
+                                child: Image(
+                                  image: AssetImage(temp > 30
+                                      ? 'assets/images/temp_high.png'
+                                      : 'assets/images/temp_low.png'),
+                                  width: 180,
                                 ),
                               ),
-                            ]),
-                      ],
+                              Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
+                                  children: <Widget>[
+                                    Text(
+                                      snapshot.data!.temp.round().toString(),
+                                      style: const TextStyle(
+                                          color: foregroundColor,
+                                          fontSize: 50,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                    const Text(
+                                      'c',
+                                      style: TextStyle(
+                                        color: foregroundColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'OpenSans',
+                                      ),
+                                    ),
+                                  ]),
+                            ],
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+                        // By default, show a loading spinner.
+                        return const CircularProgressIndicator();
+                      },
                     ),
                   ),
                   const SizedBox(
@@ -493,5 +539,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

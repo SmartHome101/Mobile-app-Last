@@ -17,13 +17,12 @@ late List devices;
 
 class Reception extends StatefulWidget {
   @override
-    _ReceptionState createState() => _ReceptionState();
+  _ReceptionState createState() => _ReceptionState();
 }
 
 class _ReceptionState extends State<Reception> {
-
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/reception/on-off");
+    dbref = FirebaseDatabase.instance.ref(Home_Code + "/reception/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -32,8 +31,9 @@ class _ReceptionState extends State<Reception> {
       setState(() {
         print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
-        devices =
-            dataBase.entries.map((entry) => {entry.key: (entry.value == 0 ? false : true)}).toList();
+        devices = dataBase.entries
+            .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
+            .toList();
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -58,7 +58,7 @@ class _ReceptionState extends State<Reception> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name):(value == true ? 1 : 0)});
+    await dbref.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
@@ -87,8 +87,10 @@ class _ReceptionState extends State<Reception> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
-                      children: devices.map((item) => ApplicationWidget(item, update)).toList(),)
-                    )
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
                   ],
                 ),
               ),

@@ -10,33 +10,38 @@ import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
 import '../Home Room/Home_Screen.dart';
 
-
-
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
 late DatabaseReference dbref;
+late DatabaseReference dbref_OnOff;
 late Map dataBase;
 late List devices;
+var temp;
+var humidity;
 
 class LivingRoom extends StatefulWidget {
   @override
-    _LivingRoomState createState() => _LivingRoomState();
+  _LivingRoomState createState() => _LivingRoomState();
 }
 
 class _LivingRoomState extends State<LivingRoom> {
-
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/living room/on-off");
+    dbref = FirebaseDatabase.instance.ref(Home_Code + "/living room");
+    dbref_OnOff =
+        FirebaseDatabase.instance.ref(Home_Code + "/living room/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
     stream.listen((DatabaseEvent event) {
       if (!mounted) return;
       setState(() {
-        print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
-        devices =
-            dataBase.entries.map((entry) => {entry.key: (entry.value == 0 ? false : true)}).toList();
+        devices = dataBase["on-off"]
+            .entries
+            .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
+            .toList();
+        temp = dataBase["temperature"];
+        humidity = dataBase["humidity"];
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -61,17 +66,13 @@ class _LivingRoomState extends State<LivingRoom> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name):(value == true ? 1 : 0)});
+    await dbref_OnOff.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
   Widget build(BuildContext context) {
-
-    int Temperature = 25;
-
-    double temp_ratio()
-    {
-      return Temperature/60.0;
+    double temp_ratio() {
+      return temp / 60.0;
     }
 
     return is_Loading
@@ -93,10 +94,13 @@ class _LivingRoomState extends State<LivingRoom> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text("Temperature", style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.white,
-                    ),),
+                    Text(
+                      "Temperature",
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -108,8 +112,8 @@ class _LivingRoomState extends State<LivingRoom> {
                             shaderCallback: (rect) {
                               return SweepGradient(
                                 startAngle: 0.0,
-                                endAngle: pi*2,
-                                stops: [temp_ratio(),temp_ratio()],
+                                endAngle: pi * 2,
+                                stops: [temp_ratio(), temp_ratio()],
                                 colors: [Colors.deepPurpleAccent, Colors.white],
                               ).createShader(rect);
                             },
@@ -130,10 +134,13 @@ class _LivingRoomState extends State<LivingRoom> {
                               color: Color(0xFF1D1E33),
                             ),
                           ),
-                          Text(Temperature.toString() + " C", style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.white,
-                          ),),
+                          Text(
+                            temp.toString() + " C",
+                            style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -145,8 +152,10 @@ class _LivingRoomState extends State<LivingRoom> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
-                      children: devices.map((item) => ApplicationWidget(item, update)).toList(),)
-                    )
+                      children: devices
+                          .map((item) => ApplicationWidget(item, update))
+                          .toList(),
+                    ))
                   ],
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:Home/widgets/custom_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,8 @@ class _SignUpScreen extends State<SignUpScreen> {
 
   bool isLoading = false;
   String? code, fullName, email, password;
-  FirebaseFirestore db = FirebaseFirestore.instance;
+  CollectionReference<Map<String, dynamic>> users =
+      FirebaseFirestore.instance.collection("users");
 
   void reset() {
     setState(() {
@@ -31,11 +33,9 @@ class _SignUpScreen extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    final firebaseUser = context.watch<User?>();
+    String? id = firebaseUser?.uid;
     Sign_Up_Account() async {
-
-      //"HOME01"
-
       isLoading = true;
       setState(() {});
 
@@ -43,7 +43,7 @@ class _SignUpScreen extends State<SignUpScreen> {
           email: email!,
           password: password!,
           fullName: fullName,
-          // code: code,
+          code: code,
           photoURL: "icons/vector.png");
 
       if (result == "success") {
@@ -55,14 +55,7 @@ class _SignUpScreen extends State<SignUpScreen> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(result)));
       }
-      final user = <String, dynamic>{
-        "email": email,
-        "code": code,
-      };
 
-      // Add a new document with a generated ID
-      db.collection("users").add(user).then((DocumentReference doc) =>
-          print('DocumentSnapshot added with ID: ${doc.id}'));
       isLoading = false;
       setState(() {});
     }
