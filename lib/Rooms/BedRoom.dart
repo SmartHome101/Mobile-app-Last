@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+import '../Home Room/Home_Screen.dart';
 import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
@@ -23,7 +24,7 @@ class _BedRoomState extends State<BedRoom> {
 
   get_Data_from_Firebase() {
 
-    dbref = FirebaseDatabase.instance.ref("HOME01/bedroom/on-off/");
+    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/bedroom/on-off/");
 
     Stream<DatabaseEvent> stream = dbref.onValue;
 

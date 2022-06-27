@@ -15,6 +15,9 @@ import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
 
+
+String Home_Code = "01";
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();

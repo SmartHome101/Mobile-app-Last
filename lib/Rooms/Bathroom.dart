@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+import '../Home Room/Home_Screen.dart';
 import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
@@ -24,7 +25,9 @@ class Bathroom extends StatefulWidget {
 class _BathroomState extends State<Bathroom> {
 
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME01/bathroom/on-off");
+
+
+    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/bathroom/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -55,6 +58,7 @@ class _BathroomState extends State<Bathroom> {
         mySetState(state);
       });
     }
+
     get_Data_from_Firebase();
   }
 

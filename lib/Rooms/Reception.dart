@@ -7,6 +7,7 @@ import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
+import '../Home Room/Home_Screen.dart';
 
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
@@ -22,7 +23,7 @@ class Reception extends StatefulWidget {
 class _ReceptionState extends State<Reception> {
 
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref("HOME01/reception/on-off");
+    dbref = FirebaseDatabase.instance.ref("HOME" + Home_Code + "/reception/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
