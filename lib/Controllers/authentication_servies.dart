@@ -40,7 +40,7 @@ class AuthenticationService {
       {required String email,
       required String password,
       required fullName,
-      required code,
+      // required code,
       required photoURL}) async {
     try {
       UserCredential userCredential = await _firebaseAuth
