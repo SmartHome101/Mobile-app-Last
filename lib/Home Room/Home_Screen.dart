@@ -52,7 +52,6 @@ class HomePage extends StatefulWidget {
 var Home_Code;
 
 class _HomePageState extends State<HomePage> {
-  double temp = 40;
   bool isLoading = false;
   FirebaseFirestore db = FirebaseFirestore.instance;
   late Future<WeatheData> weatheData;
@@ -148,6 +147,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    String Rain_Level = "";
+
     final firebaseUser = context.watch<User?>();
     String? displayName = firebaseUser?.displayName ?? "User";
     String? photoURL = firebaseUser?.photoURL ?? "icons/vector.png";
@@ -164,6 +166,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     getHomeCode();
+
     final List<Map> _listItem = [
       {
         "img": "icons/reception.png",
@@ -282,39 +285,66 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             textBaseline: TextBaseline.alphabetic,
                             children: <Widget>[
                               Transform.scale(
                                 scale: 1.4,
                                 child: Image(
-                                  image: AssetImage(temp > 30
-                                      ? 'assets/images/temp_high.png'
+                                  image: AssetImage(
+                                      Rain_Level == "Heavy" ? 'assets/images/temp_highRain.png':
+                                      ((Rain_Level == "Light")||(Rain_Level == "Moderate")) ? 'assets/images/temp_lowRain.png' :
+                                      snapshot.data!.temp.round() > 25 ? 'assets/images/temp_high.png'
                                       : 'assets/images/temp_low.png'),
                                   width: 180,
                                 ),
                               ),
-                              Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
+                              const SizedBox(
+                                height: 22,
+                                width: 30,
+                              ),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   textBaseline: TextBaseline.alphabetic,
                                   children: <Widget>[
-                                    Text(
-                                      snapshot.data!.temp.round().toString(),
-                                      style: const TextStyle(
-                                          color: foregroundColor,
-                                          fontSize: 50,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                    const Text(
-                                      'c',
-                                      style: TextStyle(
-                                        color: foregroundColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'OpenSans',
-                                      ),
-                                    ),
+                                    Row(
+                                        crossAxisAlignment:CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: <Widget>[
+                                          Text(
+                                            snapshot.data!.temp.round().toString(),
+                                            style: const TextStyle(
+                                                color: foregroundColor,
+                                                fontSize: 50,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                          const Text(
+                                            'o',
+                                            style: TextStyle(
+                                              color: foregroundColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'OpenSans',
+                                            ),
+                                          ),
+                                        ]),
+                                    Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: <Widget>[
+                                          Text(
+                                            Rain_Level == "" ? "" : "   " + Rain_Level + "\n Rain Level",
+                                            style: const TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.normal
+
+                                            ),
+                                          ),
+                                        ]),
                                   ]),
                             ],
                           );
