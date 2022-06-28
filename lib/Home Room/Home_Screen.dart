@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:Home/Rooms/BedRoom.dart';
@@ -7,7 +8,9 @@ import 'package:Home/Rooms/RoomAWS.dart';
 import 'package:Home/Rooms/Reception.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -18,11 +21,11 @@ import '../Rooms/Bathroom.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
+import '../shared/loading.dart';
 
-Future<WeatheData> fetchWeather() async {
+Future<WeatheData> fetchWeather(location) async {
   final response = await http.get(Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?q=cairo&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
-  print(response);
   if (response.statusCode == 200) {
     return WeatheData.fromJson(jsonDecode(response.body));
   } else {
@@ -52,9 +55,16 @@ class HomePage extends StatefulWidget {
 var Home_Code;
 
 class _HomePageState extends State<HomePage> {
+  StreamController<bool> streamController = StreamController<bool>();
+  bool is_Loading = true;
   bool isLoading = false;
+  late DatabaseReference dbref;
+  late Map dataBase;
+  String Rain_Level = "";
+
   FirebaseFirestore db = FirebaseFirestore.instance;
   late Future<WeatheData> weatheData;
+  var location;
 
   String CurrentAvatar = 'icons/vector.png';
 
@@ -79,7 +89,9 @@ class _HomePageState extends State<HomePage> {
   int Selected_Color = 1;
 
   initState() {
-    weatheData = fetchWeather();
+    super.initState();
+
+    weatheData = fetchWeather(location);
     setState(() {
       CurrentAvatar = "icons/vector.png";
 
@@ -90,6 +102,29 @@ class _HomePageState extends State<HomePage> {
       else if (CurrentAvatar == Avatar3_Path) Select_Avatar(3);
 
       GetColor();
+    });
+  }
+
+  get_Data_from_Firebase() {
+    dbref = FirebaseDatabase.instance.ref(Home_Code);
+    Stream<DatabaseEvent> stream = dbref.onValue;
+
+// Subscribe to the stream!
+    stream.listen((DatabaseEvent event) {
+      if (!mounted) return;
+      setState(() {
+        dataBase = event.snapshot.value as Map;
+        Rain_Level = dataBase['Rain level'];
+        is_Loading = false;
+        streamController.add(is_Loading);
+      });
+    });
+  }
+
+  void mySetState(bool state) {
+    if (!mounted) return;
+    setState(() {
+      is_Loading = state;
     });
   }
 
@@ -106,7 +141,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  getWeather() async {}
   void Select_Avatar(int number) {
     if (number == 1) {
       Avatar1_Color = Highlighted_color;
@@ -145,11 +179,23 @@ class _HomePageState extends State<HomePage> {
     CacheHelper.saveData(key: "color", value: number);
   }
 
+  determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    location = await Geolocator.getCurrentPosition();
+    print(location);
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    String Rain_Level = "";
-
     final firebaseUser = context.watch<User?>();
     String? displayName = firebaseUser?.displayName ?? "User";
     String? photoURL = firebaseUser?.photoURL ?? "icons/vector.png";
@@ -164,6 +210,13 @@ class _HomePageState extends State<HomePage> {
         onError: (e) => print("Error getting document: $e"),
       );
     }
+
+    if (!streamController.hasListener) {
+      streamController.stream.listen((state) {
+        mySetState(state);
+      });
+    }
+    get_Data_from_Firebase();
 
     getHomeCode();
 
@@ -224,348 +277,373 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return ModalProgressHUD(
-      inAsyncCall: isLoading,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 10,
-          toolbarHeight: 60,
-          backgroundColor: cardColor,
-          shadowColor: shadowColor,
-          bottom: PreferredSize(
-              child: Container(
-                color: Colors.white12,
-                height: 4.0,
-              ),
-              preferredSize: Size.fromHeight(4.0)),
-          leading: Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: Image(
-              // image: AssetImage(widget.photoURL),
-              image: AssetImage(photoURL),
-            ),
-          ),
-          title: Text(
-            // 'Hello ' + widget.userName,
-            'Hello ' + displayName,
-            style: TextStyle(
-              color: foregroundColor,
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-        ),
-        body: SlidingUpPanel(
-          body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
-              decoration: Background_decoration(),
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: shadowColor,
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
+    return is_Loading
+        ? Loading()
+        : ModalProgressHUD(
+            inAsyncCall: isLoading,
+            child: Scaffold(
+              appBar: AppBar(
+                elevation: 10,
+                toolbarHeight: 60,
+                backgroundColor: cardColor,
+                shadowColor: shadowColor,
+                bottom: PreferredSize(
+                    child: Container(
+                      color: Colors.white12,
+                      height: 4.0,
                     ),
-                    child: FutureBuilder<WeatheData>(
-                      future: weatheData,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: <Widget>[
-                              Transform.scale(
-                                scale: 1.4,
-                                child: Image(
-                                  image: AssetImage(
-                                      Rain_Level == "Heavy" ? 'assets/images/temp_highRain.png':
-                                      ((Rain_Level == "Light")||(Rain_Level == "Moderate")) ? 'assets/images/temp_lowRain.png' :
-                                      snapshot.data!.temp.round() > 25 ? 'assets/images/temp_high.png'
-                                      : 'assets/images/temp_low.png'),
-                                  width: 180,
-                                ),
+                    preferredSize: Size.fromHeight(4.0)),
+                leading: Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Image(
+                    // image: AssetImage(widget.photoURL),
+                    image: AssetImage(photoURL),
+                  ),
+                ),
+                title: Text(
+                  // 'Hello ' + widget.userName,
+                  'Hello ' + displayName,
+                  style: TextStyle(
+                    color: foregroundColor,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+              body: SlidingUpPanel(
+                body: SafeArea(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
+                    decoration: Background_decoration(),
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: cardColor,
+                            boxShadow: [
+                              BoxShadow(
+                                color: shadowColor,
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
                               ),
-                              const SizedBox(
-                                height: 22,
-                                width: 30,
-                              ),
-                              Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                            ],
+                          ),
+                          child: FutureBuilder<WeatheData>(
+                            future: weatheData,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   textBaseline: TextBaseline.alphabetic,
                                   children: <Widget>[
-                                    Row(
-                                        crossAxisAlignment:CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                    Transform.scale(
+                                      scale: 1.4,
+                                      child: Image(
+                                        image: AssetImage(Rain_Level == "Heavy"
+                                            ? 'assets/images/temp_highRain.png'
+                                            : ((Rain_Level == "Light") ||
+                                                    (Rain_Level == "Moderate"))
+                                                ? 'assets/images/temp_lowRain.png'
+                                                : snapshot.data!.temp.round() >
+                                                        25
+                                                    ? 'assets/images/temp_high.png'
+                                                    : 'assets/images/temp_low.png'),
+                                        width: 180,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 22,
+                                      width: 30,
+                                    ),
+                                    Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         textBaseline: TextBaseline.alphabetic,
                                         children: <Widget>[
-                                          Text(
-                                            snapshot.data!.temp.round().toString(),
-                                            style: const TextStyle(
-                                                color: foregroundColor,
-                                                fontSize: 50,
-                                                fontWeight: FontWeight.normal),
+                                          Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              textBaseline:
+                                                  TextBaseline.alphabetic,
+                                              children: <Widget>[
+                                                Text(
+                                                  snapshot.data!.temp
+                                                      .round()
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      color: foregroundColor,
+                                                      fontSize: 50,
+                                                      fontWeight:
+                                                          FontWeight.normal),
+                                                ),
+                                                const Text(
+                                                  'o',
+                                                  style: TextStyle(
+                                                    color: foregroundColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'OpenSans',
+                                                  ),
+                                                ),
+                                              ]),
+                                          Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              textBaseline:
+                                                  TextBaseline.alphabetic,
+                                              children: <Widget>[
+                                                Text(
+                                                  Rain_Level == ""
+                                                      ? ""
+                                                      : "   " +
+                                                          Rain_Level +
+                                                          "\n Rain Level",
+                                                  style: const TextStyle(
+                                                      color: Colors
+                                                          .deepPurpleAccent,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.normal),
+                                                ),
+                                              ]),
+                                        ]),
+                                  ],
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}');
+                              }
+                              // By default, show a loading spinner.
+                              return const CircularProgressIndicator();
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 22,
+                        ),
+                        Expanded(
+                            child: GridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 25,
+                          mainAxisSpacing: 15,
+                          scrollDirection: Axis.vertical,
+                          children: _listItem
+                              .map((item) => GestureDetector(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: cardColor,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: shadowColor,
+                                            spreadRadius: 1,
+                                            blurRadius: 3,
+                                            offset: Offset(0,
+                                                3), // changes position of shadow
                                           ),
-                                          const Text(
-                                            'o',
-                                            style: TextStyle(
-                                              color: foregroundColor,
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            item['img'],
+                                            height: 75,
+                                          ),
+                                          const SizedBox(height: 15),
+                                          Text(
+                                            item['name'],
+                                            style: const TextStyle(
+                                              color: Colors.grey,
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'OpenSans',
                                             ),
-                                          ),
-                                        ]),
-                                    Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: <Widget>[
-                                          Text(
-                                            Rain_Level == "" ? "" : "   " + Rain_Level + "\n Rain Level",
-                                            style: const TextStyle(
-                                                color: Colors.deepPurpleAccent,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.normal
-
-                                            ),
-                                          ),
-                                        ]),
-                                  ]),
-                            ],
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('${snapshot.error}');
-                        }
-                        // By default, show a loading spinner.
-                        return const CircularProgressIndicator();
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 22,
-                  ),
-                  Expanded(
-                      child: GridView.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 25,
-                    mainAxisSpacing: 15,
-                    scrollDirection: Axis.vertical,
-                    children: _listItem
-                        .map((item) => GestureDetector(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: cardColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: shadowColor,
-                                      spreadRadius: 1,
-                                      blurRadius: 3,
-                                      offset: Offset(
-                                          0, 3), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      item['img'],
-                                      height: 75,
-                                    ),
-                                    const SizedBox(height: 15),
-                                    Text(
-                                      item['name'],
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'OpenSans',
+                                          )
+                                        ],
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              onTap: item['onPress'],
-                            ))
-                        .toList(),
-                  )),
-                  const SizedBox(
-                    height: 145,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          color: cardColor,
-          minHeight: 55,
-          maxHeight: 430,
-          border: Border.all(width: 2.0, color: Colors.white10),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          panelBuilder: (controller) => ListView(
-            padding: EdgeInsets.all(5),
-            children: [
-              SizedBox(
-                height: 8,
-                width: 0,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "User Settings",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  SizedBox(
-                    height: 0,
-                    width: 10,
-                  ),
-                  Icon(
-                    Icons.arrow_upward,
-                    color: Colors.deepPurple,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 18,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                      icon: Image.asset(Avatar1_Path,
-                          color: Avatar1_Color,
-                          colorBlendMode: BlendMode.multiply),
-                      iconSize: 80,
-                      color: Colors.red,
-                      onPressed: () {
-                        setState(() {
-                          Select_Avatar(1);
-                        });
-                      }),
-                  SizedBox(
-                    height: 0,
-                    width: 10,
-                  ),
-                  IconButton(
-                      icon: Image.asset(Avatar2_Path,
-                          color: Avatar2_Color,
-                          colorBlendMode: BlendMode.multiply),
-                      iconSize: 80,
-                      onPressed: () {
-                        setState(() {
-                          Select_Avatar(2);
-                        });
-                      }),
-                  SizedBox(
-                    height: 0,
-                    width: 10,
-                  ),
-                  IconButton(
-                      icon: Image.asset(Avatar3_Path,
-                          color: Avatar3_Color,
-                          colorBlendMode: BlendMode.multiply),
-                      iconSize: 80,
-                      onPressed: () {
-                        setState(() {
-                          Select_Avatar(3);
-                        });
-                      }),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              // CustomTextField()
-              BuildUserName_Customized(UserName_Controller, displayName),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Image.asset('icons/color1.png',
-                        color: Color1_BoarderColor,
-                        colorBlendMode: BlendMode.multiply),
-                    onPressed: () {
-                      setState(() {
-                        Select_Color(1);
-                      });
-                    },
-                  ),
-                  IconButton(
-                    icon: Image.asset('icons/color2.png',
-                        color: Color2_BoarderColor,
-                        colorBlendMode: BlendMode.multiply),
-                    onPressed: () {
-                      setState(() {
-                        Select_Color(2);
-                      });
-                    },
-                  ),
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  child: Text(
-                    'Update',
-                    style: TextStyle(
-                      color: Colors.white,
-                      letterSpacing: 1.5,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'OpenSans',
+                                    ),
+                                    onTap: item['onPress'],
+                                  ))
+                              .toList(),
+                        )),
+                        const SizedBox(
+                          height: 145,
+                        ),
+                      ],
                     ),
                   ),
-                  style: buttonStyle(Size(250, 50)),
-                  onPressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    await context.read<AuthenticationService>().updateUser(
-                        fullName: UserName_Controller.text,
-                        photoURL: Selected_Avatar);
-                    setState(() {
-                      isLoading = false;
-                    });
+                ),
+                color: cardColor,
+                minHeight: 55,
+                maxHeight: 430,
+                border: Border.all(width: 2.0, color: Colors.white10),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+                panelBuilder: (controller) => ListView(
+                  padding: EdgeInsets.all(5),
+                  children: [
+                    SizedBox(
+                      height: 8,
+                      width: 0,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "User Settings",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 0,
+                          width: 10,
+                        ),
+                        Icon(
+                          Icons.arrow_upward,
+                          color: Colors.deepPurple,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 18,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            icon: Image.asset(Avatar1_Path,
+                                color: Avatar1_Color,
+                                colorBlendMode: BlendMode.multiply),
+                            iconSize: 80,
+                            color: Colors.red,
+                            onPressed: () {
+                              setState(() {
+                                Select_Avatar(1);
+                              });
+                            }),
+                        SizedBox(
+                          height: 0,
+                          width: 10,
+                        ),
+                        IconButton(
+                            icon: Image.asset(Avatar2_Path,
+                                color: Avatar2_Color,
+                                colorBlendMode: BlendMode.multiply),
+                            iconSize: 80,
+                            onPressed: () {
+                              setState(() {
+                                Select_Avatar(2);
+                              });
+                            }),
+                        SizedBox(
+                          height: 0,
+                          width: 10,
+                        ),
+                        IconButton(
+                            icon: Image.asset(Avatar3_Path,
+                                color: Avatar3_Color,
+                                colorBlendMode: BlendMode.multiply),
+                            iconSize: 80,
+                            onPressed: () {
+                              setState(() {
+                                Select_Avatar(3);
+                              });
+                            }),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    // CustomTextField()
+                    BuildUserName_Customized(UserName_Controller, displayName),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Image.asset('icons/color1.png',
+                              color: Color1_BoarderColor,
+                              colorBlendMode: BlendMode.multiply),
+                          onPressed: () {
+                            setState(() {
+                              Select_Color(1);
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: Image.asset('icons/color2.png',
+                              color: Color2_BoarderColor,
+                              colorBlendMode: BlendMode.multiply),
+                          onPressed: () {
+                            setState(() {
+                              Select_Color(2);
+                            });
+                          },
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        child: Text(
+                          'Update',
+                          style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'OpenSans',
+                          ),
+                        ),
+                        style: buttonStyle(Size(250, 50)),
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await context
+                              .read<AuthenticationService>()
+                              .updateUser(
+                                  fullName: UserName_Controller.text,
+                                  photoURL: Selected_Avatar);
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    // update_UserData(
-                    //     Selected_Avatar, UserName_Controller.text, Selected_Color);
-                  },
+                          // update_UserData(
+                          //     Selected_Avatar, UserName_Controller.text, Selected_Color);
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Build_Logout(context),
+                    SizedBox(
+                      height: 25,
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Build_Logout(context),
-              SizedBox(
-                height: 25,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }
