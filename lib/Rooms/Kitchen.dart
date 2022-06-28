@@ -15,6 +15,8 @@ late DatabaseReference dbref;
 late Map dataBase;
 late List devices;
 
+var ultrasonic_value = 100;
+
 class Kitchen extends StatefulWidget {
   @override
   _KitchenState createState() => _KitchenState();
@@ -79,6 +81,35 @@ class _KitchenState extends State<Kitchen> {
                 decoration: Background_decoration(),
                 child: Column(
                   children: <Widget>[
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: cardColor,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 350,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            ((ultrasonic_value > 1000) ? "Warning - your kid might be in the kitchen " : "Safe - Kitchen is empty"),
+                            style: TextStyle(
+                              fontSize: ((ultrasonic_value > 1000) ? 15 : 20),
+                              color: Colors.deepPurple[200],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),

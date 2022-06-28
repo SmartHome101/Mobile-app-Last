@@ -41,7 +41,7 @@ class _LivingRoomState extends State<LivingRoom> {
             .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
             .toList();
         temp = dataBase["temperature"];
-        humidity = dataBase["humidity"];
+        humidity = dataBase["Humidity"];
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -102,8 +102,8 @@ class _LivingRoomState extends State<LivingRoom> {
                       ),
                     ),
                     const SizedBox(
-                      height: 20,
-                    ),
+                height: 20,
+              ),
                     Container(
                       child: Stack(
                         alignment: Alignment.center,
@@ -139,6 +139,35 @@ class _LivingRoomState extends State<LivingRoom> {
                             style: TextStyle(
                               fontSize: 25,
                               color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: cardColor,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Humidity : " + humidity.toString(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.deepPurple[200],
                             ),
                           ),
                         ],

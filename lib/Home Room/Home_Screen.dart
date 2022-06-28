@@ -338,7 +338,7 @@ class _HomePageState extends State<HomePage> {
                                           Text(
                                             Rain_Level == "" ? "" : "   " + Rain_Level + "\n Rain Level",
                                             style: const TextStyle(
-                                                color: Colors.blue,
+                                                color: Colors.deepPurpleAccent,
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.normal
 
