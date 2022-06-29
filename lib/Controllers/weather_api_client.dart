@@ -6,10 +6,7 @@ import 'package:http/http.dart' as http;
 
 class WeatherApiClient {
   determinePosition() async {
-    bool serviceEnabled;
     LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -19,13 +16,13 @@ class WeatherApiClient {
     return await Geolocator.getCurrentPosition();
   }
 
-  Future<Weather> fetchWeather() async {
-    var location = await determinePosition();
-
-    final response = await http.get(Uri.parse(
-        "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=0fb27f9d286ec3ad117cb6b584aac7ae"));
+  Future<Weather> fetchWeather(city) async {
+    // var location = await determinePosition();
+    print(city);
     // final response = await http.get(Uri.parse(
-    //     'https://api.openweathermap.org/data/2.5/weather?q=cairo&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
+    //     "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=0fb27f9d286ec3ad117cb6b584aac7ae"));
+    final response = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=zagazig&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
     if (response.statusCode == 200) {
       return Weather.fromJson(jsonDecode(response.body));
     } else {

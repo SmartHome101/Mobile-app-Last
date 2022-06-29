@@ -30,7 +30,6 @@ class _BathroomState extends State<Bathroom> {
     stream.listen((DatabaseEvent event) {
       if (!mounted) return;
       setState(() {
-        print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
         devices = dataBase.entries
             .map((entry) => {entry.key: (entry.value == 0 ? false : true)})

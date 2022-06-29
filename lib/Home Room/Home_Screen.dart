@@ -80,7 +80,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getWeatherData() async {
-    data = await client.fetchWeather();
+    data = await client.fetchWeather(Rain_Level);
+  }
+
+  getRainStatus() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(Home_Code);
+    DatabaseEvent event = await ref.once();
+    var database = event.snapshot.value as Map;
+
+    Rain_Level = database["Rain level"];
+    print(Rain_Level);
   }
 
   GetColor() async {
@@ -152,6 +161,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     getHomeCode();
+    getRainStatus();
 
     final List<Map> _listItem = [
       {
@@ -227,12 +237,10 @@ class _HomePageState extends State<HomePage> {
           leading: Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Image(
-              // image: AssetImage(widget.photoURL),
               image: AssetImage(photoURL),
             ),
           ),
           title: Text(
-            // 'Hello ' + widget.userName,
             'Hello ' + displayName,
             style: TextStyle(
               color: foregroundColor,
