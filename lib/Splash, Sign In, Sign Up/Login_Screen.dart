@@ -57,6 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
       var result = await context
           .read<AuthenticationService>()
           .signIn(email: email!, password: password!);
+      if (result == "success") {
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
       if (result != "success" && result != "error") {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(result)));

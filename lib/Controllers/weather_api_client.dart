@@ -5,20 +5,20 @@ import '../model/weather_module.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherApiClient {
-  determinePosition() async {
-    LocationPermission permission;
+  // determinePosition() async {
+  //   LocationPermission permission;
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //   }
 
-    return await Geolocator.getCurrentPosition();
-  }
+  //   return await Geolocator.getCurrentPosition();
+  // }
 
-  Future<Weather> fetchWeather(city) async {
+  Future<Weather> fetchWeather() async {
     // var location = await determinePosition();
-    print(city);
+
     // final response = await http.get(Uri.parse(
     //     "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=0fb27f9d286ec3ad117cb6b584aac7ae"));
     final response = await http.get(Uri.parse(

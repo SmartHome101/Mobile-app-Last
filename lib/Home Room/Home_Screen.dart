@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getWeatherData() async {
-    data = await client.fetchWeather(Rain_Level);
+    data = await client.fetchWeather();
   }
 
   getRainStatus() async {
