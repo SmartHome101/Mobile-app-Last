@@ -9,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'constants.dart';
 
-
 class On_Off_Widget extends StatefulWidget {
   final item;
   final update;
@@ -18,13 +17,13 @@ class On_Off_Widget extends StatefulWidget {
   @override
   _On_Off_WidgetState createState() => _On_Off_WidgetState();
 }
+
 class _On_Off_WidgetState extends State<On_Off_Widget> {
   late bool isActive;
   late String key;
 
   @override
   Widget build(BuildContext context) {
-
     var entryList = widget.item.entries.toList();
     key = entryList[0].key;
     isActive = entryList[0].value;
@@ -60,9 +59,7 @@ class _On_Off_WidgetState extends State<On_Off_Widget> {
           Padding(
             padding: const EdgeInsets.all(8.0)
                 .copyWith(left: 15, bottom: 0, top: 5, right: 15),
-
-            child:
-            Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -77,7 +74,6 @@ class _On_Off_WidgetState extends State<On_Off_Widget> {
                 ),
               ],
             ),
-
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20),
@@ -109,7 +105,6 @@ class _On_Off_WidgetState extends State<On_Off_Widget> {
           )
         ],
       ),
-
     );
   }
 }
@@ -121,11 +116,10 @@ class Fire_Data extends StatefulWidget {
   @override
   _Fire_DataState createState() => _Fire_DataState();
 }
-class _Fire_DataState extends State<Fire_Data> {
 
+class _Fire_DataState extends State<Fire_Data> {
   @override
   Widget build(BuildContext context) {
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -160,11 +154,9 @@ class _Fire_DataState extends State<Fire_Data> {
           )
         ],
       ),
-
     );
   }
 }
-
 
 Widget BuildEmailTF(TextEditingController Email_Controller) {
   return Column(
@@ -400,10 +392,10 @@ Widget Build_Logout(BuildContext context) {
       onPressed: () async {
         await context.read<AuthenticationService>().signOut();
         // await CacheHelper.RemoveData(key: 'userName');
-        // Navigator.pop(context);
-        // Navigator.push(context, MaterialPageRoute(builder: (context) {
-        //   return LoginScreen();
-        // }));
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return LoginScreen();
+        }));
       },
     ),
   );
