@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
@@ -18,6 +17,7 @@ late Map dataBase;
 late List devices;
 var temp;
 var humidity;
+
 
 class LivingRoom extends StatefulWidget {
   @override
@@ -182,7 +182,7 @@ class _LivingRoomState extends State<LivingRoom> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
                       children: devices
-                          .map((item) => ApplicationWidget(item, update))
+                          .map((item) => On_Off_Widget(item, update))
                           .toList(),
                     ))
                   ],

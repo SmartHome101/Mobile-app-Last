@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
@@ -88,7 +87,7 @@ class _ReceptionState extends State<Reception> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
                       children: devices
-                          .map((item) => ApplicationWidget(item, update))
+                          .map((item) => On_Off_Widget(item, update))
                           .toList(),
                     ))
                   ],

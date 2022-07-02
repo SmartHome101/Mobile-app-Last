@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
@@ -12,9 +11,15 @@ import '../Home Room/Home_Screen.dart';
 StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
 late DatabaseReference dbref;
+
+
 late Map dataBase;
 late List devices;
+late List fireHistory;
+late DatabaseReference dbref_OnOff;
 
+
+var fireState = "There's no fire !!";
 var ultrasonic_value = 100;
 
 class Kitchen extends StatefulWidget {
@@ -24,18 +29,36 @@ class Kitchen extends StatefulWidget {
 
 class _KitchenState extends State<Kitchen> {
   get_Data_from_Firebase() {
-    dbref = FirebaseDatabase.instance.ref(Home_Code + "/kitchen/on-off");
+
+    dbref = FirebaseDatabase.instance.ref(Home_Code + "/kitchen");
+    dbref_OnOff =
+        FirebaseDatabase.instance.ref(Home_Code + "/kitchen/history of fire");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
     stream.listen((DatabaseEvent event) {
       if (!mounted) return;
       setState(() {
-        print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
-        devices = dataBase.entries
+        devices = dataBase["on-off"]
+            .entries
             .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
             .toList();
+
+        fireHistory = dataBase["history of fire"]
+            .entries
+            .map((entry) => entry.value).toList();
+
+        fireState = dataBase["fire"];
+
+        var count = fireHistory.where((c) => true).length;
+
+        for(int i =0; i < count; i++)
+          {
+            print(fireHistory[i]);
+          }
+
+
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -60,7 +83,7 @@ class _KitchenState extends State<Kitchen> {
   }
 
   Future<void> update(name, value) async {
-    await dbref.update({(name): (value == true ? 1 : 0)});
+    await dbref_OnOff.update({(name): (value == true ? 1 : 0)});
   }
 
   @override
@@ -119,9 +142,51 @@ class _KitchenState extends State<Kitchen> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
                       children: devices
-                          .map((item) => ApplicationWidget(item, update))
+                          .map((item) => On_Off_Widget(item, update))
                           .toList(),
-                    ))
+                    )),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: cardColor,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 250,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            fireState  == "There's no fire !!" ? "No Fire" : "There's a Fire !!",
+                            style: TextStyle(
+                              fontSize: ((ultrasonic_value > 1000) ? 15 : 20),
+                              color: fireState  == "There's no fire !!" ? Colors.deepPurple[200] : Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                        child: GridView.count(
+                          childAspectRatio: 7,
+                          crossAxisCount: 1,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 12,
+                          shrinkWrap: false,
+                          children: fireHistory.map((item) => Fire_Data(item)).toList(),
+                        )),
+
                   ],
                 ),
               ),

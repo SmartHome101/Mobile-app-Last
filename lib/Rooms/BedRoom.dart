@@ -4,7 +4,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '../Home Room/Home_Screen.dart';
-import '../shared/ApplicationWidget.dart';
 import '../shared/constants.dart';
 import '../shared/loading.dart';
 import '../shared/Custom_Widgets.dart';
@@ -91,7 +90,7 @@ class _BedRoomState extends State<BedRoom> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 12,
                       children: devices
-                          .map((item) => ApplicationWidget(item, update))
+                          .map((item) => On_Off_Widget(item, update))
                           .toList(),
                     ))
                   ],

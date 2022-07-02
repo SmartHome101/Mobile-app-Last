@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
 import 'package:Home/Rooms/LivingRoom.dart';
-import 'package:Home/Rooms/RoomAWS.dart';
 import 'package:Home/Rooms/Reception.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -148,6 +147,7 @@ class _HomePageState extends State<HomePage> {
     final firebaseUser = context.watch<User?>();
     String? displayName = firebaseUser?.displayName ?? "User";
     String? photoURL = firebaseUser?.photoURL ?? "icons/vector.png";
+    UserName_Controller.text = displayName;
 
     getHomeCode() async {
       final docRef = db.collection("users").doc(firebaseUser!.uid);
@@ -206,15 +206,6 @@ class _HomePageState extends State<HomePage> {
         "onPress": () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return BedRoom();
-          }));
-        }
-      },
-      {
-        "img": "icons/LCD display.png",
-        "name": "AWS Room",
-        "onPress": () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return RoomAWS();
           }));
         }
       },
@@ -337,11 +328,7 @@ class _HomePageState extends State<HomePage> {
                                         textBaseline: TextBaseline.alphabetic,
                                         children: <Widget>[
                                           Text(
-                                            Rain_Level == ""
-                                                ? ""
-                                                : "   " +
-                                                    Rain_Level +
-                                                    "\n Rain Level",
+                                            Rain_Level == " " ? ("") : ("   " + Rain_Level + "\n Rain Level"),
                                             style: const TextStyle(
                                                 color: Colors.deepPurpleAccent,
                                                 fontSize: 15,
@@ -497,7 +484,6 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 20,
               ),
-              // CustomTextField()
               BuildUserName_Customized(UserName_Controller, displayName),
               SizedBox(
                 height: 20,
