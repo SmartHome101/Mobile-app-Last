@@ -132,7 +132,7 @@ class _Fire_DataState extends State<Fire_Data> {
         color: cardColor,
         border: Border.all(
           color: Colors.black,
-          width: 3,
+          width: 1,
         ),
       ),
       child: Column(

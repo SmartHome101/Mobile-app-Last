@@ -32,7 +32,7 @@ class _KitchenState extends State<Kitchen> {
 
     dbref = FirebaseDatabase.instance.ref(Home_Code + "/kitchen");
     dbref_OnOff =
-        FirebaseDatabase.instance.ref(Home_Code + "/kitchen/history of fire");
+        FirebaseDatabase.instance.ref(Home_Code + "/kitchen/on-off");
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -113,7 +113,7 @@ class _KitchenState extends State<Kitchen> {
                         color: cardColor,
                         border: Border.all(
                           color: Colors.black,
-                          width: 3,
+                          width: 1,
                         ),
                       ),
                       alignment: Alignment.center,
@@ -154,12 +154,13 @@ class _KitchenState extends State<Kitchen> {
                         color: cardColor,
                         border: Border.all(
                           color: Colors.black,
-                          width: 3,
+                          width: 1,
                         ),
                       ),
                       alignment: Alignment.center,
                       height: 50,
                       width: 250,
+
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
