@@ -142,6 +142,33 @@ class _HomePageState extends State<HomePage> {
     CacheHelper.saveData(key: "color", value: number);
   }
 
+  String Get_WeatherImage()
+  {
+
+    String rainLevel_Modifed = Rain_Level.replaceAll(" ", "");
+    String path;
+
+    if(rainLevel_Modifed == "Heavy")
+    {
+        path = 'assets/images/temp_highRain.png';
+    }
+    else if((rainLevel_Modifed == "Moderate") || (rainLevel_Modifed == "Light"))
+    {
+      path = 'assets/images/temp_lowRain.png';
+    }
+    else if(data!.temp.round() > 25)
+    {
+      path = 'assets/images/temp_high.png';
+    }
+    else
+    {
+      path = 'assets/images/temp_low.png';
+    }
+
+    print(path);
+    return path;
+  }
+
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
@@ -277,14 +304,7 @@ class _HomePageState extends State<HomePage> {
                               Transform.scale(
                                 scale: 1.4,
                                 child: Image(
-                                  image: AssetImage(Rain_Level == "Heavy"
-                                      ? 'assets/images/temp_highRain.png'
-                                      : ((Rain_Level == "Light") ||
-                                              (Rain_Level == "Moderate"))
-                                          ? 'assets/images/temp_lowRain.png'
-                                          : data!.temp.round() > 25
-                                              ? 'assets/images/temp_high.png'
-                                              : 'assets/images/temp_low.png'),
+                                  image: AssetImage(Get_WeatherImage()),
                                   width: 180,
                                 ),
                               ),

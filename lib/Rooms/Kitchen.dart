@@ -51,14 +51,6 @@ class _KitchenState extends State<Kitchen> {
 
         fireState = dataBase["fire"];
 
-        var count = fireHistory.where((c) => true).length;
-
-        for(int i =0; i < count; i++)
-          {
-            print(fireHistory[i]);
-          }
-
-
         is_Loading = false;
         streamController.add(is_Loading);
       });
