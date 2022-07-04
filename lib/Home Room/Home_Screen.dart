@@ -169,6 +169,21 @@ class _HomePageState extends State<HomePage> {
     return path;
   }
 
+  String Get_Rain_Text()
+  {
+
+    String rainLevel_Modifed = Rain_Level.replaceAll(" ", "");
+
+    if(rainLevel_Modifed == "")
+    {
+      return "";
+    }
+    else
+    {
+       return  ("   " + Rain_Level + "\n Rain Level");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
@@ -348,7 +363,7 @@ class _HomePageState extends State<HomePage> {
                                         textBaseline: TextBaseline.alphabetic,
                                         children: <Widget>[
                                           Text(
-                                            Rain_Level == " " ? ("") : ("   " + Rain_Level + "\n Rain Level"),
+                                            Get_Rain_Text(),
                                             style: const TextStyle(
                                                 color: Colors.deepPurpleAccent,
                                                 fontSize: 15,
