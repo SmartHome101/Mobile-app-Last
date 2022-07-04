@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:Home/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +8,6 @@ import '../shared/constants.dart';
 import '../shared/Custom_Widgets.dart';
 import '../Controllers/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import '../widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -412,3 +412,66 @@ ButtonStyle buttonStyle(Size _size) {
     ),
   );
 }
+
+
+
+class CustomeButton extends StatelessWidget {
+  CustomeButton({required this.title, this.onTap});
+
+  VoidCallback? onTap;
+  String title;
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.white,
+          letterSpacing: 1.5,
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'OpenSans',
+        ),
+      ),
+      style: buttonStyle(Size(250, 50)),
+      onPressed: onTap,
+    );
+  }
+}
+class CustomTextField extends StatelessWidget {
+  CustomTextField({this.hintText, this.onChanged, this.isPassword, this.icon});
+
+  Function(String)? onChanged;
+  String? hintText;
+  IconData? icon;
+  bool? isPassword;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      validator: (data) {
+        if (data!.isEmpty) {
+          return "Field is Required";
+        }
+      },
+      obscureText: isPassword!,
+      onChanged: onChanged,
+      style: TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey),
+          prefixIcon: Icon(
+            icon,
+            color: Colors.white,
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.blueGrey,
+              )),
+          border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.white,
+              ))),
+    );
+  }
+}
+

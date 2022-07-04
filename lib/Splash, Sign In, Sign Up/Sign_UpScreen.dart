@@ -1,4 +1,3 @@
-import 'package:Home/widgets/custom_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../Home Room/Home_Screen.dart';
 import '../shared/constants.dart';
 import '../shared/Custom_Widgets.dart';
-import '../widgets/custom_text_field.dart';
 import '../Controllers/authentication_servies.dart';
 
 class SignUpScreen extends StatefulWidget {
