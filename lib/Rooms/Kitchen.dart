@@ -83,6 +83,7 @@ class _KitchenState extends State<Kitchen> {
     return is_Loading
         ? Loading()
         : Scaffold(
+            backgroundColor: Colors.black,
             appBar: AppBar(
               title: Text("Kitchen"),
               backgroundColor: cardColor,

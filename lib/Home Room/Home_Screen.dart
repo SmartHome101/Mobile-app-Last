@@ -44,6 +44,8 @@ class _HomePageState extends State<HomePage> {
 
   TextEditingController UserName_Controller = TextEditingController();
 
+  PanelController panalController = new PanelController();
+
   Color Highlighted_color = Color.fromARGB(40, 255, 255, 255);
   Color UnHighLighted_color = Colors.transparent;
 
@@ -150,19 +152,19 @@ class _HomePageState extends State<HomePage> {
 
     if(rainLevel_Modifed == "Heavy")
     {
-        path = 'assets/images/temp_highRain.png';
+        path = 'icons/temp_highRain.png';
     }
     else if((rainLevel_Modifed == "Moderate") || (rainLevel_Modifed == "Light"))
     {
-      path = 'assets/images/temp_lowRain.png';
+      path = 'icons/temp_lowRain.png';
     }
     else if(data!.temp.round() > 25)
     {
-      path = 'assets/images/temp_high.png';
+      path = 'icons/temp_high.png';
     }
     else
     {
-      path = 'assets/images/temp_low.png';
+      path = 'icons/temp_low.png';
     }
 
     print(path);
@@ -253,14 +255,15 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
+
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           elevation: 10,
           toolbarHeight: 60,
           backgroundColor: cardColor,
-          shadowColor: shadowColor,
           bottom: PreferredSize(
               child: Container(
                 color: Colors.white12,
@@ -268,10 +271,22 @@ class _HomePageState extends State<HomePage> {
               ),
               preferredSize: Size.fromHeight(4.0)),
           leading: Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: Image(
-              image: AssetImage(photoURL),
-            ),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child:new SizedBox(
+                height: 25.0,
+                width: 18.0,
+                child: IconButton(
+                  icon: Image.asset(photoURL),
+                  iconSize: 150,
+                  onPressed: () {
+                    if(panalController.isPanelOpen)
+                      panalController.close();
+                    else
+                      panalController.open();
+                  },
+                ),
+            )
+
           ),
           title: Text(
             'Hello ' + displayName,
@@ -438,11 +453,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          controller: panalController,
           color: cardColor,
           minHeight: 55,
           maxHeight: 430,
           border: Border.all(width: 2.0, color: Colors.white10),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
           panelBuilder: (controller) => ListView(
             padding: EdgeInsets.all(5),
             children: [

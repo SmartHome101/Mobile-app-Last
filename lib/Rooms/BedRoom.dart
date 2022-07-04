@@ -68,6 +68,7 @@ class _BedRoomState extends State<BedRoom> {
     return is_Loading
         ? Loading()
         : Scaffold(
+            backgroundColor: Colors.black,
             appBar: AppBar(
               title: Text("Bed Room"),
               backgroundColor: cardColor,

@@ -7,6 +7,7 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: Center(child: Text("Loading ...")),
         backgroundColor: cardColor,
@@ -14,7 +15,7 @@ class Loading extends StatelessWidget {
       body: SafeArea(
         child: Container(
           alignment: Alignment.center,
-          child: Lottie.asset('assets/images/98432-loading.json'),
+          child: Lottie.asset('icons/98432-loading.json'),
           decoration: Background_decoration(),
           ),
         ),

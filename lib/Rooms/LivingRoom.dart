@@ -79,6 +79,7 @@ class _LivingRoomState extends State<LivingRoom> {
     return is_Loading
         ? Loading()
         : Scaffold(
+            backgroundColor: Colors.black,
             appBar: AppBar(
               title: Text("living room"),
               backgroundColor: cardColor,

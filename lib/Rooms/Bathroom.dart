@@ -66,35 +66,36 @@ class _BathroomState extends State<Bathroom> {
     return is_Loading
         ? Loading()
         : Scaffold(
-            appBar: AppBar(
-              title: Text("Bath Room"),
-              backgroundColor: cardColor,
-              elevation: 10,
-              toolbarHeight: 60,
-              shadowColor: shadowColor,
-            ),
-            body: SafeArea(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                decoration: Background_decoration(),
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Expanded(
-                        child: GridView.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 12,
-                      children: devices
-                          .map((item) => On_Off_Widget(item, update))
-                          .toList(),
-                    ))
-                  ],
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+                  title: Text("Bath Room"),
+                  backgroundColor: cardColor,
+                  elevation: 10,
+                  toolbarHeight: 60,
+                  shadowColor: shadowColor,
                 ),
-              ),
-            ),
-          );
+                body: SafeArea(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    decoration: Background_decoration(),
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Expanded(
+                            child: GridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 12,
+                          children: devices
+                              .map((item) => On_Off_Widget(item, update))
+                              .toList(),
+                        ))
+                      ],
+                    ),
+                  ),
+                ),
+              );
   }
 }

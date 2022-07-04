@@ -49,7 +49,7 @@ var cardColor_Dark_Border_On = Colors.deepPurple[200];
 var cardColor_Dark_Border_Off = Colors.black;
 
 //Light Colors
-const cardColor_Light = Color.fromARGB(200, 66, 66, 60);
+const cardColor_Light = Color.fromARGB(100, 87, 56, 102);
 var cardColor_Light_Border_On = Colors.deepPurple[200];
 var cardColor_Light_Border_Off = Colors.black12;
 
@@ -58,6 +58,7 @@ var cardColor_Light_Border_Off = Colors.black12;
 enum Colormode { Color1, Color2, Color3 }
 
 void Change_Color(color) {
+
   if (color == "Black")
   {
     cardColor = cardColor_Dark;

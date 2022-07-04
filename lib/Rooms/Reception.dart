@@ -65,6 +65,7 @@ class _ReceptionState extends State<Reception> {
     return is_Loading
         ? Loading()
         : Scaffold(
+            backgroundColor: Colors.black,
             appBar: AppBar(
               title: Text("Reception"),
               backgroundColor: cardColor,
