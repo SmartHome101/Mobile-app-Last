@@ -17,10 +17,6 @@ class WeatherApiClient {
   // }
 
   Future<Weather> fetchWeather() async {
-    // var location = await determinePosition();
-
-    // final response = await http.get(Uri.parse(
-    //     "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=0fb27f9d286ec3ad117cb6b584aac7ae"));
     final response = await http.get(Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?q=zagazig&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
     if (response.statusCode == 200) {

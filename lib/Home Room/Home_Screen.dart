@@ -173,7 +173,6 @@ class _HomePageState extends State<HomePage> {
       path = 'icons/temp_low.png';
     }
 
-    print(path);
     return path;
   }
 
@@ -202,17 +201,7 @@ class _HomePageState extends State<HomePage> {
       Home_Code = data["code"];
 
       return data["code"];
-      // onError: (e) => print("Error getting document: $e"),
     }
-
-    // getAllData() async {
-    //   var value = await getHomeCode();
-    //   print(value);
-    //   await getRainStatus(value);
-    // }
-
-    // getHomeCode();
-    // getRainStatus();
 
     final List<Map> _listItem = [
       {
