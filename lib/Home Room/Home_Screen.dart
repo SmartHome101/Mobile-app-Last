@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
   WeatherApiClient client = WeatherApiClient();
   Weather? data;
 
+  var dataBase;
   bool isLoading = false;
 
   String Rain_Level = "";
@@ -84,15 +85,6 @@ class _HomePageState extends State<HomePage> {
     data = await client.fetchWeather();
   }
 
-  getRainStatus() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref(Home_Code);
-    DatabaseEvent event = await ref.once();
-    var database = event.snapshot.value as Map;
-
-    Rain_Level = database["Rain level"];
-    print(Rain_Level);
-  }
-
   GetColor() async {
     Selected_Color = await CacheHelper.getData(key: "color");
 
@@ -103,6 +95,28 @@ class _HomePageState extends State<HomePage> {
       } else if (Selected_Color == 2) Change_Color("White");
 
       Select_Color(Selected_Color);
+    });
+  }
+
+  getRainStatus() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(Home_Code);
+    DatabaseEvent event = await ref.once();
+
+    dataBase = event.snapshot.value as Map;
+    Rain_Level = dataBase["Rain level"];
+
+    Stream<DatabaseEvent> stream = ref.onValue;
+    stream.listen((DatabaseEvent event) {
+      if (!mounted) return;
+
+      dataBase = event.snapshot.value as Map;
+      var newRainLevel = dataBase["Rain level"];
+
+      if (newRainLevel == Rain_Level) return;
+
+      setState(() {
+        Rain_Level = newRainLevel;
+      });
     });
   }
 
@@ -144,26 +158,18 @@ class _HomePageState extends State<HomePage> {
     CacheHelper.saveData(key: "color", value: number);
   }
 
-  String Get_WeatherImage()
-  {
-
+  String Get_WeatherImage() {
     String rainLevel_Modifed = Rain_Level.replaceAll(" ", "");
     String path;
 
-    if(rainLevel_Modifed == "Heavy")
-    {
-        path = 'icons/temp_highRain.png';
-    }
-    else if((rainLevel_Modifed == "Moderate") || (rainLevel_Modifed == "Light"))
-    {
+    if (rainLevel_Modifed == "Heavy") {
+      path = 'icons/temp_highRain.png';
+    } else if ((rainLevel_Modifed == "Moderate") ||
+        (rainLevel_Modifed == "Light")) {
       path = 'icons/temp_lowRain.png';
-    }
-    else if(data!.temp.round() > 25)
-    {
+    } else if (data!.temp.round() > 25) {
       path = 'icons/temp_high.png';
-    }
-    else
-    {
+    } else {
       path = 'icons/temp_low.png';
     }
 
@@ -171,18 +177,13 @@ class _HomePageState extends State<HomePage> {
     return path;
   }
 
-  String Get_Rain_Text()
-  {
-
+  String Get_Rain_Text() {
     String rainLevel_Modifed = Rain_Level.replaceAll(" ", "");
 
-    if(rainLevel_Modifed == "")
-    {
+    if (rainLevel_Modifed == "") {
       return "";
-    }
-    else
-    {
-       return  ("   " + Rain_Level + "\n Rain Level");
+    } else {
+      return ("   " + Rain_Level + "\n Rain Level");
     }
   }
 
@@ -195,17 +196,23 @@ class _HomePageState extends State<HomePage> {
 
     getHomeCode() async {
       final docRef = db.collection("users").doc(firebaseUser!.uid);
-      docRef.get().then(
-        (DocumentSnapshot doc) {
-          final data = doc.data() as Map;
-          Home_Code = data["code"];
-        },
-        onError: (e) => print("Error getting document: $e"),
-      );
+      DocumentSnapshot doc = await docRef.get();
+      final data = doc.data() as Map;
+
+      Home_Code = data["code"];
+
+      return data["code"];
+      // onError: (e) => print("Error getting document: $e"),
     }
 
-    getHomeCode();
-    getRainStatus();
+    // getAllData() async {
+    //   var value = await getHomeCode();
+    //   print(value);
+    //   await getRainStatus(value);
+    // }
+
+    // getHomeCode();
+    // getRainStatus();
 
     final List<Map> _listItem = [
       {
@@ -255,7 +262,6 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
@@ -271,23 +277,21 @@ class _HomePageState extends State<HomePage> {
               ),
               preferredSize: Size.fromHeight(4.0)),
           leading: Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child:new SizedBox(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: new SizedBox(
                 height: 25.0,
                 width: 18.0,
                 child: IconButton(
                   icon: Image.asset(photoURL),
                   iconSize: 150,
                   onPressed: () {
-                    if(panalController.isPanelOpen)
+                    if (panalController.isPanelOpen)
                       panalController.close();
                     else
                       panalController.open();
                   },
                 ),
-            )
-
-          ),
+              )),
           title: Text(
             'Hello ' + displayName,
             style: TextStyle(
@@ -326,73 +330,120 @@ class _HomePageState extends State<HomePage> {
                       future: getWeatherData(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: <Widget>[
-                              Transform.scale(
-                                scale: 1.4,
-                                child: Image(
-                                  image: AssetImage(Get_WeatherImage()),
-                                  width: 180,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 22,
-                                width: 30,
-                              ),
-                              Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: <Widget>[
-                                    Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: <Widget>[
-                                          Text(
-                                            data!.temp.round().toString(),
-                                            style: const TextStyle(
-                                                color: foregroundColor,
-                                                fontSize: 50,
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                          const Text(
-                                            'o',
-                                            style: TextStyle(
-                                              color: foregroundColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'OpenSans',
-                                            ),
-                                          ),
-                                        ]),
-                                    Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: <Widget>[
-                                          Text(
-                                            Get_Rain_Text(),
-                                            style: const TextStyle(
-                                                color: Colors.deepPurpleAccent,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                        ]),
-                                  ]),
-                            ],
-                          );
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
+                          return FutureBuilder(
+                              future: getHomeCode(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return FutureBuilder(
+                                      future: getRainStatus(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            textBaseline:
+                                                TextBaseline.alphabetic,
+                                            children: <Widget>[
+                                              Transform.scale(
+                                                scale: 1.4,
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      Get_WeatherImage()),
+                                                  width: 180,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 22,
+                                                width: 30,
+                                              ),
+                                              Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  textBaseline:
+                                                      TextBaseline.alphabetic,
+                                                  children: <Widget>[
+                                                    Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        textBaseline:
+                                                            TextBaseline
+                                                                .alphabetic,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            data!.temp
+                                                                .round()
+                                                                .toString(),
+                                                            style: const TextStyle(
+                                                                color:
+                                                                    foregroundColor,
+                                                                fontSize: 50,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal),
+                                                          ),
+                                                          const Text(
+                                                            'o',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  foregroundColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  'OpenSans',
+                                                            ),
+                                                          ),
+                                                        ]),
+                                                    Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        textBaseline:
+                                                            TextBaseline
+                                                                .alphabetic,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            Get_Rain_Text(),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .deepPurpleAccent,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal),
+                                                          ),
+                                                        ]),
+                                                  ]),
+                                            ],
+                                          );
+                                        } else {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                      });
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              });
                         } else {
-                          return const CircularProgressIndicator();
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                         // By default, show a loading spinner.
                       },
