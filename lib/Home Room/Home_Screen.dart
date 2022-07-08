@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
@@ -22,6 +21,9 @@ import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
 import '../shared/loading.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   @override
@@ -65,10 +67,40 @@ class _HomePageState extends State<HomePage> {
 
   int Selected_Color = 1;
 
+  final recorder = FlutterSoundRecorder();
+
+
+  Future record() async {
+    await recorder.startRecorder(toFile: 'audio');
+  }
+
+  Future stop() async {
+
+    final path = await recorder.stopRecorder();
+    final file = File(path!);
+
+    print(path);
+  }
+
+  Future initRecorder() async {
+
+    final status = await Permission.microphone.request();
+
+    if(status != PermissionStatus.granted)
+      throw 'Microphone not granted';
+
+    await recorder.openRecorder();
+
+    recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
+  }
+
   initState() {
+
+
     super.initState();
 
     setState(() {
+
       CurrentAvatar = "icons/vector.png";
 
       if (CurrentAvatar == Avatar1_Path)
@@ -79,6 +111,8 @@ class _HomePageState extends State<HomePage> {
 
       GetColor();
     });
+
+    initRecorder();
   }
 
   Future<void> getWeatherData() async {
@@ -289,6 +323,49 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.w300,
             ),
           ),
+          actions: [
+            Row(
+              children:
+                [
+                  StreamBuilder<RecordingDisposition>(
+                    stream: recorder.onProgress,
+                    builder: (context, snapshot) {
+                      final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+                      return Text(
+                        recorder.isRecording ? "${duration.inSeconds} s" : "",
+                        style: TextStyle(
+                          color: foregroundColor,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      );
+                    },
+                  ),
+
+                ]
+            ),
+            IconButton(
+              icon: Icon(recorder.isRecording ? Icons.stop_circle : Icons.mic_outlined ),
+              iconSize: 35,
+              onPressed: () async {
+                  if(recorder.isRecording)
+                    {
+                      await stop();
+                    }
+                  else
+                    {
+                      await record();
+                    }
+
+                  setState(() {
+
+                  });
+              },
+            ),
+            SizedBox(
+              height: 20.0,
+              width: 20.0,
+            )
+          ],
         ),
         body: SlidingUpPanel(
           body: SafeArea(
