@@ -342,6 +342,8 @@ BoxDecoration Background_decoration() {
 
 Widget BuildUserName_Customized(
     TextEditingController Name_Controller, String displayName) {
+
+  String warnningText = "";
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
@@ -438,19 +440,24 @@ class CustomeButton extends StatelessWidget {
     );
   }
 }
+
+
 class CustomTextField extends StatelessWidget {
-  CustomTextField({this.hintText, this.onChanged, this.isPassword, this.icon});
+  CustomTextField({this.hintText, this.onChanged, this.isPassword, this.icon, required this.InputType});
 
   Function(String)? onChanged;
   String? hintText;
   IconData? icon;
   bool? isPassword;
+  inputType InputType = inputType.Email;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       validator: (data) {
-        if (data!.isEmpty) {
-          return "Field is Required";
+        var s = Validate(data.toString(), InputType);
+        if (s != "") {
+          return s;
         }
       },
       obscureText: isPassword!,
@@ -475,3 +482,62 @@ class CustomTextField extends StatelessWidget {
   }
 }
 
+
+enum inputType {UserName, HouseCode, Email, Password}
+
+String Validate(String _input,inputType _inputType)
+{
+  //"" means that's no problem with tht input
+  String Message = "";
+
+  if(_inputType == inputType.UserName)
+  {
+    if(_input.length < 4)
+    {
+      Message = "User name must be at least 4 letters long";
+    }
+    else if(_input.contains(" "))
+    {
+      Message = "User name can't contain spaces";
+    }
+  }
+  else if(_inputType == inputType.HouseCode)
+  {
+    if(_input.length < 2)
+    {
+      Message = "House code is too short";
+    }
+    else if(_input.contains(" "))
+    {
+      Message = "House code can't contain spaces";
+    }
+  }
+  else if(_inputType == inputType.Email)
+  {
+    if( _input.length <= 5)
+    {
+      Message = "Email is too short";
+    }
+    else if(_input.contains(" "))
+    {
+      Message = "Email can't contain spaces";
+    }
+    else if( !_input.contains("@") || !_input.contains("."))
+    {
+      Message = "Email format is false, must contain @, .";
+    }
+  }
+  else if(_inputType == inputType.Password)
+  {
+    if( _input.length <= 5)
+    {
+      Message = "password is too short";
+    }
+    else if(_input.contains(" "))
+    {
+      Message = "Email can't contain spaces";
+    }
+  }
+
+  return Message;
+}

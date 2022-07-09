@@ -67,8 +67,9 @@ class _HomePageState extends State<HomePage> {
 
   int Selected_Color = 1;
 
-  final recorder = FlutterSoundRecorder();
+  var userName_Validator = "";
 
+  final recorder = FlutterSoundRecorder();
 
   Future record() async {
     await recorder.startRecorder(toFile: 'audio');
@@ -219,6 +220,7 @@ class _HomePageState extends State<HomePage> {
       return ("   " + Rain_Level + "\n Rain Level");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -654,7 +656,16 @@ class _HomePageState extends State<HomePage> {
               ),
               BuildUserName_Customized(UserName_Controller, displayName),
               SizedBox(
-                height: 20,
+                height: 5,
+              ),
+              Row(
+                children: <Widget>[
+                  Text(userName_Validator, style: TextStyle(color: Colors.red, fontSize: 13),),
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              ),
+              SizedBox(
+                height: 1,
               ),
               Row(
                 children: <Widget>[
@@ -699,15 +710,29 @@ class _HomePageState extends State<HomePage> {
                   ),
                   style: buttonStyle(Size(250, 50)),
                   onPressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    await context.read<AuthenticationService>().updateUser(
-                        fullName: UserName_Controller.text,
-                        photoURL: Selected_Avatar);
-                    setState(() {
-                      isLoading = false;
-                    });
+
+                    if(UserName_Controller.text.length < 4)
+                      {
+                        setState(() {
+                          userName_Validator = "Your user name must be at least 4 letters";
+                        });
+                      }
+                    else
+                      {
+                        setState(() {
+                          userName_Validator = "";
+                          isLoading = true;
+                        });
+                        await context.read<AuthenticationService>().updateUser(
+                            fullName: UserName_Controller.text,
+                            photoURL: Selected_Avatar);
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                      }
+
+
 
                     // update_UserData(
                     //     Selected_Avatar, UserName_Controller.text, Selected_Color);

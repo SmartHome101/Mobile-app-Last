@@ -20,7 +20,7 @@ late DatabaseReference dbref_OnOff;
 
 
 var fireState = "There's no fire !!";
-var ultrasonic_value = 100;
+var ultrasonic_value = "Safe";
 
 class Kitchen extends StatefulWidget {
   @override
@@ -31,8 +31,10 @@ class _KitchenState extends State<Kitchen> {
   get_Data_from_Firebase() {
 
     dbref = FirebaseDatabase.instance.ref(Home_Code + "/kitchen");
+
     dbref_OnOff =
         FirebaseDatabase.instance.ref(Home_Code + "/kitchen/on-off");
+
     Stream<DatabaseEvent> stream = dbref.onValue;
 
 // Subscribe to the stream!
@@ -51,6 +53,7 @@ class _KitchenState extends State<Kitchen> {
 
         fireState = dataBase["fire"];
 
+        ultrasonic_value = dataBase["Ultrasonic Value"];
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -117,9 +120,9 @@ class _KitchenState extends State<Kitchen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            ((ultrasonic_value > 1000) ? "Warning - your kid might be in the kitchen " : "Safe - Kitchen is empty"),
+                            ultrasonic_value.toString(),
                             style: TextStyle(
-                              fontSize: ((ultrasonic_value > 1000) ? 15 : 20),
+                              fontSize: 20,
                               color: Colors.deepPurple[200],
                             ),
                           ),
@@ -161,7 +164,7 @@ class _KitchenState extends State<Kitchen> {
                           Text(
                             fireState  == "There's no fire !!" ? "No Fire" : "There's a Fire !!",
                             style: TextStyle(
-                              fontSize: ((ultrasonic_value > 1000) ? 15 : 20),
+                              fontSize: 20,
                               color: fireState  == "There's no fire !!" ? Colors.deepPurple[200] : Colors.red,
                             ),
                           ),

@@ -111,6 +111,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     },
                     isPassword: false,
                     icon: Icons.code,
+                    InputType: inputType.HouseCode,
+
                   ),
                   SizedBox(
                     height: 30.0,
@@ -122,6 +124,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     },
                     isPassword: false,
                     icon: Icons.man,
+                    InputType: inputType.UserName,
+
                   ),
                   SizedBox(
                     height: 30.0,
@@ -133,6 +137,8 @@ class _SignUpScreen extends State<SignUpScreen> {
                     },
                     isPassword: false,
                     icon: Icons.email,
+                    InputType: inputType.Email,
+
                   ),
                   SizedBox(
                     height: 30.0,
@@ -144,6 +150,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     },
                     isPassword: true,
                     icon: Icons.lock,
+                    InputType: inputType.Password,
                   ),
                   SizedBox(
                     height: 30.0,

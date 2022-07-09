@@ -22,7 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String? userName, photoURL;
 
   bool isLoading = false;
-  bool _rememberMe = false;
 
   Offset _offset = Offset(0, -0.05);
   double _opacity = 0;
@@ -123,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           isPassword: false,
                           icon: Icons.email,
+                          InputType: inputType.Email,
                         ),
                         SizedBox(
                           height: 30.0,
@@ -134,6 +134,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           isPassword: true,
                           icon: Icons.lock,
+                          InputType: inputType.Password,
+
                         ),
                         SizedBox(
                           height: 30.0,
@@ -141,10 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: 30.0,
                         ),
-                        // _buildRememberMeCheckbox(),
-                        // SizedBox(
-                        //   height: 30.0,
-                        // ),
                         CustomeButton(
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
@@ -152,8 +150,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               } else {}
                             },
                             title: "Log In"),
-                        // _buildLoginBtn()
-                        // ,
                         SizedBox(
                           height: 10.0,
                         ),
@@ -168,3 +164,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
