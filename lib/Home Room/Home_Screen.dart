@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
 import 'package:Home/Rooms/LivingRoom.dart';
@@ -8,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -20,10 +18,10 @@ import '../model/weather_module.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
-import '../shared/loading.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
@@ -70,25 +68,50 @@ class _HomePageState extends State<HomePage> {
   var userName_Validator = "";
 
   final recorder = FlutterSoundRecorder();
+  late String filePath;
 
   Future record() async {
-    await recorder.startRecorder(toFile: 'audio');
+    await recorder.startRecorder(
+      toFile: filePath,
+      codec: Codec.pcm16WAV,
+    );
   }
 
   Future stop() async {
+    await recorder.stopRecorder();
+    final file = File(filePath);
 
-    final path = await recorder.stopRecorder();
-    final file = File(path!);
+    await uploadFiles();
+  }
 
-    print(path);
+  uploadFiles() async {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://sr.techome.systems/predict'));
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'file',
+      filePath,
+    ));
+
+    // var audio = await http.MultipartFile.fromPath('file', filePath);
+    // print(audio);
+    // request.files.add(audio);
+    print(request.files);
+
+    var response = await request.send();
+    final respStr = await response.stream.bytesToString();
+    print(respStr);
+    // return response;
   }
 
   Future initRecorder() async {
+    filePath = '/sdcard/Download/temp.wav';
 
     final status = await Permission.microphone.request();
+    await Permission.storage.request();
+    await Permission.manageExternalStorage.request();
 
-    if(status != PermissionStatus.granted)
-      throw 'Microphone not granted';
+    if (status != PermissionStatus.granted) throw 'Microphone not granted';
 
     await recorder.openRecorder();
 
@@ -96,12 +119,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   initState() {
-
-
     super.initState();
 
     setState(() {
-
       CurrentAvatar = "icons/vector.png";
 
       if (CurrentAvatar == Avatar1_Path)
@@ -221,7 +241,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
@@ -326,41 +345,36 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           actions: [
-            Row(
-              children:
-                [
-                  StreamBuilder<RecordingDisposition>(
-                    stream: recorder.onProgress,
-                    builder: (context, snapshot) {
-                      final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
-                      return Text(
-                        recorder.isRecording ? "${duration.inSeconds} s" : "",
-                        style: TextStyle(
-                          color: foregroundColor,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      );
-                    },
-                  ),
-
-                ]
-            ),
+            Row(children: [
+              StreamBuilder<RecordingDisposition>(
+                stream: recorder.onProgress,
+                builder: (context, snapshot) {
+                  final duration = snapshot.hasData
+                      ? snapshot.data!.duration
+                      : Duration.zero;
+                  return Text(
+                    recorder.isRecording ? "${duration.inSeconds} s" : "",
+                    style: TextStyle(
+                      color: foregroundColor,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  );
+                },
+              ),
+            ]),
             IconButton(
-              icon: Icon(recorder.isRecording ? Icons.stop_circle : Icons.mic_outlined ),
+              icon: Icon(recorder.isRecording
+                  ? Icons.stop_circle
+                  : Icons.mic_outlined),
               iconSize: 35,
               onPressed: () async {
-                  if(recorder.isRecording)
-                    {
-                      await stop();
-                    }
-                  else
-                    {
-                      await record();
-                    }
+                if (recorder.isRecording) {
+                  await stop();
+                } else {
+                  await record();
+                }
 
-                  setState(() {
-
-                  });
+                setState(() {});
               },
             ),
             SizedBox(
@@ -660,7 +674,10 @@ class _HomePageState extends State<HomePage> {
               ),
               Row(
                 children: <Widget>[
-                  Text(userName_Validator, style: TextStyle(color: Colors.red, fontSize: 13),),
+                  Text(
+                    userName_Validator,
+                    style: TextStyle(color: Colors.red, fontSize: 13),
+                  ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               ),
@@ -710,29 +727,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                   style: buttonStyle(Size(250, 50)),
                   onPressed: () async {
-
-                    if(UserName_Controller.text.length < 4)
-                      {
-                        setState(() {
-                          userName_Validator = "Your user name must be at least 4 letters";
-                        });
-                      }
-                    else
-                      {
-                        setState(() {
-                          userName_Validator = "";
-                          isLoading = true;
-                        });
-                        await context.read<AuthenticationService>().updateUser(
-                            fullName: UserName_Controller.text,
-                            photoURL: Selected_Avatar);
-                        setState(() {
-                          isLoading = false;
-                        });
-
-                      }
-
-
+                    if (UserName_Controller.text.length < 4) {
+                      setState(() {
+                        userName_Validator =
+                            "Your user name must be at least 4 letters";
+                      });
+                    } else {
+                      setState(() {
+                        userName_Validator = "";
+                        isLoading = true;
+                      });
+                      await context.read<AuthenticationService>().updateUser(
+                          fullName: UserName_Controller.text,
+                          photoURL: Selected_Avatar);
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
 
                     // update_UserData(
                     //     Selected_Avatar, UserName_Controller.text, Selected_Color);
