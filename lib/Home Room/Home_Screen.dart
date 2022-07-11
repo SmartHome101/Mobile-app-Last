@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
 import 'package:Home/Rooms/LivingRoom.dart';
@@ -69,7 +71,8 @@ class _HomePageState extends State<HomePage> {
 
   final recorder = FlutterSoundRecorder();
   late String filePath;
-
+  late StreamSubscription<List<int>> responseStream;
+  dynamic _body;
   Future record() async {
     await recorder.startRecorder(
       toFile: filePath,
@@ -96,12 +99,17 @@ class _HomePageState extends State<HomePage> {
     // var audio = await http.MultipartFile.fromPath('file', filePath);
     // print(audio);
     // request.files.add(audio);
-    print(request.files);
 
     var response = await request.send();
-    final respStr = await response.stream.bytesToString();
+    // final respStr = await response.stream.bytesToString();
+    // print(respStr);
+    // responseStream = response.stream.listen((data) {
+    //   print(data);
+    // }, onDone: () {
+    //   responseStream.cancel();
+    // });
+    final respStr = await response.stream.last.toString();
     print(respStr);
-    // return response;
   }
 
   Future initRecorder() async {

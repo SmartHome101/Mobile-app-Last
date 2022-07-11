@@ -58,7 +58,6 @@ class AuthenticationService {
       await user.updatePhotoURL("icons/vector.png");
 
       await users.doc(user.uid).set({
-        "email": email,
         "code": code,
         "uid": user.uid,
       });
