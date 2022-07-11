@@ -12,15 +12,13 @@ StreamController<bool> streamController = StreamController<bool>();
 bool is_Loading = true;
 late DatabaseReference dbref;
 
-
 late Map dataBase;
 late List devices;
-late List fireHistory;
+List fireHistory = [];
 late DatabaseReference dbref_OnOff;
 
-
-var fireState = "There's no fire !!";
-var ultrasonic_value = "Safe";
+var fireState = "no fire";
+dynamic ultrasonic_value = "Safe";
 
 class Kitchen extends StatefulWidget {
   @override
@@ -29,11 +27,9 @@ class Kitchen extends StatefulWidget {
 
 class _KitchenState extends State<Kitchen> {
   get_Data_from_Firebase() {
-
     dbref = FirebaseDatabase.instance.ref(Home_Code + "/kitchen");
 
-    dbref_OnOff =
-        FirebaseDatabase.instance.ref(Home_Code + "/kitchen/on-off");
+    dbref_OnOff = FirebaseDatabase.instance.ref(Home_Code + "/kitchen/on-off");
 
     Stream<DatabaseEvent> stream = dbref.onValue;
 
@@ -47,10 +43,12 @@ class _KitchenState extends State<Kitchen> {
             .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
             .toList();
 
-        fireHistory = dataBase["history of fire"]
-            .entries
-            .map((entry) => entry.value).toList();
-
+        if (dataBase["history of fire]"] != null) {
+          fireHistory = dataBase["history of fire"]
+              .entries
+              .map((entry) => entry.value)
+              .toList();
+        }
         fireState = dataBase["fire"];
 
         ultrasonic_value = dataBase["Ultrasonic Value"];
@@ -156,16 +154,19 @@ class _KitchenState extends State<Kitchen> {
                       alignment: Alignment.center,
                       height: 50,
                       width: 250,
-
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            fireState  == "There's no fire !!" ? "No Fire" : "There's a Fire !!",
+                            fireState == "No Fire"
+                                ? "There's no fire !!"
+                                : "There's a Fire !!",
                             style: TextStyle(
                               fontSize: 20,
-                              color: fireState  == "There's no fire !!" ? Colors.deepPurple[200] : Colors.red,
+                              color: fireState == "There's no fire !!"
+                                  ? Colors.deepPurple[200]
+                                  : Colors.red,
                             ),
                           ),
                         ],
@@ -176,14 +177,14 @@ class _KitchenState extends State<Kitchen> {
                     ),
                     Expanded(
                         child: GridView.count(
-                          childAspectRatio: 7,
-                          crossAxisCount: 1,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 12,
-                          shrinkWrap: false,
-                          children: fireHistory.map((item) => Fire_Data(item)).toList(),
-                        )),
-
+                      childAspectRatio: 7,
+                      crossAxisCount: 1,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 12,
+                      shrinkWrap: false,
+                      children:
+                          fireHistory.map((item) => Fire_Data(item)).toList(),
+                    )),
                   ],
                 ),
               ),

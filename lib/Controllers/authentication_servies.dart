@@ -12,11 +12,9 @@ class AuthenticationService {
 
   Stream<User?> get authStateChanges => _firebaseAuth.userChanges();
 
-
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
-
 
   Future<String> signIn(
       {required String email, required String password}) async {
@@ -30,7 +28,6 @@ class AuthenticationService {
       return "error";
     }
   }
-
 
   Future<String> signUp(
       {required String email,
@@ -76,6 +73,17 @@ class AuthenticationService {
       User? user = FirebaseAuth.instance.currentUser;
       await user?.updateDisplayName(fullName);
       await user?.updatePhotoURL(photoURL);
+      return "success";
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    } catch (e) {
+      return "error";
+    }
+  }
+
+  Future<String> resetPassword({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
       return "success";
     } on FirebaseAuthException catch (e) {
       return e.code;

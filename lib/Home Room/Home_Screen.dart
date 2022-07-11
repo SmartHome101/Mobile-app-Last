@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
@@ -91,25 +92,13 @@ class _HomePageState extends State<HomePage> {
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://sr.techome.systems/predict'));
 
-    request.files.add(await http.MultipartFile.fromPath(
-      'file',
-      filePath,
-    ));
-
-    // var audio = await http.MultipartFile.fromPath('file', filePath);
-    // print(audio);
-    // request.files.add(audio);
+    var audio = await http.MultipartFile.fromPath('file', filePath);
+    request.files.add(audio);
 
     var response = await request.send();
-    // final respStr = await response.stream.bytesToString();
-    // print(respStr);
-    // responseStream = response.stream.listen((data) {
-    //   print(data);
-    // }, onDone: () {
-    //   responseStream.cancel();
-    // });
-    final respStr = await response.stream.last.toString();
-    print(respStr);
+    print(response.statusCode);
+    final res = await http.Response.fromStream(response);
+    print(res.body);
   }
 
   Future initRecorder() async {

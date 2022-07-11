@@ -9,6 +9,8 @@ import '../shared/Custom_Widgets.dart';
 import '../Controllers/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import 'Reset_Password.dart';
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -58,13 +60,12 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pop(context);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePage()));
-      }
-      if (result != "success" && result != "error") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(result)));
       } else if (result == "error") {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Something Went Wrong please Try again")));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result)));
       }
 
       isLoading = false;
@@ -135,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           isPassword: true,
                           icon: Icons.lock,
                           InputType: inputType.Password,
-
                         ),
                         SizedBox(
                           height: 30.0,
@@ -154,6 +154,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 10.0,
                         ),
                         BuildGo_SignUp(context, reset),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return Reset_Password();
+                            }));
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'OpenSans',
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -164,5 +181,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
