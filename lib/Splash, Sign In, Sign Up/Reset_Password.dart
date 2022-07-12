@@ -3,6 +3,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../shared/Custom_Widgets.dart';
 import '../Controllers/authentication_servies.dart';
+import '../shared/constants.dart';
 
 class Reset_Password extends StatefulWidget {
   const Reset_Password({Key? key}) : super(key: key);
@@ -21,6 +22,12 @@ class _Reset_PasswordState extends State<Reset_Password> {
       inAsyncCall: isLoading,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text("Reset Password"),
+          centerTitle: true,
+          backgroundColor: cardColor,
+          shadowColor: shadowColor,
+        ),
         body: Container(
             decoration: Background_decoration(),
             height: double.infinity,
