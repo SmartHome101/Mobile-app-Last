@@ -12,14 +12,14 @@ import '../model/weather_module.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 
-class Voice extends StatefulWidget {
-  const Voice({Key? key}) : super(key: key);
+class VoiceAssistant extends StatefulWidget {
+  const VoiceAssistant({Key? key}) : super(key: key);
 
   @override
-  State<Voice> createState() => _VoiceState();
+  State<VoiceAssistant> createState() => _VoiceAssistantState();
 }
 
-class _VoiceState extends State<Voice> {
+class _VoiceAssistantState extends State<VoiceAssistant> {
   final recorder = FlutterSoundRecorder();
   late String filePath;
 
@@ -112,11 +112,12 @@ class _VoiceState extends State<Voice> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: cardColor,
         shadowColor: shadowColor,
-        title: const Text("Voice"),
+        title: const Text("Techome Leo"),
         elevation: 10,
         toolbarHeight: 60,
       ),
@@ -188,6 +189,7 @@ class _VoiceState extends State<Voice> {
                 ),
                 Text(
                   searchTopic,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 20,
                     color: foregroundColor,

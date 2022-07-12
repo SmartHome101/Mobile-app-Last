@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 
 class FoodApiClient {
   Future<FoodRecipe> getFoodRecipe(foodName) async {
-    var endpointUrl = 'https://recipe-by-api-ninjas.p.rapidapi.com/v1/recipe';
     Map<String, String> requestHeaders = {
       'X-RapidAPI-Key': '0155f516cbmsh66bdeb5a6e8b045p19f17bjsn51412ba05bac',
       'X-RapidAPI-Host': 'recipe-by-api-ninjas.p.rapidapi.com'
     };
+    var endpointUrl = 'https://recipe-by-api-ninjas.p.rapidapi.com/v1/recipe';
 
     final uri = Uri.parse(endpointUrl).replace(queryParameters: {
       'query': foodName,

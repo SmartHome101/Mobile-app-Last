@@ -7,7 +7,6 @@ import './Controllers/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
@@ -16,9 +15,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-
-
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -33,6 +29,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Home',
         theme: ThemeData(
           primarySwatch: Colors.blue,

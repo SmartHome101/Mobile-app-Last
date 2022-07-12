@@ -19,7 +19,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../Controllers/authentication_servies.dart';
 import '../Controllers/weather_api_client.dart';
 import '../Rooms/Bathroom.dart';
-import '../Rooms/Voice.dart';
+import '../Rooms/VoiceAssistant.dart';
 import '../model/weather_module.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
@@ -79,69 +79,6 @@ class _HomePageState extends State<HomePage> {
   dynamic _body;
   var location;
 
-  // Future record() async {
-  //   await recorder.startRecorder(
-  //     toFile: filePath,
-  //     codec: Codec.pcm16WAV,
-  //   );
-  // }
-
-  // Future stop() async {
-  //   await recorder.stopRecorder();
-  //   final file = File(filePath);
-
-  //   await uploadFiles();
-  // }
-
-  // uploadFiles() async {
-  //   var request = http.MultipartRequest(
-  //       'POST', Uri.parse('http://sr.techome.systems/predict'));
-
-  //   var audio = await http.MultipartFile.fromPath('file', filePath);
-  //   request.files.add(audio);
-
-  //   var response = await request.send();
-
-  //   if (response.statusCode == 200) {
-  //     final res = await http.Response.fromStream(response);
-
-  //     var body = res.body;
-  //     print(body);
-
-  //     var result = await nlpProcess(body);
-  //     print(result);
-  //   }
-  // }
-
-  // Future<String> nlpProcess(body) async {
-  //   var endpointUrl = 'http://nlp.techome.systems';
-
-  //   final uri = Uri.parse('$endpointUrl/predict').replace(queryParameters: {
-  //     'message': body,
-  //   });
-  //   final response = await http.post(uri);
-
-  //   if (response.statusCode == 200) {
-  //     return response.body;
-  //   } else {
-  //     throw Exception('Failed to load nlp');
-  //   }
-  // }
-
-  // Future initRecorder() async {
-  //   filePath = '/sdcard/Download/temp.wav';
-
-  //   final status = await Permission.microphone.request();
-  //   await Permission.storage.request();
-  //   await Permission.manageExternalStorage.request();
-
-  //   if (status != PermissionStatus.granted) throw 'Microphone not granted';
-
-  //   await recorder.openRecorder();
-
-  //   recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
-  // }
-
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -164,7 +101,6 @@ class _HomePageState extends State<HomePage> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     location = await Geolocator.getCurrentPosition();
-    // return await Geolocator.getCurrentPosition();
   }
 
   initState() {
@@ -182,8 +118,7 @@ class _HomePageState extends State<HomePage> {
       GetColor();
     });
 
-    // initRecorder();
-    _determinePosition();
+    // _determinePosition();
   }
 
   Future<void> getWeatherData() async {
@@ -397,23 +332,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           actions: [
-            // Row(children: [
-            //   StreamBuilder<RecordingDisposition>(
-            //     stream: recorder.onProgress,
-            //     builder: (context, snapshot) {
-            //       final duration = snapshot.hasData
-            //           ? snapshot.data!.duration
-            //           : Duration.zero;
-            //       return Text(
-            //         recorder.isRecording ? "${duration.inSeconds} s" : "",
-            //         style: TextStyle(
-            //           color: foregroundColor,
-            //           fontStyle: FontStyle.italic,
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ]),
             IconButton(
               icon: Icon(recorder.isRecording
                   ? Icons.stop_circle
@@ -421,7 +339,7 @@ class _HomePageState extends State<HomePage> {
               iconSize: 35,
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const Voice();
+                  return const VoiceAssistant();
                 }));
               },
             ),
@@ -813,9 +731,6 @@ class _HomePageState extends State<HomePage> {
                         isLoading = false;
                       });
                     }
-
-                    // update_UserData(
-                    //     Selected_Avatar, UserName_Controller.text, Selected_Color);
                   },
                 ),
               ),
