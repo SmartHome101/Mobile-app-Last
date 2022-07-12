@@ -42,6 +42,12 @@ class _VoiceState extends State<Voice> {
   Weather? weatherData;
 
   Future record() async {
+    voiceResult = "";
+    searchTopic = "";
+    weatherData = null;
+    ingredients = "";
+    instructions = "";
+
     await recorder.startRecorder(
       toFile: filePath,
       codec: Codec.pcm16WAV,
@@ -71,6 +77,7 @@ class _VoiceState extends State<Voice> {
 
   processVoice() async {
     srResult = await srClient.uploadAudio(filePath);
+    print(srResult);
 
     setState(() {
       voiceResult = srResult!;
@@ -79,8 +86,6 @@ class _VoiceState extends State<Voice> {
     nlpResult = await nlpClient.getTextResult(srResult);
 
     if (nlpResult!.Intent == "Cooking") {
-      weatherData = null;
-
       searchTopic = "ًI Searched for " + nlpResult!.Entity + " recipe";
 
       foodResult = await foodClient.getFoodRecipe(nlpResult!.Entity);
@@ -88,17 +93,10 @@ class _VoiceState extends State<Voice> {
       ingredients = foodResult!.ingredients;
       instructions = foodResult!.instructions;
     } else if (nlpResult!.Intent == "Weather") {
-      ingredients = "";
-      instructions = "";
-
       searchTopic = "ًI Searched for " + nlpResult!.Entity + " weather status";
 
       weatherData = await client.fetchWeather(nlpResult!.Entity, null);
     } else {
-      ingredients = "";
-      instructions = "";
-      weatherData = null;
-
       searchTopic = "Sorry, I didn't understand you ☹️";
     }
 
@@ -124,117 +122,122 @@ class _VoiceState extends State<Voice> {
       ),
       body: SafeArea(
         child: Container(
+          height: double.infinity,
           decoration: Background_decoration(),
           padding: const EdgeInsets.fromLTRB(30, 30, 30, 10),
-          child: Column(
-            children: <Widget>[
-              const Text(
-                "Search for a food recipe or weather status",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                const Text(
+                  "Search for a food recipe or weather status",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                IconButton(
+                  icon: Icon(recorder.isRecording
+                      ? Icons.stop_circle
+                      : Icons.mic_outlined),
+                  iconSize: 55,
                   color: Colors.white,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              IconButton(
-                icon: Icon(recorder.isRecording
-                    ? Icons.stop_circle
-                    : Icons.mic_outlined),
-                iconSize: 55,
-                color: Colors.white,
-                onPressed: () async {
-                  if (recorder.isRecording) {
-                    await stop();
-                  } else {
-                    await record();
-                  }
+                  onPressed: () async {
+                    if (recorder.isRecording) {
+                      await stop();
+                    } else {
+                      await record();
+                    }
 
-                  setState(() {});
-                },
-              ),
-              StreamBuilder<RecordingDisposition>(
-                stream: recorder.onProgress,
-                builder: (context, snapshot) {
-                  final duration = snapshot.hasData
-                      ? snapshot.data!.duration
-                      : Duration.zero;
-                  return Text(
-                    recorder.isRecording ? "${duration.inSeconds} s" : "",
-                    style: const TextStyle(
-                      color: foregroundColor,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                voiceResult.isNotEmpty ? "You said \n $voiceResult" : "",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: foregroundColor,
-                  fontStyle: FontStyle.italic,
+                    setState(() {});
+                  },
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                searchTopic,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: foregroundColor,
+                StreamBuilder<RecordingDisposition>(
+                  stream: recorder.onProgress,
+                  builder: (context, snapshot) {
+                    final duration = snapshot.hasData
+                        ? snapshot.data!.duration
+                        : Duration.zero;
+                    return Text(
+                      recorder.isRecording ? "${duration.inSeconds} s" : "",
+                      style: const TextStyle(
+                        color: foregroundColor,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                ingredients.isNotEmpty ? "Ingredients: \n$ingredients" : "",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: foregroundColor,
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                instructions.isNotEmpty ? "Instructions: \n$instructions" : "",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: foregroundColor,
+                Text(
+                  voiceResult.isNotEmpty ? "You said \n $voiceResult" : "",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: foregroundColor,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
-              ),
-              Text(
-                weatherData != null
-                    ? "Tempreature is : ${weatherData!.temp.round()}°C"
-                    : "",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: foregroundColor,
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                weatherData != null
-                    ? "Weather description is : ${weatherData!.description}"
-                    : "",
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: foregroundColor,
+                Text(
+                  searchTopic,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: foregroundColor,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  ingredients.isNotEmpty ? "Ingredients: \n$ingredients" : "",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: foregroundColor,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  instructions.isNotEmpty
+                      ? "Instructions: \n$instructions"
+                      : "",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: foregroundColor,
+                  ),
+                ),
+                Text(
+                  weatherData != null
+                      ? "Tempreature is : ${weatherData!.temp.round()}°C"
+                      : "",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: foregroundColor,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  weatherData != null
+                      ? "Weather description is : ${weatherData!.description}"
+                      : "",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: foregroundColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
