@@ -4,14 +4,17 @@ import 'package:http/http.dart' as http;
 
 class WeatherApiClient {
   Future<Weather> fetchWeather(latitude, longitude) async {
-    final response;
+    final http.Response response;
 
-    if (latitude != null) {
+    if (longitude != null) {
       response = await http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
+          'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
+    } else if (latitude != null) {
+      response = await http.get(Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?q=$latitude&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
     } else {
       response = await http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?q=zagazig&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
+          'https://api.openweathermap.org/data/2.5/weather?q=cairo&appid=0fb27f9d286ec3ad117cb6b584aac7ae'));
     }
     if (response.statusCode == 200) {
       return Weather.fromJson(jsonDecode(response.body));

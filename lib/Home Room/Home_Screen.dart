@@ -19,6 +19,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../Controllers/authentication_servies.dart';
 import '../Controllers/weather_api_client.dart';
 import '../Rooms/Bathroom.dart';
+import '../Rooms/Voice.dart';
 import '../model/weather_module.dart';
 import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
@@ -37,7 +38,7 @@ var Home_Code;
 
 class _HomePageState extends State<HomePage> {
   WeatherApiClient client = WeatherApiClient();
-  Weather? data;
+  Weather? weatherData;
 
   var dataBase;
   bool isLoading = false;
@@ -78,47 +79,68 @@ class _HomePageState extends State<HomePage> {
   dynamic _body;
   var location;
 
-  Future record() async {
-    await recorder.startRecorder(
-      toFile: filePath,
-      codec: Codec.pcm16WAV,
-    );
-  }
+  // Future record() async {
+  //   await recorder.startRecorder(
+  //     toFile: filePath,
+  //     codec: Codec.pcm16WAV,
+  //   );
+  // }
 
-  Future stop() async {
-    await recorder.stopRecorder();
-    final file = File(filePath);
+  // Future stop() async {
+  //   await recorder.stopRecorder();
+  //   final file = File(filePath);
 
-    await uploadFiles();
-  }
+  //   await uploadFiles();
+  // }
 
-  uploadFiles() async {
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('http://sr.techome.systems/predict'));
+  // uploadFiles() async {
+  //   var request = http.MultipartRequest(
+  //       'POST', Uri.parse('http://sr.techome.systems/predict'));
 
-    var audio = await http.MultipartFile.fromPath('file', filePath);
-    request.files.add(audio);
+  //   var audio = await http.MultipartFile.fromPath('file', filePath);
+  //   request.files.add(audio);
 
-    var response = await request.send();
+  //   var response = await request.send();
 
-    print(response.statusCode);
-    final res = await http.Response.fromStream(response);
-    print(res.body);
-  }
+  //   if (response.statusCode == 200) {
+  //     final res = await http.Response.fromStream(response);
 
-  Future initRecorder() async {
-    filePath = '/sdcard/Download/temp.wav';
+  //     var body = res.body;
+  //     print(body);
 
-    final status = await Permission.microphone.request();
-    await Permission.storage.request();
-    await Permission.manageExternalStorage.request();
+  //     var result = await nlpProcess(body);
+  //     print(result);
+  //   }
+  // }
 
-    if (status != PermissionStatus.granted) throw 'Microphone not granted';
+  // Future<String> nlpProcess(body) async {
+  //   var endpointUrl = 'http://nlp.techome.systems';
 
-    await recorder.openRecorder();
+  //   final uri = Uri.parse('$endpointUrl/predict').replace(queryParameters: {
+  //     'message': body,
+  //   });
+  //   final response = await http.post(uri);
 
-    recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
-  }
+  //   if (response.statusCode == 200) {
+  //     return response.body;
+  //   } else {
+  //     throw Exception('Failed to load nlp');
+  //   }
+  // }
+
+  // Future initRecorder() async {
+  //   filePath = '/sdcard/Download/temp.wav';
+
+  //   final status = await Permission.microphone.request();
+  //   await Permission.storage.request();
+  //   await Permission.manageExternalStorage.request();
+
+  //   if (status != PermissionStatus.granted) throw 'Microphone not granted';
+
+  //   await recorder.openRecorder();
+
+  //   recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
+  // }
 
   Future<void> _determinePosition() async {
     bool serviceEnabled;
@@ -160,12 +182,13 @@ class _HomePageState extends State<HomePage> {
       GetColor();
     });
 
-    initRecorder();
+    // initRecorder();
     _determinePosition();
   }
 
   Future<void> getWeatherData() async {
-    data = await client.fetchWeather(location.latitude, location.longitude);
+    weatherData =
+        await client.fetchWeather(location.latitude, location.longitude);
   }
 
   GetColor() async {
@@ -250,7 +273,7 @@ class _HomePageState extends State<HomePage> {
     } else if ((rainLevel_Modifed == "Moderate") ||
         (rainLevel_Modifed == "Light")) {
       path = 'icons/temp_lowRain.png';
-    } else if (data!.temp.round() > 25) {
+    } else if (weatherData!.temp.round() > 25) {
       path = 'icons/temp_high.png';
     } else {
       path = 'icons/temp_low.png';
@@ -349,21 +372,22 @@ class _HomePageState extends State<HomePage> {
               ),
               preferredSize: Size.fromHeight(4.0)),
           leading: Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: new SizedBox(
-                height: 25.0,
-                width: 18.0,
-                child: IconButton(
-                  icon: Image.asset(photoURL),
-                  iconSize: 150,
-                  onPressed: () {
-                    if (panalController.isPanelOpen)
-                      panalController.close();
-                    else
-                      panalController.open();
-                  },
-                ),
-              )),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: SizedBox(
+              height: 25.0,
+              width: 18.0,
+              child: IconButton(
+                icon: Image.asset(photoURL),
+                iconSize: 150,
+                onPressed: () {
+                  if (panalController.isPanelOpen)
+                    panalController.close();
+                  else
+                    panalController.open();
+                },
+              ),
+            ),
+          ),
           title: Text(
             'Hello ' + displayName,
             style: TextStyle(
@@ -373,36 +397,32 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           actions: [
-            Row(children: [
-              StreamBuilder<RecordingDisposition>(
-                stream: recorder.onProgress,
-                builder: (context, snapshot) {
-                  final duration = snapshot.hasData
-                      ? snapshot.data!.duration
-                      : Duration.zero;
-                  return Text(
-                    recorder.isRecording ? "${duration.inSeconds} s" : "",
-                    style: TextStyle(
-                      color: foregroundColor,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  );
-                },
-              ),
-            ]),
+            // Row(children: [
+            //   StreamBuilder<RecordingDisposition>(
+            //     stream: recorder.onProgress,
+            //     builder: (context, snapshot) {
+            //       final duration = snapshot.hasData
+            //           ? snapshot.data!.duration
+            //           : Duration.zero;
+            //       return Text(
+            //         recorder.isRecording ? "${duration.inSeconds} s" : "",
+            //         style: TextStyle(
+            //           color: foregroundColor,
+            //           fontStyle: FontStyle.italic,
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ]),
             IconButton(
               icon: Icon(recorder.isRecording
                   ? Icons.stop_circle
                   : Icons.mic_outlined),
               iconSize: 35,
-              onPressed: () async {
-                if (recorder.isRecording) {
-                  await stop();
-                } else {
-                  await record();
-                }
-
-                setState(() {});
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const Voice();
+                }));
               },
             ),
             SizedBox(
@@ -499,7 +519,8 @@ class _HomePageState extends State<HomePage> {
                                                               children: <
                                                                   Widget>[
                                                                 Text(
-                                                                  data!.temp
+                                                                  weatherData!
+                                                                      .temp
                                                                       .round()
                                                                       .toString(),
                                                                   style: const TextStyle(

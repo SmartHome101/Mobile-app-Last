@@ -154,20 +154,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 10.0,
                         ),
                         BuildGo_SignUp(context, reset),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return Reset_Password();
-                            }));
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'OpenSans',
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 0.0, top: 8.0, right: 0, bottom: 8.0),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return Reset_Password();
+                              }));
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'OpenSans',
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
