@@ -17,8 +17,8 @@ late List devices;
 List fireHistory = [];
 late DatabaseReference dbref_OnOff;
 
-var fireState = "no fire";
-dynamic ultrasonic_value = "Safe";
+var fireState;
+late String ultrasonic_value;
 
 class Kitchen extends StatefulWidget {
   @override
@@ -38,6 +38,7 @@ class _KitchenState extends State<Kitchen> {
       if (!mounted) return;
       setState(() {
         dataBase = event.snapshot.value as Map;
+
         devices = dataBase["on-off"]
             .entries
             .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
@@ -52,6 +53,12 @@ class _KitchenState extends State<Kitchen> {
         fireState = dataBase["fire"];
 
         ultrasonic_value = dataBase["Ultrasonic Value"];
+
+        var tempArray = ultrasonic_value.split(" ");
+        var temp = tempArray.sublist(1);
+
+        ultrasonic_value = temp.join(" ");
+
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -118,10 +125,12 @@ class _KitchenState extends State<Kitchen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            ultrasonic_value.toString(),
+                            ultrasonic_value,
                             style: TextStyle(
                               fontSize: 20,
-                              color: Colors.deepPurple[200],
+                              color: ultrasonic_value == "Safe zone"
+                                  ? Colors.deepPurple[200]
+                                  : Colors.red,
                             ),
                           ),
                         ],
@@ -159,7 +168,7 @@ class _KitchenState extends State<Kitchen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            fireState == "No Fire"
+                            fireState == "There's no fire !!"
                                 ? "There's no fire !!"
                                 : "There's a Fire !!",
                             style: TextStyle(

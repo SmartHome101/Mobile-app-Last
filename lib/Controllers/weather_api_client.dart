@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 class WeatherApiClient {
   Future<Weather> fetchWeather(latitude, longitude) async {
-    print(longitude);
     final http.Response response;
 
     if (longitude != null) {

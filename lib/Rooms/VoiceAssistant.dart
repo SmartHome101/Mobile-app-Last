@@ -56,8 +56,7 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
 
   Future stop() async {
     await recorder.stopRecorder();
-    final file = File(filePath);
-    print(file);
+
     await processVoice();
   }
 
@@ -77,29 +76,32 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
 
   processVoice() async {
     srResult = await srClient.uploadAudio(filePath);
-    print(srResult);
 
     setState(() {
       voiceResult = srResult!;
     });
 
-    nlpResult = await nlpClient.getTextResult(srResult);
+    if (srResult!.length > 1) {
+      nlpResult = await nlpClient.getTextResult(srResult);
 
-    if (nlpResult!.Intent == "Cooking") {
-      searchTopic = "ًI Searched for " + nlpResult!.Entity + " recipe";
+      if (nlpResult!.Intent == "Cooking") {
+        searchTopic = "ًI Searched for " + nlpResult!.Entity + " recipe";
 
-      foodResult = await foodClient.getFoodRecipe(nlpResult!.Entity);
+        foodResult = await foodClient.getFoodRecipe(nlpResult!.Entity);
 
-      ingredients = foodResult!.ingredients;
-      instructions = foodResult!.instructions;
-    } else if (nlpResult!.Intent == "Weather") {
-      searchTopic = "ًI Searched for " + nlpResult!.Entity + " weather status";
+        ingredients = foodResult!.ingredients;
+        instructions = foodResult!.instructions;
+      } else if (nlpResult!.Intent == "Weather") {
+        searchTopic =
+            "ًI Searched for " + nlpResult!.Entity + " weather status";
 
-      weatherData = await client.fetchWeather(nlpResult!.Entity, null);
+        weatherData = await client.fetchWeather(nlpResult!.Entity, null);
+      } else {
+        searchTopic = "Sorry, I didn't understand you ☹️";
+      }
     } else {
       searchTopic = "Sorry, I didn't understand you ☹️";
     }
-
     setState(() {});
   }
 

@@ -8,6 +8,7 @@ class AuthenticationService {
 
   CollectionReference<Map<String, dynamic>> users =
       FirebaseFirestore.instance.collection("users");
+
   AuthenticationService(this._firebaseAuth);
 
   Stream<User?> get authStateChanges => _firebaseAuth.userChanges();
