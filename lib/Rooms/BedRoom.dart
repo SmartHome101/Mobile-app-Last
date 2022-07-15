@@ -14,9 +14,9 @@ bool is_Loading = true;
 late DatabaseReference dbref;
 late DatabaseReference dbref_OnOff;
 late DatabaseReference dbref_Light;
-
 late Map dataBase;
 late List devices;
+var mode;
 double lightValue = 1.0;
 
 class BedRoom extends StatefulWidget {
@@ -26,7 +26,6 @@ class BedRoom extends StatefulWidget {
 
 class _BedRoomState extends State<BedRoom> {
   get_Data_from_Firebase() {
-
     dbref = FirebaseDatabase.instance.ref(Home_Code + "/bedroom");
     dbref_OnOff = FirebaseDatabase.instance.ref(Home_Code + "/bedroom/on-off");
     dbref_Light = FirebaseDatabase.instance.ref(Home_Code + "/bedroom/light");
@@ -37,19 +36,19 @@ class _BedRoomState extends State<BedRoom> {
     stream.listen((DatabaseEvent event) {
       if (!mounted) return;
       setState(() {
-        print(event.snapshot.value);
         dataBase = event.snapshot.value as Map;
 
-        devices = dataBase["on-off"].entries
+        devices = dataBase["on-off"]
+            .entries
             .map((entry) => {entry.key: (entry.value == 0 ? false : true)})
             .toList();
 
-        var mode = dataBase["light"];
+        mode = dataBase["light"]["mode"];
 
-        mode = mode.toString().replaceAll("{mode: ", "").replaceAll("}", "");
+        // mode = mode.toString().replaceAll("{mode: ", "").replaceAll("}", "");
 
         lightValue = ValueFromMode(mode);
-        print(lightValue);
+
         is_Loading = false;
         streamController.add(is_Loading);
       });
@@ -76,6 +75,7 @@ class _BedRoomState extends State<BedRoom> {
   Future<void> update(name, value) async {
     await dbref_OnOff.update({(name): (value == true ? 1 : 0)});
   }
+
   Future<void> updateLight(name, value) async {
     await dbref_Light.update({(name): (value)});
   }
@@ -112,7 +112,7 @@ class _BedRoomState extends State<BedRoom> {
                         ),
                       ),
                       alignment: Alignment.center,
-                      height: 100,
+                      height: 150,
                       width: 350,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -122,10 +122,13 @@ class _BedRoomState extends State<BedRoom> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(Icons.light,color: Colors.white,),
-                              const SizedBox(
-                                width: 10,
+                              Icon(
+                                Icons.light,
+                                color: Colors.white,
                               ),
+                              // const SizedBox(
+                              //   width: 10,
+                              // ),
                               Text(
                                 "Light",
                                 style: TextStyle(
@@ -135,21 +138,33 @@ class _BedRoomState extends State<BedRoom> {
                               ),
                             ],
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            mode,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
                           Slider(
                             value: lightValue,
                             min: 0,
                             max: 100,
-                            activeColor: lightValue > 5 ? Colors.deepPurple : Colors.white,
+                            activeColor: lightValue > 5
+                                ? Colors.deepPurple
+                                : Colors.white,
                             onChanged: (value) {
-                            setState(() {
+                              setState(() {
+                                lightValue = value;
 
-                              lightValue = value;
-
-                              var value2 = SliderSnapValue(value);
-                              String mode = ModeFromValue(value2);
-                              updateLight("mode", mode);
-                            });
-                          },)
+                                var value2 = SliderSnapValue(value);
+                                String mode = ModeFromValue(value2);
+                                updateLight("mode", mode);
+                              });
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -173,74 +188,51 @@ class _BedRoomState extends State<BedRoom> {
   }
 }
 
-double SliderSnapValue(double value)
-{
+double SliderSnapValue(double value) {
   double _value = 0;
 
-  if(value < 5)
-  {
+  if (value < 5) {
     _value = 0;
-  }
-  else if(value >= 5 && value <= 25)
-  {
+  } else if (value >= 5 && value <= 25) {
     _value = 25;
-  }
-  else if(value > 25 && value <= 50)
-  {
+  } else if (value > 25 && value <= 50) {
     _value = 50;
-  }
-  else if(value > 50 && value <= 75)
-  {
+  } else if (value > 50 && value <= 75) {
     _value = 75;
-  }
-  else if(value > 75)
-  {
+  } else if (value > 75) {
     _value = 100;
   }
 
   return _value;
 }
 
-String ModeFromValue(double value)
-{
+String ModeFromValue(double value) {
   String mode = "off";
 
-  if(value < 5)
-  {
+  if (value < 5) {
     mode = "off";
-  }
-  else if(value >= 5 && value <= 25)
-  {
+  } else if (value >= 5 && value <= 25) {
     mode = "low";
-  }
-  else if(value > 25 && value <= 50)
-  {
+  } else if (value > 25 && value <= 50) {
     mode = "medium";
-  }
-  else if(value > 50 && value <= 75)
-  {
+  } else if (value > 50 && value <= 75) {
     mode = "high";
-  }
-  else if(value > 75)
-  {
+  } else if (value > 75) {
     mode = "on";
   }
 
   return mode;
-
 }
 
-double ValueFromMode(String mode)
-{
-  if(mode == "off")
+double ValueFromMode(String mode) {
+  if (mode == "off")
     return 0;
-  else if(mode == "low")
+  else if (mode == "low")
     return 25;
-  else if(mode == "medium")
+  else if (mode == "medium")
     return 50;
-  else if(mode == "high")
+  else if (mode == "high")
     return 75;
   else
     return 100;
 }
-
