@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:Home/Rooms/BedRoom.dart';
 import 'package:Home/Rooms/Kitchen.dart';
 import 'package:Home/Rooms/LivingRoom.dart';
@@ -10,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +21,6 @@ import '../shared/Custom_Widgets.dart';
 import '../shared/constants.dart';
 import '../Controllers/shared_preferences.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
@@ -209,7 +202,8 @@ class _HomePageState extends State<HomePage> {
     if (rainLevel_Modifed == "Heavy") {
       path = 'icons/temp_highRain.png';
     } else if ((rainLevel_Modifed == "Moderate") ||
-        (rainLevel_Modifed == "Light") || (Rain_Status != "No Rain")) {
+        (rainLevel_Modifed == "Light") ||
+        (Rain_Status != "No Rain")) {
       path = 'icons/temp_lowRain.png';
     } else if (weatherData!.temp.round() > 25) {
       path = 'icons/temp_high.png';
@@ -227,9 +221,7 @@ class _HomePageState extends State<HomePage> {
       return "";
     } else if (rainLevel_Modifed == "" && (Rain_Status != "No Rain")) {
       return "   " + "Light" + "\n Rain Level";
-    }
-    else
-    {
+    } else {
       return ("   " + Rain_Level + "\n Rain Level");
     }
   }
@@ -312,9 +304,9 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white12,
                 height: 4.0,
               ),
-              preferredSize: Size.fromHeight(4.0)),
+              preferredSize: const Size.fromHeight(4.0)),
           leading: Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: SizedBox(
               height: 25.0,
               width: 18.0,
@@ -322,17 +314,18 @@ class _HomePageState extends State<HomePage> {
                 icon: Image.asset(photoURL),
                 iconSize: 150,
                 onPressed: () {
-                  if (panalController.isPanelOpen)
+                  if (panalController.isPanelOpen) {
                     panalController.close();
-                  else
+                  } else {
                     panalController.open();
+                  }
                 },
               ),
             ),
           ),
           title: Text(
             'Hello ' + displayName,
-            style: TextStyle(
+            style: const TextStyle(
               color: foregroundColor,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w300,
@@ -350,7 +343,7 @@ class _HomePageState extends State<HomePage> {
                 }));
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 20.0,
               width: 20.0,
             )
@@ -359,7 +352,7 @@ class _HomePageState extends State<HomePage> {
         body: SlidingUpPanel(
           body: SafeArea(
             child: Container(
-              padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
+              padding: const EdgeInsets.fromLTRB(25, 15, 25, 5),
               decoration: Background_decoration(),
               child: Column(
                 children: <Widget>[
@@ -372,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: cardColor,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: shadowColor,
                           spreadRadius: 5,
@@ -382,16 +375,16 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     child: FutureBuilder(
-                      future: _determinePosition(),
+                      future: getHomeCode(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           return FutureBuilder(
-                            future: getWeatherData(),
+                            future: _determinePosition(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
                                 return FutureBuilder(
-                                    future: getHomeCode(),
+                                    future: getWeatherData(),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.done) {
@@ -499,14 +492,14 @@ class _HomePageState extends State<HomePage> {
                                                   ],
                                                 );
                                               } else {
-                                                return Center(
+                                                return const Center(
                                                   child:
                                                       CircularProgressIndicator(),
                                                 );
                                               }
                                             });
                                       } else {
-                                        return Center(
+                                        return const Center(
                                           child: CircularProgressIndicator(),
                                         );
                                       }
@@ -540,7 +533,7 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   color: cardColor,
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                       color: shadowColor,
                                       spreadRadius: 1,
@@ -585,18 +578,18 @@ class _HomePageState extends State<HomePage> {
           minHeight: 55,
           maxHeight: 430,
           border: Border.all(width: 2.0, color: Colors.white10),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(50)),
           panelBuilder: (controller) => ListView(
             padding: EdgeInsets.all(5),
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 8,
                 width: 0,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Text(
                     "User Settings",
                     style: TextStyle(fontSize: 20, color: Colors.white),
@@ -611,7 +604,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
               Row(
@@ -629,7 +622,7 @@ class _HomePageState extends State<HomePage> {
                           Select_Avatar(1);
                         });
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 0,
                     width: 10,
                   ),
@@ -643,7 +636,7 @@ class _HomePageState extends State<HomePage> {
                           Select_Avatar(2);
                         });
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 0,
                     width: 10,
                   ),
@@ -659,23 +652,23 @@ class _HomePageState extends State<HomePage> {
                       }),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               BuildUserName_Customized(UserName_Controller, displayName),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
                 children: <Widget>[
                   Text(
                     userName_Validator,
-                    style: TextStyle(color: Colors.red, fontSize: 13),
+                    style: const TextStyle(color: Colors.red, fontSize: 13),
                   ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 1,
               ),
               Row(
@@ -703,13 +696,13 @@ class _HomePageState extends State<HomePage> {
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Container(
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  child: Text(
+                  child: const Text(
                     'Update',
                     style: TextStyle(
                       color: Colors.white,
@@ -719,7 +712,7 @@ class _HomePageState extends State<HomePage> {
                       fontFamily: 'OpenSans',
                     ),
                   ),
-                  style: buttonStyle(Size(250, 50)),
+                  style: buttonStyle(const Size(250, 50)),
                   onPressed: () async {
                     if (UserName_Controller.text.length < 4) {
                       setState(() {
@@ -741,11 +734,11 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Build_Logout(context),
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
             ],
