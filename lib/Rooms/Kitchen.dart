@@ -37,6 +37,7 @@ class _KitchenState extends State<Kitchen> {
     stream.listen((DatabaseEvent event) {
       if (!mounted) return;
       setState(() {
+
         dataBase = event.snapshot.value as Map;
 
         devices = dataBase["on-off"]
@@ -50,6 +51,7 @@ class _KitchenState extends State<Kitchen> {
               .map((entry) => entry.value)
               .toList();
         }
+
         fireState = dataBase["fire"];
 
         ultrasonic_value = dataBase["Ultrasonic Value"];

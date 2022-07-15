@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = false;
 
   String Rain_Level = "";
+  String Rain_Status = "";
 
   FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -145,6 +146,7 @@ class _HomePageState extends State<HomePage> {
 
     dataBase = event.snapshot.value as Map;
     Rain_Level = dataBase["Rain level"];
+    Rain_Status = dataBase["Rain Status"];
 
     Stream<DatabaseEvent> stream = ref.onValue;
     stream.listen((DatabaseEvent event) {
@@ -201,12 +203,13 @@ class _HomePageState extends State<HomePage> {
 
   String Get_WeatherImage() {
     String rainLevel_Modifed = Rain_Level.replaceAll(" ", "");
+
     String path;
 
     if (rainLevel_Modifed == "Heavy") {
       path = 'icons/temp_highRain.png';
     } else if ((rainLevel_Modifed == "Moderate") ||
-        (rainLevel_Modifed == "Light")) {
+        (rainLevel_Modifed == "Light") || (Rain_Status != "No Rain")) {
       path = 'icons/temp_lowRain.png';
     } else if (weatherData!.temp.round() > 25) {
       path = 'icons/temp_high.png';
@@ -220,9 +223,13 @@ class _HomePageState extends State<HomePage> {
   String Get_Rain_Text() {
     String rainLevel_Modifed = Rain_Level.replaceAll(" ", "");
 
-    if (rainLevel_Modifed == "") {
+    if (rainLevel_Modifed == "" && (Rain_Status == "No Rain")) {
       return "";
-    } else {
+    } else if (rainLevel_Modifed == "" && (Rain_Status != "No Rain")) {
+      return "   " + "Light" + "\n Rain Level";
+    }
+    else
+    {
       return ("   " + Rain_Level + "\n Rain Level");
     }
   }
