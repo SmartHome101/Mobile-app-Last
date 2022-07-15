@@ -211,19 +211,19 @@ String ModeFromValue(double value)
   }
   else if(value >= 5 && value <= 25)
   {
-    mode = "on";
+    mode = "low";
   }
   else if(value > 25 && value <= 50)
   {
-    mode = "low";
+    mode = "medium";
   }
   else if(value > 50 && value <= 75)
   {
-    mode = "medium";
+    mode = "high";
   }
   else if(value > 75)
   {
-    mode = "high";
+    mode = "on";
   }
 
   return mode;
@@ -234,11 +234,11 @@ double ValueFromMode(String mode)
 {
   if(mode == "off")
     return 0;
-  else if(mode == "on")
-    return 25;
   else if(mode == "low")
-    return 50;
+    return 25;
   else if(mode == "medium")
+    return 50;
+  else if(mode == "high")
     return 75;
   else
     return 100;
