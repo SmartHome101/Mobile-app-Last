@@ -23,7 +23,6 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
   final recorder = FlutterSoundRecorder();
   late String filePath;
 
-  String voiceResult = "";
   String searchTopic = "";
 
   String ingredients = "";
@@ -42,7 +41,7 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
   Weather? weatherData;
 
   Future record() async {
-    voiceResult = "";
+    srResult = null;
     searchTopic = "";
     weatherData = null;
     ingredients = "";
@@ -56,6 +55,7 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
 
   Future stop() async {
     await recorder.stopRecorder();
+    setState(() {});
 
     await processVoice();
   }
@@ -77,23 +77,20 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
   processVoice() async {
     srResult = await srClient.uploadAudio(filePath);
 
-    setState(() {
-      voiceResult = srResult!;
-    });
+    setState(() {});
 
     if (srResult!.length > 1) {
       nlpResult = await nlpClient.getTextResult(srResult);
 
       if (nlpResult!.Intent == "Cooking") {
-        searchTopic = "ًI Searched for " + nlpResult!.Entity + " recipe";
+        searchTopic = "I Searched for " + nlpResult!.Entity + " recipe";
 
         foodResult = await foodClient.getFoodRecipe(nlpResult!.Entity);
 
         ingredients = foodResult!.ingredients;
         instructions = foodResult!.instructions;
       } else if (nlpResult!.Intent == "Weather") {
-        searchTopic =
-            "ًI Searched for " + nlpResult!.Entity + " weather status";
+        searchTopic = "I Searched for " + nlpResult!.Entity + " weather status";
 
         weatherData = await client.fetchWeather(nlpResult!.Entity, null);
       } else {
@@ -178,7 +175,7 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
                   height: 10,
                 ),
                 Text(
-                  voiceResult.isNotEmpty ? "You said \n $voiceResult" : "",
+                  srResult != null ? "You said \n $srResult" : "",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 20,
@@ -203,7 +200,7 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
                 Text(
                   ingredients.isNotEmpty ? "Ingredients: \n$ingredients" : "",
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     color: foregroundColor,
                   ),
                 ),
@@ -215,7 +212,7 @@ class _VoiceAssistantState extends State<VoiceAssistant> {
                       ? "Instructions: \n$instructions"
                       : "",
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     color: foregroundColor,
                   ),
                 ),

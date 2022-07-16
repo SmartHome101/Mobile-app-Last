@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -32,6 +31,7 @@ var Home_Code;
 class _HomePageState extends State<HomePage> {
   WeatherApiClient client = WeatherApiClient();
   Weather? weatherData;
+  late String city;
 
   var dataBase;
   bool isLoading = false;
@@ -70,32 +70,7 @@ class _HomePageState extends State<HomePage> {
   final recorder = FlutterSoundRecorder();
   late String filePath;
   late StreamSubscription<List<int>> responseStream;
-  dynamic _body;
   var location;
-
-  Future<void> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    location = await Geolocator.getCurrentPosition();
-  }
 
   initState() {
     super.initState();
@@ -111,13 +86,10 @@ class _HomePageState extends State<HomePage> {
 
       GetColor();
     });
-
-    // _determinePosition();
   }
 
   Future<void> getWeatherData() async {
-    weatherData =
-        await client.fetchWeather(location.latitude, location.longitude);
+    weatherData = await client.fetchWeather(location, null);
   }
 
   GetColor() async {
@@ -133,13 +105,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  getRainStatus() async {
+  getLocationAndRain() async {
     DatabaseReference ref = FirebaseDatabase.instance.ref(Home_Code);
     DatabaseEvent event = await ref.once();
 
     dataBase = event.snapshot.value as Map;
     Rain_Level = dataBase["Rain level"];
     Rain_Status = dataBase["Rain Status"];
+    location = dataBase["location"];
 
     Stream<DatabaseEvent> stream = ref.onValue;
     stream.listen((DatabaseEvent event) {
@@ -379,44 +352,83 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           return FutureBuilder(
-                            future: _determinePosition(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return FutureBuilder(
-                                    future: getWeatherData(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return FutureBuilder(
-                                            future: getRainStatus(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.done) {
-                                                return Row(
+                              future: getLocationAndRain(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return FutureBuilder(
+                                      future: getWeatherData(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            textBaseline:
+                                                TextBaseline.alphabetic,
+                                            children: <Widget>[
+                                              Transform.scale(
+                                                scale: 1.4,
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      Get_WeatherImage()),
+                                                  width: 180,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 22,
+                                                width: 30,
+                                              ),
+                                              Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
                                                   textBaseline:
                                                       TextBaseline.alphabetic,
                                                   children: <Widget>[
-                                                    Transform.scale(
-                                                      scale: 1.4,
-                                                      child: Image(
-                                                        image: AssetImage(
-                                                            Get_WeatherImage()),
-                                                        width: 180,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 22,
-                                                      width: 30,
-                                                    ),
-                                                    Column(
+                                                    Row(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
                                                                 .end,
+                                                        textBaseline:
+                                                            TextBaseline
+                                                                .alphabetic,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            weatherData!.temp
+                                                                .round()
+                                                                .toString(),
+                                                            style: const TextStyle(
+                                                                color:
+                                                                    foregroundColor,
+                                                                fontSize: 50,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal),
+                                                          ),
+                                                          const Text(
+                                                            'o',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  foregroundColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  'OpenSans',
+                                                            ),
+                                                          ),
+                                                        ]),
+                                                    Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .center,
@@ -424,93 +436,32 @@ class _HomePageState extends State<HomePage> {
                                                             TextBaseline
                                                                 .alphabetic,
                                                         children: <Widget>[
-                                                          Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .end,
-                                                              textBaseline:
-                                                                  TextBaseline
-                                                                      .alphabetic,
-                                                              children: <
-                                                                  Widget>[
-                                                                Text(
-                                                                  weatherData!
-                                                                      .temp
-                                                                      .round()
-                                                                      .toString(),
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                          foregroundColor,
-                                                                      fontSize:
-                                                                          50,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal),
-                                                                ),
-                                                                const Text(
-                                                                  'o',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        foregroundColor,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        'OpenSans',
-                                                                  ),
-                                                                ),
-                                                              ]),
-                                                          Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              textBaseline:
-                                                                  TextBaseline
-                                                                      .alphabetic,
-                                                              children: <
-                                                                  Widget>[
-                                                                Text(
-                                                                  Get_Rain_Text(),
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .deepPurpleAccent,
-                                                                      fontSize:
-                                                                          15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal),
-                                                                ),
-                                                              ]),
+                                                          Text(
+                                                            Get_Rain_Text(),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .deepPurpleAccent,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal),
+                                                          ),
                                                         ]),
-                                                  ],
-                                                );
-                                              } else {
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
-                                            });
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    });
-                              } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-                              // By default, show a loading spinner.
-                            },
-                          );
+                                                  ]),
+                                            ],
+                                          );
+                                        } else {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                      });
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              });
                         } else {
                           return const Center(
                               child: CircularProgressIndicator());
